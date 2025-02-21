@@ -11,3 +11,6 @@ class Game():
     def update(self) -> None:
         self.level.scene.update()
         self.engine.update()
+        
+    @property
+    def camera(self): return self.level.scene.camera

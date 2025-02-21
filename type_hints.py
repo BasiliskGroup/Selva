@@ -1,16 +1,25 @@
 import basilisk as bsk
+import glm
 from dataclasses import dataclass
 from typing import Callable
+
+# this file contains abstract classes for all classes in Selva. 
+# They can be used to provide type hinting to child classes without circular importing
 
 
 @dataclass
 class Game():
     engine: bsk.Engine
+    # NOTE level is a child class
+    camera: bsk.FreeCamera
     
+    def update(self) -> None: ...
     
+
 @dataclass
-class Player():
+class Level():
     game: Game
+    scene: bsk.Scene
     
     
 @dataclass
@@ -18,3 +27,17 @@ class HeldItem():
     node: bsk.Node
     down: Callable
     up: Callable
+    
+    
+@dataclass
+class Player():
+    # NOTE game is a parent class
+    HEIGHT: float
+    body_node: bsk.Node
+    held_node: bsk.Node
+    position: glm.vec3
+    velocity: glm.vec3
+    items: list[HeldItem]
+    
+    def update(self, dt: float) -> None: ...
+    # NOTE move(self, dt:float) -> None: should not be exposed
