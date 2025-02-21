@@ -1,6 +1,7 @@
 from basilisk import Node
 from typing import Callable, Any
 
+
 class HeldItem():
     
     def __init__(self, node: Node, down: Callable, up: Callable, **kwargs) -> None:
