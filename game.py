@@ -50,7 +50,10 @@ class Game():
     @property
     def current_scene(self): return self.current_level.scene
     
+    # reduce some typing for IO
     @property
     def keys(self): return self.engine.keys
     @property
     def previous_keys(self): return self.engine.previous_keys
+    @property
+    def mouse(self): return self.engine.mouse

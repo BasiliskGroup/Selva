@@ -13,9 +13,7 @@ def player_nodes(game: Game) -> tuple[Node, Node]:
     )
     
     held = Node(
-        scale = (0.17, 0.2, 0.05),
         position = (0.5, -0.5, -1),
-        material = game.materials['bible']
     )
     # body.add(held) TODO fix children in basilisk engine 
     

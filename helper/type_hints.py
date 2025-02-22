@@ -14,6 +14,7 @@ class Game():
     camera: bsk.FreeCamera
     keys: list[bool]
     previous_keys: list[bool]
+    mouse: bsk.engine.Mouse
     current_scene: bsk.Scene
     materials: dict[str : bsk.Material]
     

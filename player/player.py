@@ -1,7 +1,7 @@
 import glm
 import basilisk as bsk
 from helper.type_hints import Game
-from player.held_item import HeldItem
+from player.held_item import HeldItem, PictureFrame
 from player.player_nodes import player_nodes
 
 
@@ -23,7 +23,8 @@ class Player():
         self.game.current_scene.camera = self.camera # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
         
         # variables for controling the player's held items
-        self.items: list[HeldItem] = []
+        self.items: list[HeldItem] = [PictureFrame(self.game, None)] # TODO temporary, remove item and define behavior when the user has not item
+        self.held_index = 0
         
     def update(self, dt: float) -> None:
         """
@@ -33,12 +34,6 @@ class Player():
         horizontal_quat = glm.conjugate(glm.quat((0, self.camera.yaw, self.camera.roll)))
         self.body_node.rotation = horizontal_quat
         self.body_node.rotational_velocity = glm.vec3(0, 0, 0)
-        
-        # syncronize held item's position to the player TODO replace this with children
-        self.held_node.position = self.camera.position + self.camera.forward * 1.2 + (-0.25) * self.camera.up + 0.45 * self.camera.right
-        self.held_node.rotation = glm.conjugate(self.camera.rotation) * glm.conjugate(glm.angleAxis(glm.pi(), self.camera.up))
-        
-        # TODO sync game camera position with player head
         
         self.move(dt)
         self.actions(dt)
@@ -63,7 +58,11 @@ class Player():
         """
         
         # control held item functionality
-        if not len(self.items): return
+        if not self.held_item: return
+        
+        self.held_node.position = self.camera.position + self.held_item.offset.x * self.camera.right + self.held_item.offset.y * self.camera.up + self.held_item.offset.z * self.camera.forward
+        self.held_node.rotation = self.held_item.rotation * glm.conjugate(self.camera.rotation)
+        self.held_item.func(dt)
     
     @property
     def position(self): return self.body_node.position # TODO offset this position to be at the node's feet
@@ -71,10 +70,33 @@ class Player():
     @property
     def velocity(self): return self.body_node.velocity
     
+    @property
+    def held_item(self):
+        size = len(self.items)
+        if not size: return None
+        return self.items[self.held_index % size]
+    
+    @property
+    def held_index(self): return self._held_index
+    
     @position.setter
-    def position(self, value): self.body_node.position = value
+    def position(self, value: glm.vec3): self.body_node.position = value
     
     @velocity.setter
-    def velocity(self, value): self.body_node.velocity = value
+    def velocity(self, value: glm.vec3): self.body_node.velocity = value
     
-    
+    @held_item.setter
+    def held_item(self, value: HeldItem): 
+        # search for held item in the list and change 
+        if value in self.items: self.held_index = self.items.index(value)
+        else:
+            self.items.append(value)
+            self.held_index = len(self.items) - 1
+        
+    @held_index.setter
+    def held_index(self, value: int):
+        self._held_index = value
+        
+        # set properties for the held node that will not change until the held node is swapped
+        self.held_node.scale = self.items[value].node.scale
+        self.held_node.material = self.items[value].node.material
