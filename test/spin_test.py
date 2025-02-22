@@ -18,17 +18,15 @@ def actions(looked) -> bool:
     
     if not looked and engine.mouse.left_click:
         cast = scene.raycast_mouse((engine.mouse.x, engine.mouse.y))
-        if not cast.node: return
+        if not cast.node: return looked
         looked = True
         scene.camera = static
         # set item position
-        return
+        return looked
     
     rel_x, rel_y = engine.mouse.relative
-    print(rel_x, rel_y)
     if looked and engine.mouse.left_down:
         if rel_x != 0 or rel_y != 0:
-            print('moving')
             sensitivity = 0.25
             node.rotational_velocity = scene.camera.rotation * glm.vec3(rel_y * sensitivity, rel_x * sensitivity, 0)
             
