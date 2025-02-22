@@ -4,3 +4,4 @@ game = Game()
 
 while game.engine.running:
     game.update()
+    print('asd')
