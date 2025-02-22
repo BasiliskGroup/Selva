@@ -1,5 +1,5 @@
 import basilisk as bsk
-from type_hints import Game
+from helper.type_hints import Game
 
 
 class Level():

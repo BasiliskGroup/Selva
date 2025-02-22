@@ -1,7 +1,8 @@
 import glm
-from basilisk import Node
-from type_hints import Game
+import basilisk as bsk
+from helper.type_hints import Game
 from player.held_item import HeldItem
+from player.player_nodes import player_nodes
 
 
 class Player():
@@ -11,20 +12,14 @@ class Player():
         
         # constant variables
         self.HEIGHT = 2 # vertical scale of the node, 1x2x1
+        self.SPEED = 3 # the velocity of the player's node when moving
+        self.DECELERATION_COEFFICIENT = 10
         
         # Main body used for stabilizing collisions on the camera
-        self.body_node = Node(
-            position = (0, 0, 0),
-            scale = (1, 2, 1),
-            collision = True,
-            physics = True
-        )
-        self.held_node = Node(
-            scale = (0.2, 0.2, 0.2),
-            
-        )
-        self.body_node.add(self.held_node)
+        self.body_node, self.held_node = player_nodes()
         
+        
+        # variables for controling the player's held items
         self.items: list[HeldItem] = []
         
     def update(self, dt: float) -> None:
@@ -37,13 +32,24 @@ class Player():
         
         # syncronize held item's position to the player TODO replace this with children
         
+        # TODO sync game camera position with player head
+        
         self.move(dt)
+        self.actions(dt)
     
     def move(self, dt: float) -> None:
         """
         Controls the player movement from the input of the 
         """
+        # control player movement WASD
+        proposed = glm.vec3(0, 0, 0)
+        proposed += self.game.camera.horizontal * (self.game.keys[bsk.pg.K_w] - self.game.keys[bsk.pg.K_s]) 
+        proposed += self.game.camera.right * (self.game.keys[bsk.pg.K_d] - self.game.keys[bsk.pg.K_a])
         
+        if proposed == (0, 0, 0): self.body_node.velocity *= (1 - self.DECELERATION_COEFFICIENT * dt)
+        else: self.body_node.velocity = self.SPEED * glm.normalize(proposed)
+        
+        # TODO add jumping once camera is stabilized
         
     def actions(self, dt: float) -> None:
         """

@@ -12,6 +12,8 @@ class Game():
     engine: bsk.Engine
     # NOTE level is a child class
     camera: bsk.FreeCamera
+    keys: list[bool]
+    previous_keys: list[bool]
     
     def update(self) -> None: ...
     
