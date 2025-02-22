@@ -14,6 +14,7 @@ class Game():
     camera: bsk.FreeCamera
     keys: list[bool]
     previous_keys: list[bool]
+    current_scene: bsk.Scene
     
     def update(self) -> None: ...
     
