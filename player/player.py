@@ -16,7 +16,7 @@ class Player():
         self.DECELERATION_COEFFICIENT = 10
         
         # Main body used for stabilizing collisions on the camera
-        self.body_node, self.held_node = player_nodes()
+        self.body_node, self.held_node = player_nodes(self.game)
         self.current_scene = self.game.current_scene 
         self.current_scene.add(self.body_node, self.held_node)
         self.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0))
@@ -35,8 +35,8 @@ class Player():
         self.body_node.rotational_velocity = glm.vec3(0, 0, 0)
         
         # syncronize held item's position to the player TODO replace this with children
-        self.held_node.position = self.camera.position + self.camera.forward * 0.75 + (-0.25) * self.camera.up + 0.5 * self.camera.right
-        self.held_node.rotation = glm.conjugate(self.camera.rotation)
+        self.held_node.position = self.camera.position + self.camera.forward * 1.2 + (-0.25) * self.camera.up + 0.45 * self.camera.right
+        self.held_node.rotation = glm.conjugate(self.camera.rotation) * glm.conjugate(glm.angleAxis(glm.pi(), self.camera.up))
         
         # TODO sync game camera position with player head
         

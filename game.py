@@ -1,13 +1,19 @@
 import basilisk as bsk
 from levels.level import Level
 from player.player import Player
+from materials.images import images
 
 
 class Game():
     
     def __init__(self) -> None:
+        # Basilisk Engine overhead
         self.engine = bsk.Engine()
         self.current_level = Level(self) # this is the current scene that the player is in
+        self.materials = {
+            'bible' : bsk.Material(texture = images['bibleapp.png'])
+        }
+        
         self.player = Player(self)
         
         #TODO temporary for testing

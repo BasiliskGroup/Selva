@@ -15,6 +15,7 @@ class Game():
     keys: list[bool]
     previous_keys: list[bool]
     current_scene: bsk.Scene
+    materials: dict[str : bsk.Material]
     
     def update(self) -> None: ...
     
