@@ -25,8 +25,7 @@ class Level():
 @dataclass
 class HeldItem():
     node: bsk.Node
-    down: Callable
-    up: Callable
+    func: Callable
     
     
 @dataclass

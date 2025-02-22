@@ -6,11 +6,20 @@ class Game():
     
     def __init__(self) -> None:
         self.engine = bsk.Engine()
-        self.level = Level(self) # TODO find good/clean way to create scenes
+        self.current_level = Level(self) # this is the current scene that the player is in
         
     def update(self) -> None:
-        self.level.scene.update()
+        """
+        Updates all adjacent scenes and the engine
+        """
+        for level in self.adjacent_levels(): level.scene.update()
         self.engine.update()
         
+    def adjacent_levels(self) -> set[Level]:
+        """
+        Determines all "adjacent" scenes connected by portals
+        """
+        return set([self.current_level])
+        
     @property
-    def camera(self): return self.level.scene.camera
+    def camera(self): return self.current_level.scene.camera

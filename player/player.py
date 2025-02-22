@@ -19,10 +19,11 @@ class Player():
             collision = True,
             physics = True
         )
-        
         self.held_node = Node(
+            scale = (0.2, 0.2, 0.2),
             
         )
+        self.body_node.add(self.held_node)
         
         self.items: list[HeldItem] = []
         
