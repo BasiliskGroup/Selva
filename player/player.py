@@ -56,6 +56,8 @@ class Player():
         """
         Controls the player's actions that affect the world around them (i.e. not movement)
         """
+        # interact with the world around TODO figure out a way to do cross portal ray casting
+        
         
         # control held item functionality
         if not self.held_item: return
@@ -95,6 +97,12 @@ class Player():
         
     @held_index.setter
     def held_index(self, value: int):
+        # if not items are held, do nothing
+        if not len(self.items): 
+            self._held_index = 0
+            return
+        
+        value = value % len(self.items) 
         self._held_index = value
         
         # set properties for the held node that will not change until the held node is swapped
