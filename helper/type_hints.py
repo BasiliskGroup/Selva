@@ -25,6 +25,7 @@ class Game():
 class Level():
     game: Game
     scene: bsk.Scene
+    add: Callable
     
     
 @dataclass

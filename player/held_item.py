@@ -44,11 +44,13 @@ class PictureFrame(HeldItem):
         Mouse Left Down - holds the frame in front of the user for a short period of time, shakes, plays portal opening sound effect, and opens a portal
         Mouse Left Up - moves the frame back to starting position
         """
+        # play animation and store lerp value
         was1 = self.percent_moved == 1
         self.percent_moved = glm.clamp(self.percent_moved + dt / self.ANIMAtION_TIME * (2 * self.game.mouse.left_down - 1), 0, 1)
-        if self.percent_moved == 1 and not was1: self.game.current_scene.add(Node(self.game.camera.position))
-        
         self.offset = glm.mix(self.original_offset, self.final_offset, self.percent_moved)
         self.rotation = glm.slerp(self.original_rotation, self.final_rotation, self.percent_moved)
+        
+        # interact with current scene if animation is at it's maximum
+        if self.percent_moved == 1 and not was1: self.game.current_scene.add(Node(self.game.camera.position))
         
         

@@ -1,5 +1,6 @@
 import basilisk as bsk
 from levels.level import Level
+from levels.bedroom import bedroom
 from player.player import Player
 from materials.images import images
 
@@ -9,18 +10,15 @@ class Game():
     def __init__(self) -> None:
         # Basilisk Engine overhead
         self.engine = bsk.Engine()
-        self.current_level = Level(self) # this is the current scene that the player is in
-        self.materials = {
-            'bible' : bsk.Material(texture = images['bibleapp.png'])
-        }
-        
+        self.load_materials()
+        self.current_level = bedroom(self) # this is the current scene that the player is in
         self.player = Player(self)
         
-        #TODO temporary for testing
-        self.current_scene.add(bsk.Node(
-            scale = (10, 1, 10),
-            position = (0, -1, 0)
-        ))
+        # #TODO temporary for testing
+        # self.current_scene.add(bsk.Node(
+        #     scale = (10, 1, 10),
+        #     position = (0, -1, 0)
+        # ))
         
     def update(self) -> None:
         """
@@ -44,6 +42,14 @@ class Game():
         Determiones if a key has been pressed by the user
         """
         return self.keys[key] and not self.previous_keys[key]
+    
+    def load_materials(self) -> None:
+        """
+        Loads all materials for the game from images and basic colors
+        """
+        self.materials = {
+            'bible' : bsk.Material(texture = images['bibleapp.png'])
+        }
         
     @property
     def camera(self): return self.current_scene.camera
