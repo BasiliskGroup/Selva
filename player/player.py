@@ -1,8 +1,9 @@
 import glm
 import basilisk as bsk
-from helper.type_hints import Game
+from helper.type_hints import Game, Level
 from player.held_item import HeldItem, PictureFrame
 from player.player_nodes import player_nodes
+import time
 
 
 class Player():
@@ -17,10 +18,9 @@ class Player():
         
         # Main body used for stabilizing collisions on the camera
         self.body_node, self.held_node = player_nodes(self.game)
-        self.current_scene = self.game.current_scene 
         self.current_scene.add(self.body_node, self.held_node)
         self.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0))
-        self.game.current_scene.camera = self.camera # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
+        self.current_scene.camera = self.camera # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
         
         # variables for controling the player's held items
         self.items: list[HeldItem] = [PictureFrame(self.game, None)] # TODO temporary, remove item and define behavior when the user has not item
@@ -35,8 +35,10 @@ class Player():
         self.body_node.rotation = horizontal_quat
         self.body_node.rotational_velocity = glm.vec3(0, 0, 0)
         
+        # player controls
         self.move(dt)
-        self.actions(dt)
+        self.use_held_item(dt)
+        self.interact(dt)
     
     def move(self, dt: float) -> None:
         """
@@ -52,20 +54,30 @@ class Player():
         
         # TODO add jumping once camera is stabilized
         
-    def actions(self, dt: float) -> None:
+    def use_held_item(self, dt: float) -> None:
         """
-        Controls the player's actions that affect the world around them (i.e. not movement)
+        Determines if the player has a held item.
+        If so, run the held item's function.
         """
-        # interact with the world around TODO figure out a way to do cross portal ray casting
-        
-        
-        # control held item functionality
         if not self.held_item: return
-        
         self.held_node.position = self.camera.position + self.held_item.offset.x * self.camera.right + self.held_item.offset.y * self.camera.up + self.held_item.offset.z * self.camera.forward
         self.held_node.rotation = self.held_item.rotation * glm.conjugate(self.camera.rotation)
         self.held_item.func(dt)
-    
+        
+    def interact(self, dt: float) -> None:
+        """
+        If the player is pressing E, interact with what they are looking at. 
+        """
+        # determine if the player is interacting with a valid object
+        if not self.game.keys[bsk.pg.K_e]: return
+        cast = self.current_scene.raycast(position = self.camera.position + self.camera.forward * 1.5) # will find the player's hitbox
+        if not cast.node: return
+        interactable = self.current_level[cast.node]
+        if not interactable: return
+        
+        # use the Interactable's functionality
+        interactable.func(dt)
+
     @property
     def position(self): return self.body_node.position # TODO offset this position to be at the node's feet
     
@@ -80,6 +92,12 @@ class Player():
     
     @property
     def held_index(self): return self._held_index
+    
+    @property
+    def current_scene(self): return self.game.current_scene
+    
+    @property
+    def current_level(self) -> Level: return self.game.current_level
     
     @position.setter
     def position(self, value: glm.vec3): self.body_node.position = value

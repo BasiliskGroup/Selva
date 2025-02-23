@@ -48,7 +48,10 @@ class Game():
         Loads all materials for the game from images and basic colors
         """
         self.materials = {
-            'bible' : bsk.Material(texture = images['bibleapp.png'])
+            'bible' : bsk.Material(texture = images['bibleapp.png']),
+            'red' : bsk.Material(color = (255, 0, 0)),
+            'green' : bsk.Material(color = (0, 255, 0)),
+            'blue' : bsk.Material(color = (0, 0, 255))
         }
         
     @property

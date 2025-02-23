@@ -21,4 +21,12 @@ class Level():
             elif isinstance(arg, Interactable): # if interactable, keep the remember which node goes to who for detemining who's being interacted with
                 self.scene.add(arg.node)
                 self.interactables[arg.node] = arg
+    
+    def __getitem__(self, node: bsk.Node) -> Interactable:
+        """
+        Gets the ineractable from the given Node if that Node is associated with an Interactable.
+        If there is no Interactable, then return None
+        """
+        if node not in self.interactables: return None
+        return self.interactables[node]
             
