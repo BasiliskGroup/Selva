@@ -19,12 +19,14 @@ class Player():
         # Main body used for stabilizing collisions on the camera
         self.body_node, self.held_node = player_nodes(self.game)
         self.current_scene.add(self.body_node, self.held_node)
-        self.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0))
-        self.current_scene.camera = self.camera # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
         
         # variables for controling the player's held items
         self.items: list[HeldItem] = [PictureFrame(self.game, None)] # TODO temporary, remove item and define behavior when the user has not item
         self.held_index = 0
+        
+        # game interaction variables
+        self.control_disabled = False
+        self.camera = self.current_scene.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0)) # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
         
     def update(self, dt: float) -> None:
         """
@@ -34,6 +36,8 @@ class Player():
         horizontal_quat = glm.conjugate(glm.quat((0, self.camera.yaw, self.camera.roll)))
         self.body_node.rotation = horizontal_quat
         self.body_node.rotational_velocity = glm.vec3(0, 0, 0)
+        
+        if self.control_disabled: return
         
         # player controls
         self.move(dt)
@@ -99,6 +103,9 @@ class Player():
     @property
     def current_level(self) -> Level: return self.game.current_level
     
+    @property
+    def control_disabled(self): return self._control_disabled
+    
     @position.setter
     def position(self, value: glm.vec3): self.body_node.position = value
     
@@ -126,3 +133,7 @@ class Player():
         # set properties for the held node that will not change until the held node is swapped
         self.held_node.scale = self.items[value].node.scale
         self.held_node.material = self.items[value].node.material
+        
+    @control_disabled.setter
+    def control_disabled(self, value: bool):
+        self._control_disabled = value
