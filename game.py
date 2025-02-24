@@ -1,3 +1,4 @@
+import time
 import basilisk as bsk
 from levels.level import Level
 from levels.generators.bedroom import bedroom
@@ -70,6 +71,9 @@ class Game():
         cur_update = self._update
         self._update = self.primary_update
         return cur_update
+    
+    @camera.setter
+    def camera(self, value): self.current_scene.camera = value
     
     @update.setter
     def update(self, value):

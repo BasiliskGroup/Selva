@@ -3,6 +3,7 @@ from levels.level import Level
 from levels.helper import rect_room
 from levels.interactable import Interactable
 from helper.type_hints import Game
+from levels.pickup import pickup_function, pickup_return_function
 
 
 def bedroom(game: Game) -> Level:
@@ -19,10 +20,7 @@ def animated_box(level: Level) -> Interactable:
     
     animated_box = Interactable(level, box)
     
-    def func(dt: float) -> None:
-        box.position += (0, 1, 0)
-    
-    animated_box.func = func
+    animated_box.func = pickup_function(animated_box, pickup_return_function(animated_box))
     
     return animated_box
     
