@@ -6,14 +6,14 @@ from helper.type_hints import Game
 
 def player_nodes(game: Game) -> tuple[Node, Node]:
     body = Node(
-        position = (0, 0, 0),
+        position = (0, 2, 0),
         scale = (1, 2, 1),
         collision = True,
         # physics = True
     )
     
     held = Node(
-        position = (0.5, -0.5, -1),
+        position = (0.5, 1.5, -1),
     )
     # body.add(held) TODO fix children in basilisk engine 
     

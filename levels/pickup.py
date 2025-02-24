@@ -10,6 +10,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
     Generates a "pick up" function for the given interactable.
     func will be activated when the player closes the pick up menu in the accept termination.
     """
+    setattr(interact, 'timer', 0)
     level = interact.level
     game = level.game
     
@@ -17,10 +18,13 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
         """
         Controls the player's ability to spin the object around on the screen. 
         """
+        interact.timer += game.engine.delta_time
         rel_x, rel_y = game.engine.mouse.relative
         interact.node.rotational_velocity = interact.node.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(interact.node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
-        if not (game.engine.mouse.left_down and (rel_x != 0 or rel_y != 0)): return
-        interact.node.rotational_velocity = level.scene.camera.rotation * glm.vec3(rel_y * SENSITIVITY, rel_x * SENSITIVITY, 0)
+        if not game.engine.mouse.left_down: return
+        if rel_x != 0 or rel_y != 0 or interact.timer > 0.1:
+            interact.node.rotational_velocity = level.scene.camera.rotation * glm.vec3(rel_y * SENSITIVITY, rel_x * SENSITIVITY, 0)
+            interact.timer = 0
     
     def update() -> None:
         """
@@ -54,7 +58,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
         # set node's position to infront of the player # TODO this will require the same shader that Emulsion used to render HUD elements over everything else
         
         interact.node.position = game.camera.position + game.camera.forward * 5 # TODO make the distance scalable
-        interact.node.rotation = game.camera.rotation
+        interact.node.rotation = glm.conjugate(game.camera.rotation)
         
         game.update = update
         

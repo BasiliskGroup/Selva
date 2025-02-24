@@ -17,10 +17,7 @@ def bedroom(game: Game) -> Level:
 
 def animated_box(level: Level) -> Interactable:
     box = bsk.Node()
-    
     animated_box = Interactable(level, box)
-    
     animated_box.func = pickup_function(animated_box, pickup_return_function(animated_box))
-    
     return animated_box
     
