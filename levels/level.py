@@ -11,7 +11,7 @@ class Level():
         
         self.interactables: dict[bsk.Node, Interactable] = {}
         
-    def add(self, *args):
+    def add(self, *args) -> None:
         """
         Add nodes and interactables to a scene. Args can also be lists of Nodes/Interactables
         """

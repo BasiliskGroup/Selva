@@ -10,50 +10,76 @@ from typing import Callable, Any
 @dataclass
 class Game():
     engine: bsk.Engine
-    level: Any
+    materials: dict[str : bsk.Material]
+    current_level: Any
+    player: Any
+    update: Callable
     camera: bsk.FreeCamera
+    current_scene: bsk.Scene
     keys: list[bool]
     previous_keys: list[bool]
     mouse: bsk.engine.Mouse
-    current_scene: bsk.Scene
-    materials: dict[str : bsk.Material]
     
-    def update(self) -> None: ...
+    def adjacent_levels(self, origin_level: Any) -> set[Any]: ...
     def key_down(self, key: int) -> bool: ...
+    def key_down(self, key: int) -> bool: ...
+    def load_materials(self) -> None: ...
+    def primary_update(self) -> None: ...
     
 
 @dataclass
 class Interactable():
+    level: Any
     node: bsk.Node
     func: Callable
-    level: Any
     
 
 @dataclass
 class Level():
     game: Game
     scene: bsk.Scene
-    add: Callable
     interactables: list[Interactable]
     
+    def add(self, *args) -> None: ...
     def __getitem__(self, node: bsk.Node) -> Interactable: ...
     
     
 @dataclass
 class HeldItem():
+    game: Game
     node: bsk.Node
     func: Callable
+    offset: glm.vec3
+    rotation: glm.quat
+    
+
+@dataclass
+class PictureFrame(HeldItem):
+    level: Level
+    percent_moved: float
+    ANIMATION_TIME: float
+    original_offset: glm.vec3
+    original_rotation: glm.quat
+    final_offset: glm.vec3
+    final_rotation: glm.quat
     
     
 @dataclass
 class Player():
     # NOTE game is a parent class
     HEIGHT: float
+    SPEED: float
+    DECELERATION_CONSTANT: float
     body_node: bsk.Node
     held_node: bsk.Node
+    items: list[HeldItem]
+    held_index: int
+    control_disabled: bool
+    camera: bsk.FollowCamera
+    
     position: glm.vec3
     velocity: glm.vec3
-    items: list[HeldItem]
+    
     
     def update(self, dt: float) -> None: ...
     
