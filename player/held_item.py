@@ -26,7 +26,7 @@ class PictureFrame(HeldItem):
         # variables to be sent to the parent
         node = Node(
             scale = (0.2, 0.2, 0.2),
-            material = game.materials['bible'],
+            material = game.materials['picture_frame'],
             mesh = game.meshes['picture_frame']
         )
         super().__init__(game, node, self.func)

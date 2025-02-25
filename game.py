@@ -38,6 +38,7 @@ class Game():
         """
         self.materials = {
             'bible' : bsk.Material(texture = images['bibleapp.png']),
+            'picture_frame' : bsk.Material(texture = images['picture_frame.png']),
             'red' : bsk.Material(color = (255, 0, 0)),
             'green' : bsk.Material(color = (0, 255, 0)),
             'blue' : bsk.Material(color = (0, 0, 255))
