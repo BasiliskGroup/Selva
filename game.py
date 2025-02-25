@@ -1,4 +1,5 @@
 import time
+import os
 import basilisk as bsk
 from levels.level import Level
 from levels.generators.bedroom import bedroom
@@ -12,6 +13,7 @@ class Game():
         # Basilisk Engine overhead
         self.engine = bsk.Engine()
         self.load_materials()
+        self.load_meshes()
         self.current_level = bedroom(self) # this is the current scene that the player is in
         self.player = Player(self)
         
@@ -39,6 +41,16 @@ class Game():
             'red' : bsk.Material(color = (255, 0, 0)),
             'green' : bsk.Material(color = (0, 255, 0)),
             'blue' : bsk.Material(color = (0, 0, 255))
+        }
+        
+    def load_meshes(self) -> None:
+        """
+        Loads all meshes from the meshes folder
+        """
+        self.meshes = {
+            file_name[:-4] : bsk.Mesh(f'./meshes/{file_name}') 
+            for file_name in os.listdir('./meshes') 
+            if file_name.endswith('.obj')
         }
     
     def primary_update(self) -> None:

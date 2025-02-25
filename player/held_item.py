@@ -25,19 +25,20 @@ class PictureFrame(HeldItem):
         
         # variables to be sent to the parent
         node = Node(
-            scale = (0.17, 0.2, 0.05),
-            material = game.materials['bible']
+            scale = (0.2, 0.2, 0.2),
+            material = game.materials['bible'],
+            mesh = game.meshes['picture_frame']
         )
         super().__init__(game, node, self.func)
         
         # animation variables
         self.percent_moved = 0
-        self.ANIMAtION_TIME = 1
+        self.ANIMAtION_TIME = 0.5
         
         self.original_offset = glm.vec3(self.offset)
         self.original_rotation = glm.quat(self.rotation)
         self.final_offset = glm.vec3(0, 0, 0.3)
-        self.final_rotation = glm.quat(0, 1, 0, 0)
+        self.final_rotation = glm.quat(1, 0, 0, 0)
         
     def func(self, dt: float) -> None:
         """

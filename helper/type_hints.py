@@ -11,6 +11,7 @@ from typing import Callable, Any
 class Game():
     engine: bsk.Engine
     materials: dict[str : bsk.Material]
+    meshes: dict[str : bsk.Mesh]
     current_level: Any
     player: Any
     update: Callable

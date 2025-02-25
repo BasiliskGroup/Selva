@@ -133,6 +133,7 @@ class Player():
         # set properties for the held node that will not change until the held node is swapped
         self.held_node.scale = self.items[value].node.scale
         self.held_node.material = self.items[value].node.material
+        self.held_node.mesh = self.items[value].node.mesh
         
     @control_disabled.setter
     def control_disabled(self, value: bool):

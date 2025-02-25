@@ -13,7 +13,7 @@ def player_nodes(game: Game) -> tuple[Node, Node]:
     )
     
     held = Node(
-        position = (0.5, 1.5, -1),
+        position = (0.5, 1.5, -1)
     )
     # body.add(held) TODO fix children in basilisk engine 
     
