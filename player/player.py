@@ -32,17 +32,16 @@ class Player():
         """
         Updates the players movement, Nodes, and controls
         """
+        if not self.control_disabled: 
+            # player controls
+            self.move(dt)
+            self.use_held_item(dt)
+            self.interact(dt)
+        
         # update user node to preserve direction
         horizontal_quat = glm.conjugate(glm.quat((0, self.camera.yaw, self.camera.roll)))
         self.body_node.rotation = horizontal_quat
         self.body_node.rotational_velocity = glm.vec3(0, 0, 0)
-        
-        if self.control_disabled: return
-        
-        # player controls
-        self.move(dt)
-        self.use_held_item(dt)
-        self.interact(dt)
     
     def move(self, dt: float) -> None:
         """

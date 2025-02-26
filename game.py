@@ -36,12 +36,16 @@ class Game():
         """
         Loads all materials for the game from images and basic colors
         """
+        saturation = 70
         self.materials = {
             'bible' : bsk.Material(texture = images['bibleapp.png']),
-            'picture_frame' : bsk.Material(texture = images['picture_frame.png']),
-            'red' : bsk.Material(color = (255, 0, 0)),
-            'green' : bsk.Material(color = (0, 255, 0)),
-            'blue' : bsk.Material(color = (0, 0, 255))
+            'picture_frame' : bsk.Material(texture = images['uv_map.png']),
+            'john' : bsk.Material(texture = images['john.png']),
+            'wheel_eight' : bsk.Material(texture = images['wheel_eight.png']),
+            'red' : bsk.Material(color = (255, saturation, saturation)),
+            'green' : bsk.Material(color = (saturation, 255, saturation)),
+            'blue' : bsk.Material(color = (saturation, saturation, 255)),
+            'light_white' : bsk.Material(color = [saturation for _ in range(3)])
         }
         
     def load_meshes(self) -> None:
