@@ -29,7 +29,7 @@ class PictureFrame(HeldItem):
             material = game.materials['picture_frame'],
             mesh = game.meshes['picture_frame']
         )
-        super().__init__(game, node, self.func)
+        super().__init__(game, node, self.func, rotation = glm.angleAxis(glm.pi(), (0, 1, 0)))
         
         # animation variables
         self.percent_moved = 0
@@ -38,7 +38,7 @@ class PictureFrame(HeldItem):
         self.original_offset = glm.vec3(self.offset)
         self.original_rotation = glm.quat(self.rotation)
         self.final_offset = glm.vec3(0, 0, 0.3)
-        self.final_rotation = glm.quat(1, 0, 0, 0)
+        self.final_rotation = glm.quat(self.rotation)
         
     def func(self, dt: float) -> None:
         """
@@ -52,6 +52,6 @@ class PictureFrame(HeldItem):
         self.rotation = glm.slerp(self.original_rotation, self.final_rotation, self.percent_moved)
         
         # interact with current scene if animation is at it's maximum
-        if self.percent_moved == 1 and not was1: self.game.current_scene.add(Node(self.game.camera.position))
+        if self.percent_moved == 1 and not was1: print('*farts*')
         
         
