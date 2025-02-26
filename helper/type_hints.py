@@ -32,7 +32,10 @@ class Game():
 class Interactable():
     level: Any
     node: bsk.Node
-    func: Callable
+    active: Callable
+    passive: Callable
+    
+    def update(self) -> None: ...
     
 
 @dataclass

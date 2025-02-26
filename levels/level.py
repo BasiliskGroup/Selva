@@ -11,6 +11,14 @@ class Level():
         
         self.interactables: dict[bsk.Node, Interactable] = {}
         
+    def update(self, render: bool=True, nodes: bool=True, particles: bool=True, collisions: bool=True) -> None:
+        """
+        Updates the scene as normal and all interactables in the level
+        """
+        self.scene.update(render, nodes, particles, collisions)
+        for interactable in self.interactables.values():
+            if interactable.passive: interactable.passive(self.game.engine.delta_time)
+        
     def add(self, *args) -> None:
         """
         Add nodes and interactables to a scene. Args can also be lists of Nodes/Interactables

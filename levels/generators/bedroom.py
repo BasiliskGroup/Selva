@@ -4,7 +4,8 @@ from levels.level import Level
 from levels.helper import rect_room
 from levels.interactable import Interactable
 from helper.type_hints import Game
-from levels.pickup import pickup_function, pickup_return_function
+from levels.functions.pickup import pickup_function, pickup_return_function
+from levels.functions.interpolate import lerp, lerp_interact, lerp_difference
 
 
 def bedroom(game: Game) -> Level:
@@ -35,7 +36,7 @@ def animated_box(level: Level) -> Interactable:
         position = (0, 1.5, 0)
     )
     animated_box = Interactable(level, box)
-    animated_box.func = pickup_function(animated_box, pickup_return_function(animated_box))
+    animated_box.active = pickup_function(animated_box, pickup_return_function(animated_box))
     return animated_box
     
 def locked_box(level: Level) -> Interactable:
@@ -55,7 +56,7 @@ def key(level: Level) -> Interactable:
         mesh = level.game.meshes['key']
     )
     key = Interactable(level, node)
-    key.func = pickup_function(key, pickup_return_function(key))
+    key.active = pickup_function(key, pickup_return_function(key))
     return key
 
 def drawer(level: Level, position: glm.vec3) -> Interactable:
@@ -63,7 +64,9 @@ def drawer(level: Level, position: glm.vec3) -> Interactable:
         position = position,
         scale = (1, 0.8, 0.8),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
-        mesh = level.game.meshes['drawer']
+        # mesh = level.game.meshes['drawer']
     )
     drawer = Interactable(level, node)
+    drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (0, 0, 1))
+    drawer.active = lerp_interact(drawer)
     return drawer
