@@ -79,7 +79,7 @@ class Player():
         if not interactable: return
         
         # use the Interactable's functionality
-        interactable.func(dt)
+        if interactable.func: interactable.func(dt)
 
     @property
     def position(self): return self.body_node.position # TODO offset this position to be at the node's feet
