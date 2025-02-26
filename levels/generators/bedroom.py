@@ -64,7 +64,7 @@ def drawer(level: Level, position: glm.vec3) -> Interactable:
         position = position,
         scale = (1, 0.8, 0.8),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
-        # mesh = level.game.meshes['drawer']
+        mesh = level.game.meshes['drawer']
     )
     drawer = Interactable(level, node)
     drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (0, 0, 1))
