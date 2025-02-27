@@ -1,12 +1,13 @@
 import basilisk as bsk
 import glm
+from helper.type_hints import Game
 from levels.level import Level
 from levels.helper import rect_room
 from levels.interactable import Interactable
-from helper.type_hints import Game
 from levels.functions.pickup import pickup_function, pickup_return_function
 from levels.functions.interpolate import lerp, lerp_interact, lerp_difference
 from levels.functions.pan import pan_loop
+from levels.functions.tactile import free, free_y
 
 
 def bedroom(game: Game) -> Level:
@@ -24,16 +25,9 @@ def bedroom(game: Game) -> Level:
     for position in (glm.vec3(1.55, 0.6, -4.4), glm.vec3(3.45, 1.4, -4.4), glm.vec3(3.45, 0.6, -4.4)): bedroom.add(drawer(bedroom, position))
     
     # locked box
-    wheels = [bsk.Node(
-        position = (3.5 + 0.15 * i, 2.25, -3.85),
-        scale = (0.07, 0.07, 0.07),
-        mesh = game.meshes['wheel_eight'],
-        material = game.materials['wheel_eight']
-    ) for i in range(-1, 2)]
-    bedroom.add(wheels)
-    locked_box_interactable = locked_box(bedroom)
-    setattr(locked_box_interactable, 'wheels', wheels)
-    bedroom.add(locked_box_interactable)
+    locked_box_interact = locked_box(bedroom)
+    bedroom.add(locked_box_interact)
+    wheels(bedroom, locked_box_interact)
     bedroom.add(key(bedroom))
     
     bedroom.add(animated_box(bedroom))
@@ -80,14 +74,43 @@ def locked_box(level: Level) -> Interactable:
         scale = (0.5, 0.5, 0.5),
         mesh = level.game.meshes['box_three']
     )
-    locked_box = Interactable(level, node)
+    locked_box = Interactable(level, node)        
+    return locked_box
+
+def wheels(bedroom: Level, locked_box: Interactable) -> None:
+    game = bedroom.game
+    
+    wheels = [bsk.Node(
+        position = (3.5 + 0.15 * i, 2.25, -3.85),
+        scale = (0.07, 0.07, 0.07),
+        mesh = game.meshes['wheel_eight'],
+        material = game.materials['wheel_eight']
+    ) for i in range(-1, 2)]
+    bedroom.add(wheels)
+    
+    locked_wheels = {wheel : free_y(locked_box, wheel) for wheel in wheels}
+    setattr(locked_box, 'wheels', locked_wheels)
+    setattr(locked_box, 'timer', 0)
+    setattr(locked_box, 'selected', None)
+    setattr(locked_box, 'prev_left_down', False)
+    
+    def loop_func() -> None:
+        if game.mouse.left_down:
+            if not locked_box.prev_left_down:
+                cast = game.current_scene.raycast_mouse(game.mouse.position, has_collisions=False)
+                locked_box.selected = cast.node
+            if locked_box.selected in locked_box.wheels:
+                locked_box.wheels[locked_box.selected]()
+        
+        for wheel in locked_box.wheels:
+            wheel.rotational_velocity = wheel.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(wheel.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
+        
+        locked_box.prev_left_down = game.mouse.left_down
     
     locked_box.active = pan_loop(
         interact = locked_box, 
         time = 0.5, 
-        position = node.position.data + glm.vec3(0, 0, 1.5),
+        position = locked_box.node.position.data + glm.vec3(0, 0, 1.5),
         rotation = glm.quat(),
-        loop_func = None
+        loop_func = loop_func
     )
-    
-    return locked_box

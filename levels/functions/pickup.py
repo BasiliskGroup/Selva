@@ -2,6 +2,7 @@ import glm
 import basilisk as bsk
 from typing import Callable
 from levels.interactable import Interactable
+from levels.functions.tactile import free
 
 SENSITIVITY = 0.35
 
@@ -13,23 +14,9 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
     setattr(interact, 'timer', 0)
     level = interact.level
     game = level.game
-    
-    def actions() -> None:
-        """
-        Controls the player's ability to spin the object around on the screen. 
-        """
-        interact.timer += game.engine.delta_time
-        rel_x, rel_y = game.engine.mouse.relative
-        interact.node.rotational_velocity = interact.node.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(interact.node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
-        if not game.engine.mouse.left_down: return
-        if rel_x != 0 or rel_y != 0 or interact.timer > 0.1:
-            interact.node.rotational_velocity = level.scene.camera.rotation * glm.vec3(rel_y * SENSITIVITY, rel_x * SENSITIVITY, 0)
-            interact.timer = 0
-    
+    actions = free(interact)
+
     def update() -> None:
-        """
-        This function will replace the game's primary update function. 
-        """
         actions()
         
         # TODO grey out background
@@ -44,9 +31,6 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
         game.engine.update()
         
     def func(dt: float) -> None:
-        """
-        The function that will be called when "picking up" an Interactable
-        """
         if not game.key_down(bsk.pg.K_e): return # only allow the user to call this function on a full left click
         
         # prevent the player from moving camera and position
@@ -72,9 +56,6 @@ def pickup_return_function(interact: Interactable, end_func: Callable=None) -> C
     rotation = glm.quat(interact.node.rotation.data)
     
     def func() -> None:
-        """
-        Returns the node to its original location
-        """
         interact.node.position = position
         interact.node.rotation = rotation
         interact.node.rotational_velocity = glm.vec3(0, 0, 0)

@@ -73,7 +73,7 @@ class Player():
         """
         # determine if the player is interacting with a valid object
         if not self.game.keys[bsk.pg.K_e]: return
-        cast = self.current_scene.raycast(position = self.camera.position + self.camera.forward * 1.5) # will find the player's hitbox
+        cast = self.current_scene.raycast(has_collisions=False) # will find the player's hitbox
         if not cast.node: return
         interactable = self.current_level[cast.node]
         if not interactable: return
