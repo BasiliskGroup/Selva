@@ -111,7 +111,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
                 locked_box.wheels[locked_box.selected]()
         
         for index, wheel in enumerate(locked_box.wheels):
-            wheel.rotational_velocity = wheel.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(wheel.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
+            wheel.rotational_velocity = wheel.rotational_velocity * (1 - game.engine.delta_time * 5) if glm.length2(wheel.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
             
             # compute and adjust the rotation angle for generating input code
             angle = glm.angle(wheel.rotation.data)
