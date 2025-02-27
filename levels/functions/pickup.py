@@ -54,6 +54,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
             position = game.camera.position,
             rotation = game.camera.rotation
         )
+        game.player.velocity = glm.vec3()
         
         # set node's position to infront of the player # TODO this will require the same shader that Emulsion used to render HUD elements over everything else
         

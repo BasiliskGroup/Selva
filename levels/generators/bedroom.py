@@ -21,11 +21,21 @@ def bedroom(game: Game) -> Level:
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh=game.meshes['dresser']
     ))
-    
     for position in (glm.vec3(1.55, 0.6, -4.4), glm.vec3(3.45, 1.4, -4.4), glm.vec3(3.45, 0.6, -4.4)): bedroom.add(drawer(bedroom, position))
     
-    bedroom.add(locked_box(bedroom))
+    # locked box
+    wheels = [bsk.Node(
+        position = (3.5 + 0.15 * i, 2.25, -3.85),
+        scale = (0.07, 0.07, 0.07),
+        mesh = game.meshes['wheel_eight'],
+        material = game.materials['wheel_eight']
+    ) for i in range(-1, 2)]
+    bedroom.add(wheels)
+    locked_box_interactable = locked_box(bedroom)
+    setattr(locked_box_interactable, 'wheels', wheels)
+    bedroom.add(locked_box_interactable)
     bedroom.add(key(bedroom))
+    
     bedroom.add(animated_box(bedroom))
     
     return bedroom
@@ -71,13 +81,6 @@ def locked_box(level: Level) -> Interactable:
         mesh = level.game.meshes['box_three']
     )
     locked_box = Interactable(level, node)
-    
-    def active(dt: float) -> None:
-        """
-        1. Camera lerps to box
-        2. Player is allowed control (Moving wheels and exiting with e)
-        3. On exit, camera lerps to player position
-        """
     
     locked_box.active = pan_loop(
         interact = locked_box, 

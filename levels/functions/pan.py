@@ -22,7 +22,8 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
         final_position = glm.vec3(position) if position else original_position
         final_rotation = glm.quat(rotation) if rotation else original_rotation
         game.camera = interact.camera
-        interact.step = 1
+        game.player.velocity = glm.vec3() # reset player velocity to prevent player sliding away
+        interact.step = 1 # reset steps from previous calls of this function
 
         # generate update function for the game
         def update():
