@@ -45,7 +45,7 @@ class Game():
             'red' : bsk.Material(color = (255, saturation, saturation)),
             'green' : bsk.Material(color = (saturation, 255, saturation)),
             'blue' : bsk.Material(color = (saturation, saturation, 255)),
-            'light_white' : bsk.Material(color = [saturation for _ in range(3)])
+            'light_white' : bsk.Material(color = [240 for _ in range(3)])
         }
         
     def load_meshes(self) -> None:

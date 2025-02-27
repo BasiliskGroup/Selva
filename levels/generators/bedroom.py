@@ -22,28 +22,16 @@ def bedroom(game: Game) -> Level:
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh=game.meshes['dresser']
     ))
-    for position in (glm.vec3(1.55, 0.6, -4.4), glm.vec3(3.45, 1.4, -4.4), glm.vec3(3.45, 0.6, -4.4)): bedroom.add(drawer(bedroom, position))
+    drawers(bedroom)
     
     # locked box
     locked_box_interact = locked_box(bedroom)
     bedroom.add(locked_box_interact)
     wheels(bedroom, locked_box_interact)
     bedroom.add(key(bedroom))
-    
-    bedroom.add(animated_box(bedroom))
+    bedroom.add(locked_lid(bedroom, locked_box_interact))
     
     return bedroom
-
-def animated_box(level: Level) -> Interactable:
-    box = bsk.Node(
-        mesh = level.game.meshes['john'],
-        scale = (0.25, 0.25, 0.25),
-        material = level.game.materials['john'],
-        position = (0, 1.5, 0)
-    )
-    animated_box = Interactable(level, box)
-    animated_box.active = pickup_function(animated_box, pickup_return_function(animated_box))
-    return animated_box
     
 def key(level: Level) -> Interactable:
     node = bsk.Node(
@@ -68,6 +56,25 @@ def drawer(level: Level, position: glm.vec3) -> Interactable:
     drawer.active = lerp_interact(drawer)
     return drawer
 
+def drawers(bedroom: Level) -> None:
+    drawers: list[Interactable] = [
+        drawer(bedroom, position) for position in (
+            glm.vec3(1.55, 0.6, -4.4), # bottom left
+            glm.vec3(3.45, 1.4, -4.4), # top right
+            glm.vec3(3.45, 0.6, -4.4)  # bottom right
+        )
+    ]
+    bedroom.add(drawers)
+    
+    john = bsk.Node(
+        position = (3.7, 0.6, -4.4),
+        scale = (0.1, 0.1, 0.1),
+        mesh = bedroom.game.meshes['john'],
+        material = bedroom.game.materials['john'],
+        rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)) * glm.angleAxis(glm.pi() / 2, (1, 0, 0)) * glm.angleAxis(glm.pi() / 3, (0, 1, 0))
+    )
+    drawers[2].node.add(john)
+
 def locked_box(level: Level) -> Interactable:
     node = bsk.Node(
         position = (3.5, 2.25, -4.35),
@@ -88,7 +95,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
     ) for i in range(-1, 2)]
     bedroom.add(wheels)
     
-    locked_wheels = {wheel : free_y(locked_box, wheel) for wheel in wheels}
+    locked_wheels = {wheel : free_y(locked_box, wheel, sensitivity = 0.7) for wheel in wheels}
     setattr(locked_box, 'wheels', locked_wheels)
     setattr(locked_box, 'timer', 0)
     setattr(locked_box, 'selected', None)
@@ -123,3 +130,25 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
         rotation = glm.quat(),
         loop_func = loop_func
     )
+    
+def locked_lid(bedroom: Level, locked_box: Interactable) -> Interactable:
+    parent = bsk.Node( # TODO make this invisible or a hinge
+        position = locked_box.node.position.data + glm.vec3(0, 0.375, -0.4),
+        scale = (0.1, 0.1, 0.1),
+    )
+    node = bsk.Node(
+        position = glm.vec3(0.35, 0.375, -0.075) * 10,
+        scale = locked_box.node.scale,
+        mesh = bedroom.game.meshes['box_three_lid'],
+    )
+    bedroom.add(parent)
+    parent.add(node)
+    locked_lid = Interactable(bedroom, node)
+    
+    def check_func() -> bool:
+        return bedroom.game.key_down(bsk.pg.K_e) and locked_box.code == [2, 6, 3]
+    
+    locked_lid.passive = lerp_difference(locked_lid, node = parent, time = 0.25, delta_rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)))
+    locked_lid.active = lerp_interact(locked_lid, check_func = check_func)
+    
+    return locked_lid

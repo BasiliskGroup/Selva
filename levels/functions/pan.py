@@ -17,6 +17,7 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
     
     def func(dt: float) -> None:
         # prepare variables for lerp
+        if not game.key_down(bsk.pg.K_e): return
         original_position = interact.camera.position = glm.vec3(*game.camera.position)
         original_rotation = interact.camera.rotation = glm.quat(*game.camera.rotation)
         final_position = glm.vec3(position) if position else original_position
