@@ -1,5 +1,7 @@
 import basilisk as bsk
 import glm
+import random
+from typing import Callable
 from helper.type_hints import Game
 from levels.level import Level
 from levels.helper import rect_room
@@ -8,12 +10,21 @@ from levels.functions.pickup import pickup_function, pickup_return_function
 from levels.functions.interpolate import lerp, lerp_interact, lerp_difference
 from levels.functions.pan import pan_loop
 from levels.functions.tactile import free, free_y
+from levels.functions.held_item import interact_to_hold
 
 
 def bedroom(game: Game) -> Level:
     # create basic layout for bedroom level
     bedroom = Level(game)
     bedroom.add(*rect_room(0, 0, 5.75, 6.75, 4, game.materials['light_white']))
+
+    # locked box
+    locked_box_interact = locked_box(bedroom)
+    bedroom.add(locked_box_interact)
+    wheels(bedroom, locked_box_interact)
+    key_interact = key(bedroom)
+    bedroom.add(key_interact)
+    bedroom.add(locked_lid(bedroom, locked_box_interact))
     
     # dresser
     bedroom.add(bsk.Node(
@@ -22,14 +33,7 @@ def bedroom(game: Game) -> Level:
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh=game.meshes['dresser']
     ))
-    drawers(bedroom)
-    
-    # locked box
-    locked_box_interact = locked_box(bedroom)
-    bedroom.add(locked_box_interact)
-    wheels(bedroom, locked_box_interact)
-    bedroom.add(key(bedroom))
-    bedroom.add(locked_lid(bedroom, locked_box_interact))
+    drawers(bedroom, key_interact)
     
     return bedroom
     
@@ -41,10 +45,10 @@ def key(level: Level) -> Interactable:
         mesh = level.game.meshes['key']
     )
     key = Interactable(level, node)
-    key.active = pickup_function(key, pickup_return_function(key))
+    key.active = pickup_function(key, interact_to_hold(key, key.node))
     return key
 
-def drawer(level: Level, position: glm.vec3) -> Interactable:
+def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Interactable:
     node = bsk.Node(
         position = position,
         scale = (1, 0.8, 0.8),
@@ -53,10 +57,10 @@ def drawer(level: Level, position: glm.vec3) -> Interactable:
     )
     drawer = Interactable(level, node)
     drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (0, 0, 1))
-    drawer.active = lerp_interact(drawer)
+    drawer.active = lerp_interact(drawer, check_func = check_func)
     return drawer
 
-def drawers(bedroom: Level) -> None:
+def drawers(bedroom: Level, key: Interactable) -> None:
     drawers: list[Interactable] = [
         drawer(bedroom, position) for position in (
             glm.vec3(1.55, 0.6, -4.4), # bottom left
@@ -66,6 +70,7 @@ def drawers(bedroom: Level) -> None:
     ]
     bedroom.add(drawers)
     
+    # bottom right drawer 
     john = bsk.Node(
         position = (3.7, 0.6, -4.4),
         scale = (0.1, 0.1, 0.1),
@@ -73,7 +78,50 @@ def drawers(bedroom: Level) -> None:
         material = bedroom.game.materials['john'],
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)) * glm.angleAxis(glm.pi() / 2, (1, 0, 0)) * glm.angleAxis(glm.pi() / 3, (0, 1, 0))
     )
+    # john_interact = Interactable(bedroom, john)
+    # john_interact.active = pickup_function(john_interact, pickup_return_function(john_interact))
     drawers[2].node.add(john)
+    # bedroom.add(john_interact)
+    
+    # bottom left drawer
+    for node in [bsk.Node(
+        position = position,
+        scale = (0.06, 0.06, 0.06),
+        mesh = bedroom.game.meshes['sock'],
+        material = bedroom.game.materials['red'],
+        rotation = glm.angleAxis(angle, (0, 1, 0))
+    ) for position, angle in (
+        ((1.8, 0.6, -4.4), glm.pi() / 3),
+        ((2, 0.6, -4.5), -glm.pi() / 3),
+        ((1.7, 0.6, -4.3), glm.pi()),
+    )]: 
+        drawers[0].node.add(node)
+    
+    # top right drawer
+    for node in [bsk.Node(
+        position = position,
+        scale = (0.03, 0.03, 0.03),
+        mesh = bedroom.game.meshes['brick'],
+        material = bedroom.game.materials['red'],
+        rotation = glm.angleAxis(angle, (0, 1, 0))
+    ) for position, angle in (
+        ((3.8, 1.4, -4.4), random.uniform(0, 2 * glm.pi())),
+        ((4, 1.4, -4.5), random.uniform(0, 2 * glm.pi())),
+        ((3.7, 1.4, -4.3), random.uniform(0, 2 * glm.pi())),
+        ((3.4, 1.4, -4.2), random.uniform(0, 2 * glm.pi())),
+        ((3.6, 1.4, -4.7), random.uniform(0, 2 * glm.pi())),
+        ((3.5, 1.4, -4.8), random.uniform(0, 2 * glm.pi())),
+    )]: 
+        drawers[1].node.add(node)
+    
+    # function for opening locked drawer
+    def check_func() -> bool:
+        if not bedroom.game.key_down(bsk.pg.K_e) or not bedroom.game.player.held_item or not bedroom.game.player.held_item.node == key.node: return False
+        bedroom.game.player.items.remove(bedroom.game.player.held_item) # removes key from the player's inventory
+        return True
+    
+    locked_drawer = drawer(bedroom, glm.vec3(1.55, 1.4, -4.4), check_func = check_func)
+    bedroom.add(locked_drawer)
 
 def locked_box(level: Level) -> Interactable:
     node = bsk.Node(
@@ -122,6 +170,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
             locked_box.code[index] = 8 - int(angle / glm.pi() * 4)
         
         locked_box.prev_left_down = game.mouse.left_down
+        # print(locked_box.code)
     
     locked_box.active = pan_loop(
         interact = locked_box, 

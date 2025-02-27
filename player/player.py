@@ -21,7 +21,7 @@ class Player():
         self.current_scene.add(self.body_node, self.held_node)
         
         # variables for controling the player's held items
-        self.items: list[HeldItem] = [PictureFrame(self.game, None)] # TODO temporary, remove item and define behavior when the user has not item
+        self.items: list[HeldItem] = [] # TODO temporary, remove item and define behavior when the user has not item
         self.held_index = 0
         
         # game interaction variables
@@ -62,10 +62,12 @@ class Player():
         Determines if the player has a held item.
         If so, run the held item's function.
         """
-        if not self.held_item: return
+        if not self.held_item: 
+            self.held_node.position = glm.vec3(0, 1000, 0)
+            return
         self.held_node.position = self.camera.position + self.held_item.offset.x * self.camera.right + self.held_item.offset.y * self.camera.up + self.held_item.offset.z * self.camera.forward
         self.held_node.rotation = self.held_item.rotation * glm.conjugate(self.camera.rotation)
-        self.held_item.func(dt)
+        if self.held_item.func: self.held_item.func(dt)
         
     def interact(self, dt: float) -> None:
         """

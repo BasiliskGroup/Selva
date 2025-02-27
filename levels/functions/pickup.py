@@ -24,7 +24,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
         # if the function is not exiting
         if game.key_down(bsk.pg.K_e): 
             game.camera = game.player.camera
-            if end_func: end_func()
+            if end_func: end_func(game.engine.delta_time)
         else: game.update = update
         
         level.update() # TODO change this to only update HUD scene and render background scenes
@@ -42,7 +42,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
         
         # set node's position to infront of the player # TODO this will require the same shader that Emulsion used to render HUD elements over everything else
         
-        interact.node.position = game.camera.position + game.camera.forward * 5 # TODO make the distance scalable
+        interact.node.position = game.camera.position + game.camera.forward * 1 # TODO make the distance scalable
         interact.node.rotation = glm.conjugate(game.camera.rotation)
         game.update = update
         
@@ -55,10 +55,10 @@ def pickup_return_function(interact: Interactable, end_func: Callable=None) -> C
     position = glm.vec3(interact.node.position.data)
     rotation = glm.quat(interact.node.rotation.data)
     
-    def func() -> None:
+    def func(dt: float) -> None:
         interact.node.position = position
         interact.node.rotation = rotation
         interact.node.rotational_velocity = glm.vec3(0, 0, 0)
-        if end_func: end_func()
+        if end_func: end_func(interact.level.game.engine.delta_time)
         
     return func

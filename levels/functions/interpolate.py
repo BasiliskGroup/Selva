@@ -23,7 +23,7 @@ def lerp(interact: Interactable, node: bsk.Node=None, time: float=1, position: g
         node.rotation = glm.slerp(original_rotation, final_rotation, interact.percent)
         
         # interact with current scene if animation is at it's maximum
-        if end_func and interact.percent == 1 and not was1: end_func()
+        if end_func and interact.percent == 1 and not was1: end_func(dt)
         
     return func
 
@@ -47,6 +47,6 @@ def lerp_interact(interact: Interactable, end_func: Callable=None, check_func: C
     def func(dt: float) -> None:
         if not check_func(): return
         interact.step *= -1
-        if end_func: end_func()
+        if end_func: end_func(dt)
         
     return func
