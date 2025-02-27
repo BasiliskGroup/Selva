@@ -93,6 +93,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
     setattr(locked_box, 'timer', 0)
     setattr(locked_box, 'selected', None)
     setattr(locked_box, 'prev_left_down', False)
+    setattr(locked_box, 'code', [1, 1, 1])
     
     def loop_func() -> None:
         if game.mouse.left_down:
@@ -102,8 +103,16 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
             if locked_box.selected in locked_box.wheels:
                 locked_box.wheels[locked_box.selected]()
         
-        for wheel in locked_box.wheels:
+        for index, wheel in enumerate(locked_box.wheels):
             wheel.rotational_velocity = wheel.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(wheel.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
+            
+            # compute and adjust the rotation angle for generating input code
+            angle = glm.angle(wheel.rotation.data)
+            if glm.axis(wheel.rotation.data).x < 1: angle -= 2 * glm.pi()
+            angle = (abs(angle) - glm.pi() / 8) % (2 * glm.pi())
+            
+            # compute input code from angle
+            locked_box.code[index] = 8 - int(angle / glm.pi() * 4)
         
         locked_box.prev_left_down = game.mouse.left_down
     
