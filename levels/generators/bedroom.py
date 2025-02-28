@@ -17,6 +17,14 @@ def bedroom(game: Game) -> Level:
     # create basic layout for bedroom level
     bedroom = Level(game)
     bedroom.add(*rect_room(0, 0, 5.75, 6.75, 4, game.materials['light_white']))
+    
+    # poster
+    bedroom.add(bsk.Node(
+        position = (4.75, 5, -2),
+        scale = (0.01, 1.2, 1.7),
+        rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
+        material = game.materials['suits']
+    ))
 
     # locked box
     locked_box_interact = locked_box(bedroom)
@@ -127,7 +135,8 @@ def locked_box(level: Level) -> Interactable:
     node = bsk.Node(
         position = (3.5, 2.25, -4.35),
         scale = (0.5, 0.5, 0.5),
-        mesh = level.game.meshes['box_three']
+        mesh = level.game.meshes['box_three'],
+        material = level.game.materials['box_three']
     )
     locked_box = Interactable(level, node)        
     return locked_box
@@ -195,7 +204,7 @@ def locked_lid(bedroom: Level, locked_box: Interactable) -> Interactable:
     locked_lid = Interactable(bedroom, node)
     
     def check_func() -> bool:
-        return bedroom.game.key_down(bsk.pg.K_e) and locked_box.code == [2, 6, 3]
+        return bedroom.game.key_down(bsk.pg.K_e) and locked_box.code == [1, 6, 3]
     
     locked_lid.passive = lerp_difference(locked_lid, node = parent, time = 0.25, delta_rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)))
     locked_lid.active = lerp_interact(locked_lid, check_func = check_func)

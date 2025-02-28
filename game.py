@@ -42,6 +42,8 @@ class Game():
             'picture_frame' : bsk.Material(texture = images['uv_map.png']),
             'john' : bsk.Material(texture = images['john.png']),
             'wheel_eight' : bsk.Material(texture = images['wheel_eight.png']),
+            'box_three' : bsk.Material(texture = images['box_three.png']),
+            'suits' : bsk.Material(texture = images['suits.png']),
             'red' : bsk.Material(color = (255, saturation, saturation)),
             'green' : bsk.Material(color = (saturation, 255, saturation)),
             'blue' : bsk.Material(color = (saturation, saturation, 255)),
