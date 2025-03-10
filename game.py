@@ -4,6 +4,8 @@ from levels.level import Level
 from levels.generators.imports import bedroom
 from player.player import Player
 from materials.images import images
+from memories.memory_handler import MemoryHandler
+from memories.memory import Memory
 
 
 class Game():
@@ -13,7 +15,8 @@ class Game():
         self.engine = bsk.Engine()
         self.load_materials()
         self.load_meshes()
-        self.current_level = bedroom(self) # this is the current scene that the player is in
+        self.memory_handler = MemoryHandler(self)
+        self.memory_handler['bedroom'] = Memory(bedroom(self), [])
         self.player = Player(self)
         
         # frame by frame updating
@@ -85,6 +88,9 @@ class Game():
     def mouse(self): return self.engine.mouse
     
     @property
+    def current_level(self) -> Level: return self.memory_handler.current_memory.level
+    
+    @property
     def update(self):
         # assumes that the update function has been overridden
         cur_update = self._update
@@ -97,3 +103,5 @@ class Game():
     @update.setter
     def update(self, value):
         self._update = value
+        
+    

@@ -36,6 +36,7 @@ def lerp_difference(interact: Interactable, node: bsk.Node=None, time: float=1, 
     final_rotation = (glm.quat(delta_rotation) if delta_rotation else glm.quat()) * node.rotation.data
     return lerp(interact, node, time, final_position, final_rotation, end_func)
 
+# function used for activating a lerp
 def lerp_interact(interact: Interactable, end_func: Callable=None, check_func: Callable=None) -> Callable:
     """
     On keydown, toggles the lerp on an Interactable with the lerp function.

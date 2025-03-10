@@ -4,8 +4,6 @@ from typing import Callable
 from levels.interactable import Interactable
 from levels.functions.tactile import free
 
-SENSITIVITY = 0.35
-
 def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable:
     """
     Generates a "pick up" function for the given interactable.

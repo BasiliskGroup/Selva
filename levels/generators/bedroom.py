@@ -59,6 +59,7 @@ def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Inter
         mesh = level.game.meshes['drawer']
     )
     drawer = Interactable(level, node)
+    
     drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (0, 0, 1))
     drawer.active = lerp_interact(drawer, check_func = check_func)
     return drawer
@@ -81,10 +82,10 @@ def drawers(bedroom: Level, key: Interactable) -> None:
         material = bedroom.game.materials['john'],
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)) * glm.angleAxis(glm.pi() / 2, (1, 0, 0)) * glm.angleAxis(glm.pi() / 3, (0, 1, 0))
     )
-    # john_interact = Interactable(bedroom, john)
-    # john_interact.active = pickup_function(john_interact, pickup_return_function(john_interact))
+    john_interact = Interactable(bedroom, john)
+    john_interact.active = pickup_function(john_interact, pickup_return_function(john_interact))
     drawers[2].node.add(john)
-    # bedroom.add(john_interact)
+    bedroom.add(john_interact)
     
     # bottom left drawer
     for node in [bsk.Node(
