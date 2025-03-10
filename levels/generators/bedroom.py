@@ -6,12 +6,7 @@ from helper.type_hints import Game
 from levels.level import Level
 from levels.helper import rect_room
 from levels.interactable import Interactable
-from levels.functions.pickup import pickup_function, pickup_return_function
-from levels.functions.interpolate import lerp, lerp_interact, lerp_difference
-from levels.functions.pan import pan_loop
-from levels.functions.tactile import free, free_y
-from levels.functions.held_item import interact_to_hold
-
+from levels.functions.imports import *
 
 def bedroom(game: Game) -> Level:
     # create basic layout for bedroom level
@@ -193,9 +188,10 @@ def locked_lid(bedroom: Level, locked_box: Interactable) -> Interactable:
     parent = bsk.Node( # TODO make this invisible or a hinge
         position = locked_box.node.position.data + glm.vec3(0, 0.375, -0.4),
         scale = (0.1, 0.1, 0.1),
+        rotation = glm.angleAxis(0.2, (1, 0, 0))
     )
     node = bsk.Node(
-        position = glm.vec3(0.35, 0.375, -0.075) * 10,
+        position = parent.position + (0, 0.125, 0.425),
         scale = locked_box.node.scale,
         mesh = bedroom.game.meshes['box_three_lid'],
     )

@@ -2,7 +2,7 @@ import time
 import os
 import basilisk as bsk
 from levels.level import Level
-from levels.generators.bedroom import bedroom
+from levels.generators.imports import bedroom
 from player.player import Player
 from materials.images import images
 
@@ -64,11 +64,12 @@ class Game():
         """
         Updates all adjacent scenes and the engine
         """
-        # update player data and actions
+         # update player data and actions
         self.player.update(self.engine.delta_time)
         
         # render and tick physics # TODO Jonah, I'm guessing you're going to need to separate a lot of stuff for render portals, 
         for level in self.adjacent_levels(self.current_level): level.update()
+        
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
         self.engine.update()
         
