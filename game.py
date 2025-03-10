@@ -1,4 +1,3 @@
-import time
 import os
 import basilisk as bsk
 from levels.level import Level
@@ -38,7 +37,6 @@ class Game():
         """
         saturation = 70
         self.materials = {
-            'bible' : bsk.Material(texture = images['bibleapp.png']),
             'picture_frame' : bsk.Material(texture = images['uv_map.png']),
             'john' : bsk.Material(texture = images['john.png']),
             'wheel_eight' : bsk.Material(texture = images['wheel_eight.png']),
