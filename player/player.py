@@ -3,7 +3,7 @@ import basilisk as bsk
 from helper.type_hints import Game, Level
 from player.held_item import HeldItem, PictureFrame
 from player.player_nodes import player_nodes
-import time
+from player.held_ui import HeldUI
 
 
 class Player():
@@ -17,12 +17,12 @@ class Player():
         self.DECELERATION_COEFFICIENT = 10
         
         # Main body used for stabilizing collisions on the camera
-        self.body_node, self.held_node = player_nodes(self.game)
-        self.current_scene.add(self.body_node, self.held_node)
+        self.body_node = player_nodes(self.game)
+        self.current_scene.add(self.body_node)
         
         # variables for controling the player's held items
-        self.items: list[HeldItem] = [] # TODO temporary, remove item and define behavior when the user has not item
-        self.held_index = 0
+        self.item_r_ui = HeldUI(self.game)
+        # self.item_l_ui = HeldUI(self.game)
         
         # game interaction variables
         self.control_disabled = False
@@ -35,7 +35,7 @@ class Player():
         if not self.control_disabled: 
             # player controls
             self.move(dt)
-            self.use_held_item(dt)
+            self.item_r_ui.update(dt)
             self.interact(dt)
         
         # update user node to preserve direction
@@ -57,18 +57,6 @@ class Player():
         
         # TODO add jumping once camera is stabilized
         
-    def use_held_item(self, dt: float) -> None:
-        """
-        Determines if the player has a held item.
-        If so, run the held item's function.
-        """
-        if not self.held_item: 
-            self.held_node.position = glm.vec3(0, 1000, 0)
-            return
-        self.held_node.position = self.camera.position + self.held_item.offset.x * self.camera.right + self.held_item.offset.y * self.camera.up + self.held_item.offset.z * self.camera.forward
-        self.held_node.rotation = self.held_item.rotation * glm.conjugate(self.camera.rotation)
-        if self.held_item.func: self.held_item.func(dt)
-        
     def interact(self, dt: float) -> None:
         """
         If the player is pressing E, interact with what they are looking at. 
@@ -85,57 +73,33 @@ class Player():
 
     @property
     def position(self): return self.body_node.position # TODO offset this position to be at the node's feet
-    
     @property
     def velocity(self): return self.body_node.velocity
-    
-    @property
-    def held_item(self):
-        size = len(self.items)
-        if not size: return None
-        return self.items[self.held_index % size]
-    
-    @property
-    def held_index(self): return self._held_index
-    
-    @property
-    def current_scene(self): return self.game.current_scene
-    
-    @property
-    def current_level(self) -> Level: return self.game.current_level
-    
-    @property
-    def control_disabled(self): return self._control_disabled
-    
     @position.setter
     def position(self, value: glm.vec3): self.body_node.position = value
-    
     @velocity.setter
     def velocity(self, value: glm.vec3): self.body_node.velocity = value
     
-    @held_item.setter
-    def held_item(self, value: HeldItem): 
-        # search for held item in the list and change 
-        if value in self.items: self.held_index = self.items.index(value)
-        else:
-            self.items.append(value)
-            self.held_index = len(self.items) - 1
-        
-    @held_index.setter
-    def held_index(self, value: int):
-        # if not items are held, do nothing
-        if not len(self.items): 
-            self._held_index = 0
-            return
-        
-        value = value % len(self.items) 
-        self._held_index = value
-        
-        # set properties for the held node that will not change until the held node is swapped
-        self.held_node.scale = self.items[value].node.scale
-        self.held_node.material = self.items[value].node.material
-        self.held_node.mesh = self.items[value].node.mesh
-        
+    # derived properties from the game
+    @property
+    def current_scene(self): return self.game.current_scene
+    @property
+    def current_level(self) -> Level: return self.game.current_level
+    
+    # TODO check if this is needed for the game
+    @property
+    def control_disabled(self): return self._control_disabled
     @control_disabled.setter
     def control_disabled(self, value: bool):
         self._control_disabled = value
+        
+    # held items
+    @property
+    def item_r(self) -> HeldItem: return self.item_r_ui.item
+    @item_r.setter
+    def item_r(self, value) -> HeldItem: self.item_r_ui.item = value
+    
+    # @property
+    # def item_l(self) -> HeldItem: return self.item_l_ui.item
+    # @item_l.setter
+    # def item_l(self, value) -> HeldItem: self.item_l_ui.item = value

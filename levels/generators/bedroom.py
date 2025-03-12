@@ -120,8 +120,8 @@ def drawers(bedroom: Level, key: Interactable) -> None:
     
     # function for opening locked drawer
     def check_func() -> bool:
-        if not bedroom.game.key_down(bsk.pg.K_e) or not bedroom.game.player.held_item or not bedroom.game.player.held_item.node == key.node: return False
-        bedroom.game.player.items.remove(bedroom.game.player.held_item) # removes key from the player's inventory
+        if not bedroom.game.key_down(bsk.pg.K_e) or not bedroom.game.player.item_r or not bedroom.game.player.item_r.node == key.node: return False
+        bedroom.game.player.item_r_ui.remove(bedroom.game.player.item_r) # removes key from the player's inventory
         return True
     
     locked_drawer = drawer(bedroom, glm.vec3(1.55, 1.4, -4.4), check_func = check_func)

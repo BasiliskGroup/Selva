@@ -26,6 +26,6 @@ def interact_to_hold(interact: Interactable, node: bsk.Node, held_func: Callable
     def func(dt: float) -> None:
         if not game.key_down(bsk.pg.K_e): return
         level.scene.remove(interact.node)
-        game.player.held_item = held_item
+        game.player.item_r = held_item
         
     return func

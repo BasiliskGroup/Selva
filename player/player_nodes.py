@@ -11,10 +11,6 @@ def player_nodes(game: Game) -> tuple[Node, Node]:
         collision = True,
         # physics = True
     )
-    
-    held = Node(
-        position = (0.5, 100, -1)
-    )
     # body.add(held) TODO fix children in basilisk engine 
     
-    return body, held
+    return body
