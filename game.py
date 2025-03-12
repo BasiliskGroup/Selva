@@ -5,7 +5,6 @@ from levels.generators.imports import bedroom
 from player.player import Player
 from materials.images import images
 from memories.memory_handler import MemoryHandler
-from memories.memory import Memory
 
 
 class Game():
@@ -16,7 +15,7 @@ class Game():
         self.load_materials()
         self.load_meshes()
         self.memory_handler = MemoryHandler(self)
-        self.memory_handler['bedroom'] = Memory(bedroom(self), [])
+        self.memory_handler['bedroom'] = bedroom(self)
         self.player = Player(self)
         
         # frame by frame updating
@@ -88,7 +87,7 @@ class Game():
     def mouse(self): return self.engine.mouse
     
     @property
-    def current_level(self) -> Level: return self.memory_handler.current_memory.level
+    def current_level(self) -> Level: return self.memory_handler.current_level
     
     @property
     def update(self):

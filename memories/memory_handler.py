@@ -1,15 +1,16 @@
 from typing import Callable
 from helper.type_hints import Game
 from levels.level import Level
-from memories.memory import Memory
+from memories.edge_matrix import EdgeMatrix
 
 
 class MemoryHandler():
     
     def __init__(self, game: Game) -> None:
         self.game = game
-        self.graph: dict[str, Memory] = {}
-        self.current_memory: Memory = None
+        self.nodes: dict[str, Level] = {}
+        self.edges = EdgeMatrix()
+        self.current_level: Level = None
         
     # functions for adding and accessing graphs
     def add_first(func: Callable) -> Callable:
@@ -18,15 +19,15 @@ class MemoryHandler():
         """
         def wrapper(self, *args, **kwargs):
             func(self, *args, **kwargs)
-            if len(self.graph) == 1: self.current_memory = list(self.graph.values())[0]
+            if len(self.nodes) == 1: self.current_level = list(self.nodes.values())[0]
         return wrapper
     
     @add_first
-    def add(self, name: str, level: Level, neighbors: list[str]) -> None: self[name] = Memory(level, neighbors)
+    def add(self, name: str, level: Level) -> None: self[name] = level
     
     @add_first
-    def __setitem__(self, name: str, memory: Memory) -> None: self.graph[name] = memory
-    def __getitem__(self, name: str) -> Memory: return self.graph[name]
+    def __setitem__(self, name: str, level: Level) -> None: self.nodes[name] = level
+    def __getitem__(self, name: str) -> Level: return self.nodes[name]
     
     
     
