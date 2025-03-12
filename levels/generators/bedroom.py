@@ -34,9 +34,29 @@ def bedroom(game: Game) -> Level:
         position = (2.5, 1, -4.5),
         scale = (1, 0.8, 1),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
-        mesh=game.meshes['dresser']
+        mesh = game.meshes['dresser']
     ))
     drawers(bedroom, key_interact)
+
+    # decorations
+    bedroom.add(bsk.Node(
+        position = (-2.5, 1, -2.5),
+        mesh = game.meshes['bed']
+    ))
+    bedroom.add(bsk.Node(
+        position = (1, 2.25, -4.35),
+        scale = (0.7, 0.7, 0.7),
+        mesh = game.meshes['lamp']
+    ))
+    bedroom.add(bsk.Node(
+        position = (2.5, 2, 4.5),
+        mesh = game.meshes['desk']
+    ))
+    bedroom.add(bsk.Node(
+        position = (3.5, 2.25, 4.35),
+        scale = (0.1, 0.1, 0.1),
+        mesh = game.meshes['mug']
+    ))
     
     return bedroom
     
