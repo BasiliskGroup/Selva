@@ -29,9 +29,7 @@ class HeldUI():
         self.node.rotation = self.item.rotation * glm.conjugate(self.camera.rotation)
         if self.item.func: self.item.func(dt)
         
-    def add(self, item: HeldItem) -> None: 
-        print('adding', self.items)
-        self.items.append(item)
+    def add(self, item: HeldItem) -> None: self.items.append(item)
         
     def remove(self, item: HeldItem) -> None | HeldItem:
         """
@@ -53,7 +51,7 @@ class HeldUI():
         interact = Interactable(level = self.game.current_level, node = item.node)
         
         # freeze interact node from any previous movement
-        interact.node.position = self.game.camera.position - glm.vec3(0, 1, 0)
+        interact.node.position = self.game.camera.position - glm.vec3(0, 0.5, 0)
         interact.node.rotation = glm.quat()
         interact.node.velocity = glm.vec3()
         interact.node.rotational_velocity = glm.vec3()

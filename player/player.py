@@ -39,7 +39,7 @@ class Player():
             self.move(dt)
             self.item_r_ui.update(dt)
             self.interact(dt)
-            if self.game.key_down(bsk.pg.K_r): self.item_r_ui.drop()
+            if self.game.right_mouse_time > 1.5: self.item_r_ui.drop()
         
         # update user node to preserve direction
         horizontal_quat = glm.conjugate(glm.quat((0, self.camera.yaw, self.camera.roll)))

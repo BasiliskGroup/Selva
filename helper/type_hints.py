@@ -20,6 +20,8 @@ class Game():
     keys: list[bool]
     previous_keys: list[bool]
     mouse: bsk.engine.Mouse
+    right_mouse_time: float
+    left_mouse_time: float
     
     def adjacent_levels(self, origin_level: Any) -> set[Any]: ...
     def key_down(self, key: int) -> bool: ...

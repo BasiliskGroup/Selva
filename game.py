@@ -19,6 +19,7 @@ class Game():
         self.player = Player(self)
         
         # frame by frame updating
+        self.left_mouse_time = self.right_mouse_time = 0
         self.update = self.primary_update
         
     def adjacent_levels(self, origin_level: Level) -> set[Level]:
@@ -69,9 +70,16 @@ class Game():
         
         # render and tick physics # TODO Jonah, I'm guessing you're going to need to separate a lot of stuff for render portals, 
         for level in self.adjacent_levels(self.current_level): level.update()
-        
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
+        self.track_io_holds()
         self.engine.update()
+        
+    def track_io_holds(self) -> None:
+        """
+        Tracks the in-game time that certain io elements have stayed on
+        """
+        self.right_mouse_time = self.engine.delta_time + self.right_mouse_time if self.engine.mouse.right_down else 0
+        self.left_mouse_time = self.engine.delta_time + self.left_mouse_time if self.engine.mouse.left_down else 0
         
     @property
     def camera(self): return self.current_scene.camera
