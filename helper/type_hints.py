@@ -81,6 +81,7 @@ class Player():
     held_index: int
     control_disabled: bool
     camera: bsk.FollowCamera
+    gravity: glm.vec3
     
     position: glm.vec3
     velocity: glm.vec3

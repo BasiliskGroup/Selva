@@ -6,7 +6,7 @@ from helper.type_hints import Game, Level
 
 class HeldItem():
     
-    def __init__(self, game: Game, node: Node, func: Callable, offset: glm.vec3=None, rotation: glm.quat=None, **kwargs) -> None:
+    def __init__(self, game: Game, node: Node, func: Callable=None, offset: glm.vec3=None, rotation: glm.quat=None, **kwargs) -> None:
         self.game = game
         self.node = node # NOTE never added to the scnee, only used to store data like material, mesh, and scale
         self.func = func

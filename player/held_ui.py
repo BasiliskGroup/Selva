@@ -1,7 +1,10 @@
+from typing import Any
 import basilisk as bsk
 import glm
 from helper.type_hints import Game
+from levels.interactable import Interactable
 from player.held_item import HeldItem
+from levels.functions.imports import interact_to_hold, simulate_gravity_node
 
 
 class HeldUI():
@@ -26,9 +29,11 @@ class HeldUI():
         self.node.rotation = self.item.rotation * glm.conjugate(self.camera.rotation)
         if self.item.func: self.item.func(dt)
         
-    def add(self, item: HeldItem) -> None: self.items.append(item)
+    def add(self, item: HeldItem) -> None: 
+        print('adding', self.items)
+        self.items.append(item)
         
-    def remove(self, item: HeldItem) -> None:
+    def remove(self, item: HeldItem) -> None | HeldItem:
         """
         Removes item and preserves which item the player was holding if the item removed was not the one held
         """
@@ -36,9 +41,35 @@ class HeldUI():
         index = self.items.index(item)
         self.items.remove(item)
         if index <= self.index: self -= 1
+        return item
         
-    def __iadd__(self, num: int) -> None: self.index = (self.index + num) % self.safe_len
-    def __isub__(self, num: int) -> None: self.index = (self.index - num) % self.safe_len
+    def drop(self) -> Interactable:
+        """
+        Removes the item from the ui element and spawns a falling Interactable in the current scene
+        """
+        if not self.item: return # can't drop an item you don't have
+        
+        item = self.remove(self.item)
+        interact = Interactable(level = self.game.current_level, node = item.node)
+        
+        # freeze interact node from any previous movement
+        interact.node.position = self.game.camera.position - glm.vec3(0, 1, 0)
+        interact.node.rotation = glm.quat()
+        interact.node.velocity = glm.vec3()
+        interact.node.rotational_velocity = glm.vec3()
+        
+        # define interact bahvior and add to level
+        interact.active = interact_to_hold(interact, item)
+        interact.passive = simulate_gravity_node(self.game, self.game.current_scene, interact, interact.node)
+        self.game.current_level.add(interact)
+        return interact
+        
+    def __iadd__(self, num: int) -> Any: 
+        self.index = (self.index + num) % self.safe_len
+        return self
+    def __isub__(self, num: int) -> Any: 
+        self.index = (self.index - num) % self.safe_len
+        return self
         
     @property
     def item(self) -> None | HeldItem:

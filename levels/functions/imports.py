@@ -3,3 +3,4 @@ from levels.functions.interpolate import lerp, lerp_interact, lerp_difference
 from levels.functions.pan import pan_loop
 from levels.functions.tactile import free, free_y
 from levels.functions.held_item import interact_to_hold
+from levels.functions.gravity import simulate_gravity_node

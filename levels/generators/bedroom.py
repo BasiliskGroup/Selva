@@ -7,6 +7,7 @@ from levels.level import Level
 from levels.helper import rect_room
 from levels.interactable import Interactable
 from levels.functions.imports import *
+from player.held_item import HeldItem
 
 def bedroom(game: Game) -> Level:
     # create basic layout for bedroom level
@@ -58,6 +59,11 @@ def bedroom(game: Game) -> Level:
         mesh = game.meshes['mug']
     ))
     
+    # TODO test objects
+    test_interactable = Interactable(bedroom, bsk.Node(scale = (0.1, 0.1, 0.1), material = game.materials['red']))
+    test_interactable.active = pickup_function(test_interactable, interact_to_hold(test_interactable, HeldItem(game, test_interactable.node)))
+    bedroom.add(test_interactable)
+    
     return bedroom
     
 def key(level: Level) -> Interactable:
@@ -68,7 +74,7 @@ def key(level: Level) -> Interactable:
         mesh = level.game.meshes['key']
     )
     key = Interactable(level, node)
-    key.active = pickup_function(key, interact_to_hold(key, key.node))
+    key.active = pickup_function(key, interact_to_hold(key, HeldItem(level.game, key.node)))
     return key
 
 def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Interactable:

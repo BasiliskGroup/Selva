@@ -4,6 +4,7 @@ from helper.type_hints import Game, Level
 from player.held_item import HeldItem, PictureFrame
 from player.player_nodes import player_nodes
 from player.held_ui import HeldUI
+from levels.functions.imports import simulate_gravity_node
 
 
 class Player():
@@ -25,6 +26,7 @@ class Player():
         # self.item_l_ui = HeldUI(self.game)
         
         # game interaction variables
+        self.gravity = glm.vec3(0, -9.8, 0)
         self.control_disabled = False
         self.camera = self.current_scene.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0)) # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
         
@@ -37,6 +39,7 @@ class Player():
             self.move(dt)
             self.item_r_ui.update(dt)
             self.interact(dt)
+            if self.game.key_down(bsk.pg.K_r): self.item_r_ui.drop()
         
         # update user node to preserve direction
         horizontal_quat = glm.conjugate(glm.quat((0, self.camera.yaw, self.camera.roll)))
