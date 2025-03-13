@@ -15,7 +15,7 @@ class HeldUI():
         self.items: list[HeldItem] = []
         self.index = 0
         
-        self.game.current_scene.add(self.node) # TODO Later change this to a specific UI scene
+        self.game.current_scene.add(self.node)
         
     def update(self, dt: float) -> None:
         """

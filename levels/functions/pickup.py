@@ -26,6 +26,8 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
         else: game.update = update
         
         level.update() # TODO change this to only update HUD scene and render background scenes
+        # game.ui_scene.update(collisions = False)
+        # game.overlay_scene.update(collisions = False)
         game.engine.update()
         
     def func(dt: float) -> None:
@@ -42,6 +44,8 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
         
         interact.node.position = game.camera.position + game.camera.forward * 1 # TODO make the distance scalable
         interact.node.rotation = glm.conjugate(game.camera.rotation)
+        level.scene.remove(interact.node)
+        game.current_scene.add(interact.node)
         game.update = update
         
     return func

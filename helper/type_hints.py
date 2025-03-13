@@ -22,6 +22,8 @@ class Game():
     mouse: bsk.engine.Mouse
     right_mouse_time: float
     left_mouse_time: float
+    ui_scene: bsk.Scene
+    overlay_scene: bsk.Scene
     
     def adjacent_levels(self, origin_level: Any) -> set[Any]: ...
     def key_down(self, key: int) -> bool: ...

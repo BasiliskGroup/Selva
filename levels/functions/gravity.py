@@ -25,7 +25,7 @@ def simulate_gravity_node(game: Game, scene: bsk.Scene, parent: Any, node: bsk.N
         # print(node.velocity)
 
         # anticipate next physics step and check if there is a collision
-        if glm.length(cast.position - base) > glm.length(node.velocity) * dt + epsilon: return # fall distance > amount fallen next frame
+        if glm.length(cast.position - base) / 2 > glm.length(node.velocity) * dt + epsilon: return # fall distance > amount fallen next frame
         parent.resting = True
         node.position = cast.position - base + node.position
         node.velocity -= gravity_dir * glm.dot(node.velocity, gravity_dir)

@@ -12,10 +12,18 @@ class Game():
     def __init__(self) -> None:
         # Basilisk Engine overhead
         self.engine = bsk.Engine()
+        self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
+        self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
+        
+        # game components
         self.load_materials()
         self.load_meshes()
+        
+        # level layout
         self.memory_handler = MemoryHandler(self)
         self.memory_handler['bedroom'] = bedroom(self)
+        
+        # player
         self.player = Player(self)
         
         # frame by frame updating
@@ -69,9 +77,12 @@ class Game():
         self.player.update(self.engine.delta_time)
         
         # render and tick physics # TODO Jonah, I'm guessing you're going to need to separate a lot of stuff for render portals, 
-        for level in self.adjacent_levels(self.current_level): level.update()
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
+        for level in self.adjacent_levels(self.current_level): level.update()
+        
         self.track_io_holds()
+        self.ui_scene.update()
+        self.overlay_scene.update()
         self.engine.update()
         
     def track_io_holds(self) -> None:
