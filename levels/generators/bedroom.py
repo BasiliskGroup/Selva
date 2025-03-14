@@ -59,6 +59,9 @@ def bedroom(game: Game) -> Level:
         mesh = game.meshes['mug']
     ))
     
+    #safe
+    safe(bedroom)
+    
     # TODO test objects
     test_interactable = Interactable(bedroom, bsk.Node(scale = (0.1, 0.1, 0.1), material = game.materials['red']))
     test_interactable.active = pickup_function(test_interactable, interact_to_hold(test_interactable, HeldItem(game, test_interactable.node)))
@@ -237,3 +240,6 @@ def locked_lid(bedroom: Level, locked_box: Interactable) -> Interactable:
     locked_lid.active = lerp_interact(locked_lid, check_func = check_func)
     
     return locked_lid
+
+def safe(level: Level) -> None:
+    game = level.game
