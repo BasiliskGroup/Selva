@@ -10,7 +10,7 @@ class HeldItem():
         self.game = game
         self.node = node # NOTE never added to the scnee, only used to store data like material, mesh, and scale
         self.func = func
-        self.offset = glm.vec3(offset) if offset else glm.vec3(0.45, -0.25, 1.2) # camera right, up, forward
+        self.offset = glm.vec3(offset) if offset else glm.vec3() # camera right, up, forward
         self.rotation = glm.quat(rotation) if rotation else glm.quat()
         
         # allows the user to set arguments of any type they want
@@ -35,9 +35,9 @@ class PictureFrame(HeldItem):
         self.percent_moved = 0
         self.ANIMAtION_TIME = 0.5
         
-        self.original_offset = glm.vec3(self.offset)
+        self.original_offset = glm.vec3(self.offset) # left hand offset (-0.45, -0.25, 1.2)
         self.original_rotation = glm.quat(self.rotation)
-        self.final_offset = glm.vec3(0, 0, 0.3)
+        self.final_offset = glm.vec3(0, 0, 0.3) - glm.vec3(-0.45, -0.25, 1.2)
         self.final_rotation = glm.quat(self.rotation)
         
     def func(self, dt: float) -> None:

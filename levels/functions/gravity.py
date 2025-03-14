@@ -4,7 +4,7 @@ from typing import Callable, Any
 from levels.interactable import Interactable
 from helper.type_hints import Game
 
-def simulate_gravity_node(game: Game, scene: bsk.Scene, parent: Any, node: bsk.Node, end_func: Callable=None, epsilon=1e-5) -> Callable: # TODO possibly add "resting" check to simplify calculations
+def simulate_gravity_node(game: Game, scene: bsk.Scene, parent: Any, node: bsk.Node, end_func: Callable=None, epsilon=1e-3) -> Callable: # TODO possibly add "resting" check to simplify calculations
     """
     Simulates gravity on a node to collide with floors without using collision pipeline, saves on performance
     """
@@ -20,9 +20,6 @@ def simulate_gravity_node(game: Game, scene: bsk.Scene, parent: Any, node: bsk.N
         
         cast = scene.raycast(base, gravity_dir)
         if not cast.node: return # nothing to break fall, shouldn't happen but this should avoid errors
-        
-        # print(node == cast.node)
-        # print(node.velocity)
 
         # anticipate next physics step and check if there is a collision
         if glm.length(cast.position - base) / 2 > glm.length(node.velocity) * dt + epsilon: return # fall distance > amount fallen next frame

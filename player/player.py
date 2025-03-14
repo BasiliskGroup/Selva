@@ -22,8 +22,8 @@ class Player():
         self.current_scene.add(self.body_node)
         
         # variables for controling the player's held items
-        self.item_r_ui = HeldUI(self.game)
-        # self.item_l_ui = HeldUI(self.game)
+        self.item_r_ui = HeldUI(self.game, glm.vec3(0.45, -0.25, 1.2))
+        self.item_l_ui = HeldUI(self.game, glm.vec3(-0.45, -0.25, 1.2))
         
         # game interaction variables
         self.gravity = glm.vec3(0, -9.8, 0)
@@ -38,6 +38,7 @@ class Player():
             # player controls
             self.move(dt)
             self.item_r_ui.update(dt)
+            self.item_l_ui.update(dt)
             self.interact(dt)
             if self.game.right_mouse_time > 1.5: self.item_r_ui.drop()
         
@@ -102,7 +103,7 @@ class Player():
     @item_r.setter
     def item_r(self, value) -> HeldItem: self.item_r_ui.item = value
     
-    # @property
-    # def item_l(self) -> HeldItem: return self.item_l_ui.item
-    # @item_l.setter
-    # def item_l(self, value) -> HeldItem: self.item_l_ui.item = value
+    @property
+    def item_l(self) -> HeldItem: return self.item_l_ui.item
+    @item_l.setter
+    def item_l(self, value) -> HeldItem: self.item_l_ui.item = value

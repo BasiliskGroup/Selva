@@ -9,8 +9,9 @@ from levels.functions.imports import interact_to_hold, simulate_gravity_node
 
 class HeldUI():
     
-    def __init__(self, game: Game) -> None:
+    def __init__(self, game: Game, offset: glm.vec3) -> None:
         self.game = game
+        self.offset = glm.vec3(offset)
         self.node = bsk.Node()
         self.items: list[HeldItem] = []
         self.index = 0
@@ -25,7 +26,8 @@ class HeldUI():
             self.node.position = glm.vec3(0, 1000, 0)
             return
         
-        self.node.position = self.camera.position + self.item.offset.x * self.camera.right + self.item.offset.y * self.camera.up + self.item.offset.z * self.camera.forward
+        # TODO this can probably be done better with a matrix transformation
+        self.node.position = self.camera.position + (self.offset.x + self.item.offset.x) * self.camera.right + (self.offset.y + self.item.offset.y) * self.camera.up + (self.offset.z + self.item.offset.z) * self.camera.forward
         self.node.rotation = self.item.rotation * glm.conjugate(self.camera.rotation)
         if self.item.func: self.item.func(dt)
         

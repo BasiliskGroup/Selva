@@ -7,7 +7,7 @@ from levels.level import Level
 from levels.helper import rect_room
 from levels.interactable import Interactable
 from levels.functions.imports import *
-from player.held_item import HeldItem
+from player.held_item import HeldItem, PictureFrame
 
 def bedroom(game: Game) -> Level:
     # create basic layout for bedroom level
@@ -63,6 +63,10 @@ def bedroom(game: Game) -> Level:
     test_interactable = Interactable(bedroom, bsk.Node(scale = (0.1, 0.1, 0.1), material = game.materials['red']))
     test_interactable.active = pickup_function(test_interactable, interact_to_hold(test_interactable, HeldItem(game, test_interactable.node)))
     bedroom.add(test_interactable)
+    
+    frame = Interactable(bedroom, bsk.Node(position = (1, 1, 1), mesh = game.meshes['picture_frame'], scale = (0.1, 0.1, 0.1)))
+    frame.active = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, bedroom)))
+    bedroom.add(frame)
     
     return bedroom
     
