@@ -25,6 +25,7 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
         game.camera = interact.camera
         game.player.velocity = glm.vec3() # reset player velocity to prevent player sliding away
         interact.step = 1 # reset steps from previous calls of this function
+        game.mouse.position = glm.vec2(game.engine.win_size) // 2
 
         # generate update function for the game
         def update():
@@ -38,6 +39,7 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
             else: game.camera = game.player.camera # reapply the player camera when fully exited
 
             level.update()
+            bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
             game.engine.update()
         
         # exit procedure for pan

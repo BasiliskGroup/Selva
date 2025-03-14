@@ -16,6 +16,7 @@ class Game():
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
         
         # game components
+        self.images = images
         self.load_materials()
         self.load_meshes()
         self.load_sounds()
