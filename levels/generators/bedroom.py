@@ -181,7 +181,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
     ) for i in range(-1, 2)]
     bedroom.add(wheels)
     
-    locked_wheels = {wheel : free_y(locked_box, wheel, sensitivity = 0.7) for wheel in wheels}
+    locked_wheels = {wheel : free_axis(locked_box, (1, 0, 0), wheel, sensitivity = 0.7) for wheel in wheels}
     setattr(locked_box, 'wheels', locked_wheels)
     setattr(locked_box, 'timer', 0)
     setattr(locked_box, 'selected', None)
@@ -252,7 +252,8 @@ def safe(level: Level) -> None:
         material = game.materials['red']
     ))
     setattr(safe, 'buttons', [])
-    setattr(safe, 'code', [0 for _ in range(3)])
+    setattr(safe, 'code', [0 for _ in range(4)])
+    setattr(safe, 'locked', True)
     
     def loop_func(dt: float) -> None:
         if not game.mouse.left_click: return
@@ -262,6 +263,7 @@ def safe(level: Level) -> None:
             button = safe.buttons[[i.node for i in safe.buttons].index(cast.node)]
             if button.percent == 0: button.step = 1
             game.sounds['keycap'].play()
+        safe.locked = safe.code != [1, 2, 3, 4]
     
     safe.active = pan_loop(safe, rotation = glm.quatLookAt((0, 0, 1), (0, 1, 0)), position = (1.5, 0.95, 2), time = 0.5, loop_func = loop_func)
     
@@ -271,6 +273,12 @@ def safe(level: Level) -> None:
         scale = (0.7, 0.7, 0.7),
         mesh = game.meshes['safe_door']
     ))
+    
+    def door_func(dt: float) -> None:
+        if safe.locked: safe.active(dt)
+        else: print('unlocked')
+        
+    safe_door.active = door_func
     
     for y in range(1, -2, -1):
         for x in range(1, -2, -1):
@@ -294,6 +302,16 @@ def safe(level: Level) -> None:
             keycap.passive = lerp_difference(interact = keycap, node = keycap.node, time = 0.05, delta_position = glm.vec3(0, 0, 0.05), end_func = end_func)
             safe.buttons.append(keycap)
             level.add(keycap)
+            
+    safe_handle = Interactable(level, bsk.Node(
+        position = (1.85, 0.95, 3.9),
+        rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
+        scale = (0.7, 0.7, 0.7),
+        mesh = game.meshes['safe_door_handle'],
+        material = game.materials['red']
+    ))
+    
+    level.add(safe_handle)
     
     level.add(safe)
     level.add(safe_door)
