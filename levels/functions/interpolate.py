@@ -8,7 +8,7 @@ def lerp(interact: Interactable, node: bsk.Node=None, time: float=1, position: g
     Linrealy interpolates between the original position/rotation to the final position/rotation.
     """
     setattr(interact, 'percent', 0)
-    setattr(interact, 'step', -1 / time) # step is negative so the animation doesn't play on start up
+    setattr(interact, 'step', -1) # step is negative so the animation doesn't play on start up
     node = node if node else interact.node
     original_position = glm.vec3(*node.position)
     original_rotation = glm.quat(*node.rotation)
@@ -18,7 +18,7 @@ def lerp(interact: Interactable, node: bsk.Node=None, time: float=1, position: g
     def func(dt: float) -> None:
         # play animation and store lerp value
         was1 = interact.percent == 1
-        interact.percent = glm.clamp(interact.percent + dt * interact.step, 0, 1)
+        interact.percent = glm.clamp(interact.percent + dt * interact.step / time, 0, 1)
         node.position = glm.mix(original_position, final_position, interact.percent)
         node.rotation = glm.slerp(original_rotation, final_rotation, interact.percent)
         

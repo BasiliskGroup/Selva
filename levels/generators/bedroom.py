@@ -93,7 +93,7 @@ def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Inter
     )
     drawer = Interactable(level, node)
     
-    drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (0, 0, 1))
+    drawer.passive = lerp_difference(drawer, time = 0.02, delta_position = (0, 0, 1))
     drawer.active = lerp_interact(drawer, check_func = check_func)
     return drawer
 
@@ -188,7 +188,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
     setattr(locked_box, 'prev_left_down', False)
     setattr(locked_box, 'code', [1, 1, 1])
     
-    def loop_func() -> None:
+    def loop_func(dt) -> None:
         if game.mouse.left_down:
             if not locked_box.prev_left_down:
                 cast = game.current_scene.raycast_mouse(game.mouse.position, has_collisions=False)
@@ -243,3 +243,57 @@ def locked_lid(bedroom: Level, locked_box: Interactable) -> Interactable:
 
 def safe(level: Level) -> None:
     game = level.game
+    
+    safe = Interactable(level, bsk.Node(
+        position = (1.5, 0.95, 4.6),
+        rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
+        scale = (0.7, 0.7, 0.7),
+        mesh = game.meshes['safe'],
+        material = game.materials['red']
+    ))
+    setattr(safe, 'buttons', [])
+    setattr(safe, 'code', [0 for _ in range(3)])
+    
+    def loop_func(dt: float) -> None:
+        if not game.mouse.left_click: return
+        cast = game.current_scene.raycast_mouse(game.mouse.position, has_collisions=False)
+        if not cast.node: return
+        if cast.node in [i.node for i in safe.buttons]: 
+            button = safe.buttons[[i.node for i in safe.buttons].index(cast.node)]
+            if button.percent == 0: button.step = 1
+            game.sounds['keycap'].play()
+    
+    safe.active = pan_loop(safe, rotation = glm.quatLookAt((0, 0, 1), (0, 1, 0)), position = (1.5, 0.95, 2), time = 0.5, loop_func = loop_func)
+    
+    safe_door = Interactable(level, bsk.Node(
+        position = (1.5, 0.95, 4),
+        rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
+        scale = (0.7, 0.7, 0.7),
+        mesh = game.meshes['safe_door']
+    ))
+    
+    for y in range(1, -2, -1):
+        for x in range(1, -2, -1):
+            position = glm.vec3(1.3 - 0.1 * x, 0.95 - 0.1 * y, 3.9)
+            keycap = Interactable(level, bsk.Node(
+                position = position,
+                rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
+                scale = (0.8, 0.8, 0.8),
+                mesh = game.meshes['keycap'],
+                material = game.materials['red'],
+            ))
+            setattr(keycap, 'safe', safe)
+            setattr(keycap, 'number', (x + 2) + (y + 1) * 3)
+            
+            def end_func(dt: float, keycap=keycap) -> None:
+                keycap.step = -1
+                safe.code.pop(0)
+                safe.code.append(keycap.number)
+                print(keycap.number)
+                
+            keycap.passive = lerp_difference(interact = keycap, node = keycap.node, time = 0.05, delta_position = glm.vec3(0, 0, 0.05), end_func = end_func)
+            safe.buttons.append(keycap)
+            level.add(keycap)
+    
+    level.add(safe)
+    level.add(safe_door)

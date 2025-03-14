@@ -24,6 +24,7 @@ class Game():
     left_mouse_time: float
     ui_scene: bsk.Scene
     overlay_scene: bsk.Scene
+    sounds: list[bsk.Sound]
     
     def adjacent_levels(self, origin_level: Any) -> set[Any]: ...
     def key_down(self, key: int) -> bool: ...

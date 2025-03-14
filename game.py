@@ -18,6 +18,7 @@ class Game():
         # game components
         self.load_materials()
         self.load_meshes()
+        self.load_sounds()
         
         # level layout
         self.memory_handler = MemoryHandler(self)
@@ -67,6 +68,16 @@ class Game():
             file_name[:-4] : bsk.Mesh(f'./meshes/{file_name}') 
             for file_name in os.listdir('./meshes') 
             if file_name.endswith('.obj')
+        }
+        
+    def load_sounds(self) -> None:
+        """
+        Loads all sounds from the sounds folder
+        """
+        self.sounds = {
+            file_name[:-4] : bsk.Sound(f'./sounds/{file_name}') 
+            for file_name in os.listdir('./sounds') 
+            if file_name.endswith('.mp3')
         }
     
     def primary_update(self) -> None:
