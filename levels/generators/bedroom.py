@@ -268,11 +268,13 @@ def safe(level: Level) -> None:
     handle_rotate = free_axis(safe_handle, (0, 0, 1), safe_handle.node)
     
     def loop_func(dt: float) -> None:
+        safe_handle.node.rotational_velocity = safe_handle.node.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(safe_handle.node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
+        safe_handle.open = glm.dot(glm.axis(safe_handle.node.rotation.data), (-0.68, 0.72, 0)) > 0.9 or glm.dot(glm.axis(safe_handle.node.rotation.data), (0.68, -0.72, 0)) > 0.9
         if not game.mouse.left_down: 
             safe.holding_handle = False
             return
         cast = game.current_scene.raycast_mouse(game.mouse.position, has_collisions=False)
-        if game.mouse.left_down and (cast.node == safe.handle.node or safe.holding_handle):
+        if game.mouse.left_down and (cast.node == safe.handle.node or safe.holding_handle) and not safe.locked:
             safe.holding_handle = True
             handle_rotate()
         else: safe.holding_handle = False
@@ -293,7 +295,7 @@ def safe(level: Level) -> None:
     ))
     
     def door_func(dt: float) -> None:
-        if safe.locked: safe.active(dt)
+        if not safe_handle.open: safe.active(dt)
         else: print('unlocked')
         
     safe_door.active = door_func
