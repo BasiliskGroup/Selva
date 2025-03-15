@@ -208,7 +208,6 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
             locked_box.code[index] = 8 - int(angle / glm.pi() * 4)
         
         locked_box.prev_left_down = game.mouse.left_down
-        # print(locked_box.code)
     
     locked_box.active = pan_loop(
         interact = locked_box, 
@@ -254,11 +253,30 @@ def safe(level: Level) -> None:
     setattr(safe, 'buttons', [])
     setattr(safe, 'code', [0 for _ in range(4)])
     setattr(safe, 'locked', True)
+    setattr(safe, 'holding_handle', False)
+    
+    safe_handle = Interactable(level, bsk.Node(
+        position = (1.85, 0.95, 3.9),
+        rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
+        scale = (0.7, 0.7, 0.7),
+        mesh = game.meshes['safe_door_handle'],
+        material = game.materials['red']
+    ))
+    setattr(safe_handle, 'open', False)
+    setattr(safe, 'handle', safe_handle)
+    
+    handle_rotate = free_axis(safe_handle, (0, 0, 1), safe_handle.node)
     
     def loop_func(dt: float) -> None:
-        if not game.mouse.left_click: return
+        if not game.mouse.left_down: 
+            safe.holding_handle = False
+            return
         cast = game.current_scene.raycast_mouse(game.mouse.position, has_collisions=False)
-        if not cast.node: return
+        if game.mouse.left_down and (cast.node == safe.handle.node or safe.holding_handle):
+            safe.holding_handle = True
+            handle_rotate()
+        else: safe.holding_handle = False
+        if not game.mouse.left_click: return
         if cast.node in [i.node for i in safe.buttons]: 
             button = safe.buttons[[i.node for i in safe.buttons].index(cast.node)]
             if button.percent == 0: button.step = 1
@@ -302,16 +320,7 @@ def safe(level: Level) -> None:
             keycap.passive = lerp_difference(interact = keycap, node = keycap.node, time = 0.05, delta_position = glm.vec3(0, 0, 0.05), end_func = end_func)
             safe.buttons.append(keycap)
             level.add(keycap)
-            
-    safe_handle = Interactable(level, bsk.Node(
-        position = (1.85, 0.95, 3.9),
-        rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
-        scale = (0.7, 0.7, 0.7),
-        mesh = game.meshes['safe_door_handle'],
-        material = game.materials['red']
-    ))
     
     level.add(safe_handle)
-    
     level.add(safe)
     level.add(safe_door)
