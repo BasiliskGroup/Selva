@@ -18,7 +18,7 @@ def free(interact: Interactable, node: bsk.Node=None, sensitivity: float=0.35) -
         interact.timer += game.engine.delta_time
         rel_x, rel_y = game.engine.mouse.relative
         node.rotational_velocity = node.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
-        if not game.engine.mouse.left_down and (rel_x != 0 or rel_y != 0 or interact.timer > 0.1):
+        if game.engine.mouse.left_down and (rel_x != 0 or rel_y != 0 or interact.timer > 0.1):
             node.rotational_velocity = level.scene.camera.rotation * glm.vec3(rel_y * sensitivity, rel_x * sensitivity, 0)
             interact.timer = 0
         

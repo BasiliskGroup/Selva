@@ -12,7 +12,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
     setattr(interact, 'timer', 0)
     level = interact.level
     game = level.game
-    actions = free(interact, (0, 1, 0))
+    actions = free(interact)
 
     def update() -> None:
         actions()
