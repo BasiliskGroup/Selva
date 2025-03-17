@@ -16,6 +16,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
 
     def update() -> None:
         actions()
+        bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
         
         # TODO grey out background
         

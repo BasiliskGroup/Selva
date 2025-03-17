@@ -293,12 +293,21 @@ def safe(level: Level) -> None:
         scale = (0.7, 0.7, 0.7),
         mesh = game.meshes['safe_door']
     ))
-    
+    hinge = bsk.Node(
+        position = (1, 0.95, 4),
+        scale = (0.02, 0.02, 0.02)
+    )
+    safe_door.passive = lerp_difference(safe_door, hinge, 0.5, delta_rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)))
+
     def door_func(dt: float) -> None:
         if not safe_handle.open: safe.active(dt)
-        else: print('unlocked')
+        else: 
+            for button in safe.buttons: button.passive = empty
+            safe_door.step = 1
         
     safe_door.active = door_func
+    hinge.add(safe_door.node)
+    hinge.add(safe_handle.node)
     
     for y in range(1, -2, -1):
         for x in range(1, -2, -1):
@@ -321,8 +330,10 @@ def safe(level: Level) -> None:
                 
             keycap.passive = lerp_difference(interact = keycap, node = keycap.node, time = 0.05, delta_position = glm.vec3(0, 0, 0.05), end_func = end_func)
             safe.buttons.append(keycap)
+            hinge.add(keycap.node)
             level.add(keycap)
     
+    level.add(hinge)
     level.add(safe_handle)
     level.add(safe)
     level.add(safe_door)
