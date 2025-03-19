@@ -37,7 +37,6 @@ def placed_interactable(interact: Interactable, position: glm.vec3=None, check_o
     Allows the player to pick their item back up without needing to click on the parent interact
     """
     level = interact.level
-    game = level.game
     node = interact.held_item.node
     
     # create the interactable

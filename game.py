@@ -1,7 +1,8 @@
 import os
 import basilisk as bsk
 from levels.level import Level
-from levels.generators.imports import bedroom
+from levels.generators.imports import bedroom, office
+
 from player.player import Player
 from materials.images import images
 from memories.memory_handler import MemoryHandler
@@ -23,7 +24,8 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        self.memory_handler['bedroom'] = bedroom(self)
+        self.memory_handler['office'] = office(self)
+        # self.memory_handler['bedroom'] = bedroom(self)
         
         # player
         self.player = Player(self)
