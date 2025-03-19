@@ -89,7 +89,7 @@ class Game():
         self.player.update(self.engine.delta_time)
         
         # render and tick physics # TODO Jonah, I'm guessing you're going to need to separate a lot of stuff for render portals, 
-        bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
+        bsk.draw.circle(self.engine, (200, 200, 200), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
         for level in self.adjacent_levels(self.current_level): level.update()
         
         self.track_io_holds()
