@@ -15,6 +15,7 @@ class Game():
         self.engine = bsk.Engine()
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
+        self.day = True
         
         # game components
         self.images = images

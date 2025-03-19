@@ -5,4 +5,4 @@ game = Game()
 while game.engine.running:
     game.update()
     
-# Skibidi Toileta
+# Skibidi Toilet

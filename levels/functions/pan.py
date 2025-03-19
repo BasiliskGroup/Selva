@@ -34,9 +34,9 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
             game.camera.rotation = glm.slerp(original_rotation, final_rotation, interact.percent)
 
             if interact.percent == 1 and game.key_down(bsk.pg.K_e): interact.step = -1 # initiate reverse lerp
-            if loop_func and interact.percent == 1 and interact.step == 1: loop_func(dt)
             if not (interact.percent == 0 and interact.step == -1): game.update = update # "recurse" through this function if not exiting
             else: game.camera = game.player.camera # reapply the player camera when fully exited
+            if loop_func and interact.percent == 1 and interact.step == 1: loop_func(dt) # placed after game.update reset to allow breaking without panning out
 
             level.update()
             bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
