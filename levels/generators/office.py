@@ -25,12 +25,14 @@ def battery_box(office: Level) -> None:
     battery = Interactable(office, bsk.Node(
         position = (0, 1, 2),
         scale = glm.vec3(0.2),
-        mesh = game.meshes['battery']
+        # mesh = game.meshes['battery']
     ))
     battery.active = pickup_function(battery, interact_to_hold(battery, HeldItem(game, battery.node)))
     office.add(battery)
     
     # add the battery box
+    def check_in(dt: float) -> bool: return game.key_down(bsk.pg.K_e)
+    
     sockets = [Interactable(
         office,
         bsk.Node(
@@ -40,5 +42,6 @@ def battery_box(office: Level) -> None:
             mesh = game.meshes['battery_box']
         )
     ) for z in range(-1, 2)]
+    for socket in sockets: socket.active = place(socket, rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), check_in_func = check_in, check_out_func = check_in, put_in_func = None, pull_out_func = None)
     
     office.add(sockets)
