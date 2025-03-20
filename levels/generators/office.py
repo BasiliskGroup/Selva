@@ -27,7 +27,8 @@ def puzzle(office: Level) -> None:
         position = (0, 2.5, 0),
         scale = glm.vec3(0.5),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
-        mesh = game.meshes['crt']
+        mesh = game.meshes['crt'],
+        material = game.materials['crt']
     ))
     setattr(computer, 'on', False)
     
@@ -43,7 +44,8 @@ def puzzle(office: Level) -> None:
     battery = Interactable(office, bsk.Node(
         position = (0, 1, 3),
         scale = glm.vec3(0.2),
-        # mesh = game.meshes['battery'], # TODO enable when jonah figures out why its throwing errors
+        mesh = game.meshes['battery'], # TODO enable when jonah figures out why its throwing errors
+        material = game.materials['battery'],
         tags = ['battery']
     ))
     battery.active = pickup_function(battery, interact_to_hold(battery, HeldItem(game, battery.node)))
@@ -85,7 +87,7 @@ def desk(office: Level) -> None:
     
     desk = bsk.Node(
         position = (0, 2, 0),
-        scale = glm.vec3(0.7),
+        scale = glm.vec3(0.65),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['work_desk']
     )

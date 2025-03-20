@@ -53,6 +53,8 @@ class Game():
         """
         saturation = 70
         self.materials = {
+            'battery' : bsk.Material(texture = images['battery.png']),
+            'crt' : bsk.Material(texture = images['crt.png']),
             'picture_frame' : bsk.Material(texture = images['uv_map.png']),
             'john' : bsk.Material(texture = images['john.png']),
             'wheel_eight' : bsk.Material(texture = images['wheel_eight.png']),
