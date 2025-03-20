@@ -17,6 +17,7 @@ def office(game: Game) -> Level:
     desk(office)
     puzzle(office)
     coffee_table(office)
+    decor(office)
     
     return office
     
@@ -25,7 +26,7 @@ def puzzle(office: Level) -> None:
     
     # computer
     computer = Interactable(office, bsk.Node(
-        position = (0.5, 2.25, 0),
+        position = (0.5, 2.4, 0),
         scale    = glm.vec3(0.4),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh     = game.meshes['crt'],
@@ -39,7 +40,7 @@ def puzzle(office: Level) -> None:
             game.update = game.primary_update
     
     def computer_active(dt: float) -> None:
-        pan_loop(computer, time = 0.5, position = (1.5, 2.25, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func)(dt)
+        pan_loop(computer, time = 0.5, position = (1.5, 2.4, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func)(dt)
     
     computer.active = computer_active
     
@@ -90,15 +91,15 @@ def desk(office: Level) -> None:
     game = office.game
     
     desk = bsk.Node(
-        position = (0.5, 1.65, 0),
-        scale    = glm.vec3(0.8),
+        position = (0.5, 1.75, 0),
+        scale    = glm.vec3(0.85),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh     = game.meshes['work_desk'],
         material = game.materials['bright_wood']
     )
     
     drawers = [Interactable(office, bsk.Node(
-        position = (0.7, 0.5 + i * 0.75, 0.8),
+        position = (0.7, 0.5 + i * 0.8, 0.9),
         scale    = glm.vec3(0.65),
         mesh     = game.meshes['drawer'],
         material = game.materials['light_wood']
@@ -122,3 +123,24 @@ def coffee_table(office: Level) -> None:
     )
     
     office.add(table)
+    
+def decor(office: Level) -> None:
+    game = office.game
+    
+    window = bsk.Node(
+        position = (6.9, 3.5, 0),
+        scale = glm.vec3(0.85),
+        rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
+        mesh = game.meshes['office_window'],
+        material = game.materials['office_window']
+    )
+    
+    cubicle = bsk.Node(
+        position = (1, 1.5, 0),
+        scale = glm.vec3(0.65),
+        rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
+        mesh = game.meshes['cubicle'],
+        material = game.materials['dark_wood']
+    )
+    
+    office.add(window, cubicle)

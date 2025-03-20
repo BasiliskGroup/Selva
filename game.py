@@ -62,6 +62,7 @@ class Game():
             'box_three' : bsk.Material(texture = images['box_three.png']),
             'suits' : bsk.Material(texture = images['suits.png']),
             'battery_box' : bsk.Material(texture = images['battery_box.png']),
+            'office_window' : bsk.Material(texture = images['office_window.png']),
             # pure colors
             'red' : bsk.Material(color = (255, saturation, saturation)),
             'green' : bsk.Material(color = (saturation, 255, saturation)),
@@ -69,6 +70,7 @@ class Game():
             'light_white' : bsk.Material(color = [240 for _ in range(3)]),
             'bright_wood' : bsk.Material(color = (183, 170, 131)),
             'light_wood' : bsk.Material(color = (142, 124, 94)),
+            'dark_wood' : bsk.Material(color = (59, 34, 24)),
             'dry_wall' : bsk.Material(color = (181, 190, 179)),
             'dirty_carpet' : bsk.Material(color = (90, 70, 35))
         }
