@@ -24,8 +24,8 @@ def puzzle(office: Level) -> None:
     
     # computer
     computer = Interactable(office, bsk.Node(
-        position = (0, 2.5, 0),
-        scale = glm.vec3(0.5),
+        position = (0.5, 2.25, 0),
+        scale = glm.vec3(0.4),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['crt'],
         material = game.materials['crt']
@@ -36,7 +36,7 @@ def puzzle(office: Level) -> None:
         if computer.on: game.update = game.primary_update
     
     def computer_active(dt: float) -> None:
-        pan_loop(computer, time = 0.5, position = (1.5, 2.5, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func)(dt)
+        pan_loop(computer, time = 0.5, position = (1.5, 2.25, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func)(dt)
     
     computer.active = computer_active
     
@@ -86,10 +86,20 @@ def desk(office: Level) -> None:
     game = office.game
     
     desk = bsk.Node(
-        position = (0, 2, 0),
-        scale = glm.vec3(0.65),
+        position = (0.5, 1.65, 0),
+        scale = glm.vec3(0.8),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['work_desk']
     )
     
+    drawers = [Interactable(office, bsk.Node(
+        position = (0.65, 0.5 + i * 0.75, 0.8),
+        scale = glm.vec3(0.65),
+        mesh = game.meshes['drawer']
+    )) for i in range(2)]
+    for drawer in drawers:
+        drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (1, 0, 0))
+        drawer.active = lerp_interact(drawer)
+    
+    office.add(drawers)
     office.add(desk)
