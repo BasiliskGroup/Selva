@@ -2,12 +2,12 @@ import glm
 from basilisk import Node, Material
 import random
     
-def rect_room(centerx: float, centerz: float, width: float, depth: float, height: float, material: Material) -> list[Node]:
+def rect_room(centerx: float, centerz: float, width: float, depth: float, height: float, floor_material: Material=None, wall_material: Material=None, ceil_material: Material=None) -> list[Node]:
     nodes = [Node(
         position = (data[0], -1 + height, data[1]), 
         scale = (data[2], height, data[3]),
         collision = True,
-        material = material
+        material = wall_material
     ) for data in (
         (centerx + width, centerz, 1, depth), 
         (centerx - width, centerz, 1, depth), 
@@ -19,6 +19,6 @@ def rect_room(centerx: float, centerz: float, width: float, depth: float, height
         scale = (width, 1, depth),
         collision = True,
         position=(centerx, y, centerz),
-        material = material
+        material = floor_material if y == -1 else ceil_material
     ) for y in (-1, height * 2)]
     return nodes
