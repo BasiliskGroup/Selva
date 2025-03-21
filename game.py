@@ -1,7 +1,7 @@
 import os
 import basilisk as bsk
 from levels.level import Level
-from levels.generators.imports import bedroom, office
+from levels.generators.imports import *
 
 from player.player import Player
 from materials.images import images
@@ -25,7 +25,8 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        self.memory_handler['office'] = office(self)
+        self.memory_handler['boat'] = boat(self)
+        # self.memory_handler['office'] = office(self)
         # self.memory_handler['bedroom'] = bedroom(self)
         
         # player
@@ -64,6 +65,8 @@ class Game():
             'battery_box' : bsk.Material(texture = images['battery_box.png']),
             'office_window' : bsk.Material(texture = images['office_window.png']),
             'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
+            'boat' : bsk.Material(texture = images['boat.png']),
+            'ocean' : bsk.Material(texture = images['ocean.jpg']),
             # pure colors
             'red' : bsk.Material(color = (255, saturation, saturation)),
             'green' : bsk.Material(color = (saturation, 255, saturation)),
