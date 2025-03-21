@@ -46,7 +46,7 @@ def puzzle(office: Level) -> None:
     
     # add the battery into the scene
     battery = Interactable(office, bsk.Node(
-        position = (0, 1, 3),
+        position = (-2, 1.8, 1.1),
         scale    = glm.vec3(0.2),
         mesh     = game.meshes['battery'], # TODO enable when jonah figures out why its throwing errors
         material = game.materials['battery'],
@@ -73,7 +73,7 @@ def puzzle(office: Level) -> None:
     sockets = [Interactable(
         office,
         bsk.Node(
-            position = (-2, 2.5, 0.25 * z),
+            position = (-2, 2.1, 0.25 * z),
             scale    = glm.vec3(0.2),
             rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
             mesh     = game.meshes['battery_box'],
