@@ -63,6 +63,7 @@ class Game():
             'suits' : bsk.Material(texture = images['suits.png']),
             'battery_box' : bsk.Material(texture = images['battery_box.png']),
             'office_window' : bsk.Material(texture = images['office_window.png']),
+            'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
             # pure colors
             'red' : bsk.Material(color = (255, saturation, saturation)),
             'green' : bsk.Material(color = (saturation, 255, saturation)),
