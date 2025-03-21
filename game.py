@@ -67,6 +67,7 @@ class Game():
             'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
             'boat' : bsk.Material(texture = images['boat.png']),
             'ocean' : bsk.Material(texture = images['ocean.jpg']),
+            'fishing_rod' : bsk.Material(texture = images['fishing_rod.png']),
             # pure colors
             'red' : bsk.Material(color = (255, saturation, saturation)),
             'green' : bsk.Material(color = (saturation, 255, saturation)),

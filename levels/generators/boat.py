@@ -13,10 +13,25 @@ from helper.transforms import connect
 def boat(game: Game) -> Level:
     level = Level(game)
     
+    fishing(level)
     load_boat(level)
     ocean(level)
     
     return level
+
+def fishing(level: Level) -> None:
+    game = level.game
+    
+    pos, sca, rot = connect(glm.vec3(-2.5, 1.5, 6.5), glm.vec3(-1.5, 4.5, 13.5), 3)
+    rod = Interactable(level, bsk.Node(
+        position = pos,
+        scale = sca,
+        rotation = rot,
+        mesh = game.meshes['fishing_rod'],
+        material = game.materials['fishing_rod']
+    ))
+    
+    level.add(rod)
 
 def load_boat(level: Level) -> None:
     game = level.game

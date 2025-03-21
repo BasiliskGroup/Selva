@@ -12,7 +12,7 @@ def connect(p1: glm.vec3, p2: glm.vec3, width: float=0.02) -> tuple[glm.vec3, gl
     direction, distance = glm.normalize(diff), glm.length(diff)
     
     position = (p1 + p2) / 2
-    scale = glm.vec3(width, width, distance / 2)
-    rotation = glm.quatLookAt(direction, (0, 1, 0))
+    scale = glm.vec3(width, distance / 2, width)
+    rotation = glm.normalize(glm.angleAxis(glm.pi() / 2, (1, 0, 0)) * glm.conjugate(glm.quatLookAt(direction, (0, 1, 0))))
     
     return position, scale, rotation
