@@ -19,6 +19,22 @@ def interact_to_hold(interact: Interactable, held: HeldItem) -> Callable:
         
     return func
 
+def interact_give_hold(interact: Interactable, held: HeldItem) -> Callable:
+    """
+    Gives the player the held item
+    """
+    level = interact.level
+    game = level.game
+    
+    def func(dt: float) -> None:
+        if not game.key_down(bsk.pg.K_e): return
+        game.player.item_r_ui.drop()
+        held_copy = held
+        held_copy.node = held.node.deep_copy()
+        game.player.item_r = held_copy
+        
+    return func
+
 def interact_to_frame(interact: Interactable, held: HeldItem) -> Callable:
     """
     Removes the Interactable from the scene and gives the player the held item

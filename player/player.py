@@ -46,6 +46,9 @@ class Player():
         horizontal_quat = glm.conjugate(glm.quat((0, self.camera.yaw, self.camera.roll)))
         self.body_node.rotation = horizontal_quat
         self.body_node.rotational_velocity = glm.vec3(0, 0, 0)
+        
+        # hover TODO remove maybe
+        self.position.y = 2.1
     
     def move(self, dt: float) -> None:
         """

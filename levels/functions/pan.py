@@ -10,8 +10,8 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
     Lerps camera back to player position
     """
     setattr(interact, 'camera', bsk.StaticCamera()) # position and rotation do not matter for init
-    setattr(interact, 'percent', 0)
-    setattr(interact, 'step', 1)
+    setattr(interact, 'percent_lerp', 0)
+    setattr(interact, 'step_lerp', 1)
     level = interact.level
     game = level.game
     
@@ -24,19 +24,19 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
         final_rotation = glm.quat(rotation) if rotation else original_rotation
         game.camera = interact.camera
         game.player.velocity = glm.vec3() # reset player velocity to prevent player sliding away
-        interact.step = 1 # reset steps from previous calls of this function
+        interact.step_lerp = 1 # reset steps from previous calls of this function
         game.mouse.position = glm.vec2(game.engine.win_size) // 2
 
         # generate update function for the game
         def update():
-            interact.percent = glm.clamp(interact.percent + game.engine.delta_time / time * interact.step, 0, 1)
-            game.camera.position = glm.mix(original_position, final_position, interact.percent)
-            game.camera.rotation = glm.slerp(original_rotation, final_rotation, interact.percent)
+            interact.percent_lerp = glm.clamp(interact.percent_lerp + game.engine.delta_time / time * interact.step_lerp, 0, 1)
+            game.camera.position = glm.mix(original_position, final_position, interact.percent_lerp)
+            game.camera.rotation = glm.slerp(original_rotation, final_rotation, interact.percent_lerp)
 
-            if interact.percent == 1 and game.key_down(bsk.pg.K_e): interact.step = -1 # initiate reverse lerp
-            if not (interact.percent == 0 and interact.step == -1): game.update = update # "recurse" through this function if not exiting
+            if interact.percent_lerp == 1 and game.key_down(bsk.pg.K_e): interact.step_lerp = -1 # initiate reverse lerp
+            if not (interact.percent_lerp == 0 and interact.step_lerp == -1): game.update = update # "recurse" through this function if not exiting
             else: game.camera = game.player.camera # reapply the player camera when fully exited
-            if loop_func and interact.percent == 1 and interact.step == 1: loop_func(dt) # placed after game.update reset to allow breaking without panning out
+            if loop_func and interact.percent_lerp == 1 and interact.step_lerp == 1: loop_func(dt) # placed after game.update reset to allow breaking without panning out
 
             level.update()
             bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
