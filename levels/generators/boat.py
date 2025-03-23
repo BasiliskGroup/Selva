@@ -37,6 +37,17 @@ def fishing(level: Level) -> None:
         mesh = game.meshes['fishing_rod'],
         material = game.materials['fishing_rod']
     ))
+    tip_tracker = bsk.Node(position = tip_pos, scale = glm.vec3(0.01))
+    fishing_line = bsk.Node( # TODO amke this disappear when not being used
+        mesh = game.meshes['cylinder'],
+        material = game.materials['green']
+    )
+    fishing_reel = bsk.Node(
+        position = glm.normalize(tip_pos - handle_pos) * 1.3 + handle_pos - glm.vec3(0, 0.2, 0),
+        scale = glm.vec3(0.1),
+    )
+    rod.node.add(fishing_reel)
+    rod.node.add(tip_tracker)
     setattr(rod, 'stage', 'bait')
     setattr(rod, 'time', 0)
     setattr(rod, 'bobber_pos', glm.vec3(tip_pos))
@@ -45,14 +56,42 @@ def fishing(level: Level) -> None:
     def rod_check_in(dt: float) -> bool: return game.player.item_r and game.player.item_r.node.tags in [['worm'], ['place holder']] # must be type list[list[str]]
     def rod_put_in(dt: float) -> None: rod.stage = 'ready'
     def rod_lerp_end_func(dt: float) -> None: 
+        rod_node: bsk.Node = rod.held_item.node
         rod.step = -1
+        rod.node.remove(rod_node)
+        game.current_scene.add(rod_node)
+        rod_node.physics = True
+        rod_node.velocity = glm.vec3(0, 3, 15)
+        rod.time = 0
+        
+    free_reel = free_axis(rod, glm.normalize(glm.cross(tip_pos - handle_pos, (0, 1, 0))), fishing_reel)
         
     def rod_loop(dt: float, rod = rod) -> None:
+        rod_node: bsk.Node = rod.held_item.node
+        rod_lerp(dt)
+        match rod.stage:
+            case 'bait': ...
+            case 'ready':
+                rod.stage = 'cast'
+                rod.step = 1
+                rod.node.add(rod_node)
+            case 'cast':
+                pos, sca, rot = connect(rod_node.position.data, tip_tracker.position.data, 0.025)
+                # fishing_line.position = pos
+                # fishing_line.scale = sca
+                # fishing_line.rotation = rot
+                rod.time += dt
+                if rod.time > 2.35:
+                    rod_node.physics = False
+                    rod_node.velocity = glm.vec3(0)
+                    print('hit')
+                    rod.stage = 'reel'
+            case 'reel': free_reel(dt)
+            case 'end': ...
         if rod.stage == 'ready': 
-            rod.stage = 'cast'
-            rod.step = 1
+            ...
         
-    rod_lerp = lerp(rod, rod_pivot, time = 0.3, rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)), end_func = rod_lerp_end_func)
+    rod_lerp = lerp(rod, rod_pivot, time = 0.3, rotation = glm.angleAxis(glm.pi() / 3, (1, 0, 0)), end_func = rod_lerp_end_func)
     rod_place = place(rod, tip_pos, check_in_func = rod_check_in, put_in_func = rod_put_in)
     rod_pan_loop = pan_loop(rod, time = 0.5, position = glm.vec3(-1.75, 2, 6), rotation = glm.angleAxis(glm.pi(), (0, 1, 0)), loop_func = rod_loop)
     
@@ -61,20 +100,9 @@ def fishing(level: Level) -> None:
             case 'bait': rod_place(dt)
             case 'ready': rod_pan_loop(dt)
     
-    def rod_passive(dt: float, rod = rod) -> None:
-        rod_lerp(dt)
-        match rod.stage:
-            case 'bait': ...
-            case 'ready':
-                if not rod.held_item: rod.stage = 'bait' # TODO doesnt work
-            case 'cast': ...
-            case 'reel': ...
-            case 'end': ...
-    
     rod.active = rod_active
-    rod.passive = rod_passive
     
-    level.add(rod_pivot, rod)
+    level.add(rod_pivot, rod, fishing_line)
 
 def load_boat(level: Level) -> None:
     game = level.game

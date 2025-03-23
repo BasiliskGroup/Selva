@@ -181,7 +181,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
     ) for i in range(-1, 2)]
     bedroom.add(wheels)
     
-    locked_wheels = {wheel : free_axis(locked_box, (1, 0, 0), wheel, sensitivity = 0.7) for wheel in wheels}
+    locked_wheels = {wheel : free_axis_xy(locked_box, (1, 0, 0), wheel) for wheel in wheels}
     setattr(locked_box, 'wheels', locked_wheels)
     setattr(locked_box, 'timer', 0)
     setattr(locked_box, 'selected', None)
@@ -194,7 +194,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
                 cast = game.current_scene.raycast_mouse(game.mouse.position, has_collisions=False)
                 locked_box.selected = cast.node
             if locked_box.selected in locked_box.wheels:
-                locked_box.wheels[locked_box.selected]()
+                locked_box.wheels[locked_box.selected](dt)
         
         for index, wheel in enumerate(locked_box.wheels):
             wheel.rotational_velocity = wheel.rotational_velocity * (1 - game.engine.delta_time * 5) if glm.length2(wheel.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
@@ -276,7 +276,7 @@ def safe(level: Level) -> None:
         cast = game.current_scene.raycast_mouse(game.mouse.position, has_collisions=False)
         if game.mouse.left_down and (cast.node == safe.handle.node or safe.holding_handle) and not safe.locked:
             safe.holding_handle = True
-            handle_rotate()
+            handle_rotate(dt)
         else: safe.holding_handle = False
         if not game.mouse.left_click: return
         if cast.node in [i.node for i in safe.buttons]: 

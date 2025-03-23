@@ -2,7 +2,7 @@ import glm
 import basilisk as bsk
 from typing import Callable
 from levels.interactable import Interactable
-from math import atan2
+import time
 
 def free(interact: Interactable, node: bsk.Node=None, sensitivity: float=0.35) -> Callable:
     """
@@ -14,17 +14,17 @@ def free(interact: Interactable, node: bsk.Node=None, sensitivity: float=0.35) -
     game = level.game
     node = node if node else interact.node
     
-    def func() -> None:
-        interact.timer += game.engine.delta_time
+    def func(dt: float) -> None:
+        interact.timer += dt
         rel_x, rel_y = game.engine.mouse.relative
-        node.rotational_velocity = node.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
+        node.rotational_velocity = node.rotational_velocity * (1 - dt) if glm.length2(node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
         if game.engine.mouse.left_down and (rel_x != 0 or rel_y != 0 or interact.timer > 0.1):
             node.rotational_velocity = level.scene.camera.rotation * glm.vec3(rel_y * sensitivity, rel_x * sensitivity, 0)
             interact.timer = 0
         
     return func
 
-def free_axis(interact: Interactable, axis :glm.vec3, node: bsk.Node=None, sensitivity: float=0.35) -> Callable: # TODO use free axis instead of this function
+def free_axis_xy(interact: Interactable, axis :glm.vec3, node: bsk.Node=None, sensitivity: float=0.35) -> Callable: # TODO use free axis instead of this function
     """
     Generates a function that allows the user to spin the given node around the specified axis.
     interact requires the following attributes: timer
@@ -35,30 +35,69 @@ def free_axis(interact: Interactable, axis :glm.vec3, node: bsk.Node=None, sensi
     node = node if node else interact.node
     axis = glm.normalize(axis)
     
-    def func() -> None:
+    def func(dt: float) -> None:
         # get relative x and y components
-        interact.timer += game.engine.delta_time
+        interact.timer += dt
         rel_x, rel_y = game.engine.mouse.relative
-        node.rotational_velocity = node.rotational_velocity * (1 - game.engine.delta_time) if glm.length2(node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0) # apply deceleration
-        
-        # get relative z component
-        clip = game.camera.m_proj * game.camera.m_view * glm.vec4(*node.position, 1.0)
-        prev_pos = glm.vec2(game.engine.mouse.position) - game.engine.mouse.relative
-        if clip.w == 0 or prev_pos == game.engine.mouse.position: rel_z = 0
-        else:
-            # get node position on screen
-            ndc_pos = glm.vec3(clip) / clip.w
-            node_pos = glm.vec2((ndc_pos.x + 1.0) * 0.5 * game.engine.win_size[0], (1.0 - ndc_pos.y) * 0.5 * game.engine.win_size[1])
-            
-            # get angle
-            ca = prev_pos - node_pos
-            cb = game.engine.mouse.position - node_pos
-            rel_z = glm.degrees(atan2(ca.x * cb.y - ca.y * cb.x, glm.dot(ca, cb))) * 6
+        node.rotational_velocity = node.rotational_velocity * (1 - dt) if glm.length2(node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0) # apply deceleration
         
         # apply rotation to node
         if game.engine.mouse.left_down and (rel_x != 0 or rel_y != 0 or interact.timer > 0.1):
-            rotation = game.camera.right * rel_y + game.camera.up * rel_x  + game.camera.forward * rel_z
+            rotation = game.camera.right * rel_y + game.camera.up * rel_x
             node.rotational_velocity = axis * glm.dot(rotation, axis) * sensitivity
             interact.timer = 0
+        
+    return func
+
+def free_axis(interact: Interactable, axis :glm.vec3, node: bsk.Node=None) -> Callable: # TODO use free axis instead of this function
+    """
+    Generates a function that allows the user to spin the given node around the specified axis.
+    interact requires the following attributes: timer
+    """
+    setattr(interact, 'timer', 0)
+    setattr(interact, 'positions', [None, None])
+    setattr(interact, 'last_time_registered', 0)
+    level = interact.level
+    game = level.game
+    node = node if node else interact.node
+    axis = glm.normalize(axis)
+    
+    capture_time = 0.1
+    
+    # TODO add functionality for planes perpendicular to the camera's forward axis
+    def func(dt: float) -> None:
+        if not game.mouse.left_down or time.time() - interact.last_time_registered > capture_time: 
+            interact.last_time_registered = time.time()
+            interact.positions = [None, None]
+            interact.timer = 0 # TODO add rotational velocity at the end
+            return
+        interact.last_time_registered = time.time()
+        
+        # get mouse position every x time
+        # interact.timer += dt
+        # if interact.timer < capture_time: return
+        # interact.timer = 0
+        
+        # compute world space of the mouse
+        position = game.engine.mouse.position
+        inv_proj, inv_view = glm.inverse(game.camera.m_proj), glm.inverse(game.camera.m_view)
+        ndc = glm.vec4(2 * position[0] / game.engine.win_size[0] - 1, 1 - 2 * position[1] / game.engine.win_size[1], 1, 1)
+        position: glm.vec4 = inv_proj * ndc
+        position /= position.w
+        forward = glm.normalize(glm.vec3(inv_view * glm.vec4(position.x, position.y, position.z, 0)))
+        
+        # get mouse point on the plane
+        d = glm.dot(node.position.data - game.camera.position, axis) / glm.dot(forward, axis)
+        position = game.camera.position + d * forward
+        
+        interact.positions.pop(0)
+        interact.positions.append(position)
+        
+        if not interact.positions[0]: return # no change in position has been detected
+        v1, v2 = interact.positions[0] - node.position.data, interact.positions[1] - node.position.data
+        cross = glm.cross(v2, v1)
+        dot = glm.dot(v1, v2)
+        dq = glm.angleAxis(glm.atan2(glm.length(cross), dot) * glm.sign(glm.dot(axis, cross)), axis)
+        node.rotation *= dq
         
     return func
