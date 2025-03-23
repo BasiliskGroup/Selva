@@ -5,6 +5,7 @@ from player.held_item import HeldItem, PictureFrame
 from player.player_nodes import player_nodes
 from player.held_ui import HeldUI
 from levels.functions.imports import simulate_gravity_node
+from levels.classes.fish import FishTracker
 
 
 class Player():
@@ -26,6 +27,8 @@ class Player():
         self.item_l_ui = HeldUI(self.game, glm.vec3(-0.45, -0.25, 1.2))
         
         # game interaction variables
+        self.fish_tracker = FishTracker()
+        
         self.gravity = glm.vec3(0, -9.8, 0)
         self.control_disabled = False
         self.camera = self.current_scene.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0)) # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera

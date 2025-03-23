@@ -9,6 +9,7 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
     Exits on pressing E.
     Lerps camera back to player position
     """
+    # attributes created dynamically so that they can be accessed outside function call
     setattr(interact, 'camera', bsk.StaticCamera()) # position and rotation do not matter for init
     setattr(interact, 'percent_lerp', 0)
     setattr(interact, 'step_lerp', 1)

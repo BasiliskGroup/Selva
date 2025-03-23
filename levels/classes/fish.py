@@ -20,11 +20,11 @@ class FishTracker():
     def __init__(self) -> None:
         self.record: dict[str, float] = {}
         self.fish: dict[str: FishData] = {
-            'tuna':     FishData(10,   0.6, 1.40),
+            'tuna':     FishData(10,   0.6,  1.40),
             'flounder': FishData(12.5, 0.15, 0.9),
             'herring':  FishData(12.5, 0.18, 0.46),
             'bass':     FishData(15,   0.25, 0.9),
-            'carp':     FishData(15,   0.3,  1.2)
+            'tilapia':  FishData(15,   0.15, 0.6)
         }
         
     def log(self, fish: Fish) -> bool:
