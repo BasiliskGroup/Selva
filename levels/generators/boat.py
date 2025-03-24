@@ -185,7 +185,8 @@ def bucket(level: Level) -> None:
     bucket = Interactable(level, bsk.Node(
         position = (-8, 1.5, 6.5),
         scale = glm.vec3(0.8),
-        material = game.materials['green']
+        material = game.materials['green'],
+        mesh = game.meshes['tuna']
     ))
     
     worm_node = bsk.Node(
