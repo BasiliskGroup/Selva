@@ -10,6 +10,7 @@ from levels.interactable import Interactable
 from levels.functions.imports import *
 from helper.transforms import connect
 from levels.classes.fish import FishTracker
+from materials.images import images
 
 def boat(game: Game) -> Level:
     level = Level(game)
@@ -55,8 +56,9 @@ def fishing(level: Level) -> None:
     ))
     tip_tracker = bsk.Node(position = tip_pos, scale = glm.vec3(0.01))
     fishing_line = bsk.Node( # TODO amke this disappear when not being used
+        position = (0, -100, 0),
         mesh = game.meshes['cylinder'],
-        material = game.materials['green']
+        material = game.materials['white']
     )
     fishing_reel = bsk.Node(
         position = glm.normalize(tip_pos - handle_pos) * 1.3 + handle_pos - glm.vec3(0, 0.2, 0) - ortho_vector * 0.15,
@@ -109,7 +111,6 @@ def fishing(level: Level) -> None:
                 if rod_node.position.y < water.node.position.y + 1:
                     rod_node.physics = False
                     rod_node.velocity = glm.vec3(0)
-                    print('hit')
                     rod.stage = 'reel'
                     rod.time = 0
             case 'reel': 
@@ -124,27 +125,45 @@ def fishing(level: Level) -> None:
                 b = glm.angle(rot_end) if glm.dot(glm.axis(rot_end), ortho_vector) > 0 else -glm.angle(rot_end)
                 reeled = b - a if a > b and a * b > 0 else 0
                 # control bait movement in the water plus fighting the fish
-                fish_velocity = rod.time * 0.2 - glm.cos(rod.time) + 0.5
+                fish_velocity = rod.time * 2 - glm.cos(rod.time) * 2 + 2
                 rod_node.position.z += reeled + dt * fish_velocity
                 
                 # when the fish is successfully caught
-                if glm.length(rod_node.position.data - game.camera.position) < 8: # NOTE playtest this number
-                    rod.stage = 'end'
-            case 'end':
+                distance = glm.length(rod_node.position.data - game.camera.position)
+                if distance < 8: rod.stage = 'win'
+                elif distance > 50: rod.stage = 'lose'
+                    
+            case 'win':
                 # give the player their fish
                 bait_tag = rod.held_item.node.tags[0]
-                if False: ...
+                if bait_tag == 'copper_wire': ...
                 else:
                     fish = game.player.fish_tracker.get_fish()
                     new_record = game.player.fish_tracker.log(fish)
                     print(new_record, fish)
+                    
+                    fish_item = HeldItem(game, bsk.Node(
+                        scale = glm.vec3(fish.length),
+                        mesh = game.meshes[fish.kind],
+                        material = game.materials[fish.kind]
+                    ))
+                    
+                    game.player.item_r = fish_item
                 
                 # remove bait from rod
                 rod.held_item = None
                 level.scene.node_handler.remove(rod.held_interact.node)
                 rod.held_interact = None
+                fishing_line.position = (0, -100, 0)
                     
                 rod.stage = 'bait'
+            
+            case 'lose':
+                
+                rod_node.position = tip_pos
+                fishing_line.position = (0, -100, 0)
+                rod.stage = 'bait'
+                
         if rod.stage == 'ready': 
             ...
         
@@ -186,7 +205,7 @@ def bucket(level: Level) -> None:
         position = (-8, 1.5, 6.5),
         scale = glm.vec3(0.8),
         material = game.materials['green'],
-        mesh = game.meshes['tuna']
+        # mesh = game.meshes['tuna']
     ))
     
     worm_node = bsk.Node(

@@ -24,7 +24,7 @@ def office(game: Game) -> Level:
     mug = Interactable(office, bsk.Node(
         position = (3.5, 2.25, 4.35),
         scale = glm.vec3(0.1),
-        # mesh = game.meshes['mug'],
+        mesh = game.meshes['mug'],
         tags = ['empty_mug']
     ))
     mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)))
@@ -132,7 +132,7 @@ def puzzle(office: Level) -> None:
     battery = Interactable(office, bsk.Node(
         position = (-2, 1.8, 3),
         scale    = glm.vec3(0.2),
-        # mesh     = game.meshes['battery'], # TODO enable when jonah figures out why its throwing errors
+        mesh     = game.meshes['battery'],
         material = game.materials['battery'],
         tags     = ['battery']
     ))
