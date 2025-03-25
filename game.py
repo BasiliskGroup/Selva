@@ -25,9 +25,11 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
+        self.memory_handler['void'] = void(self)
         # self.memory_handler['boat'] = boat(self)
         # self.memory_handler['office'] = office(self)
-        self.memory_handler['bedroom'] = bedroom(self)
+        # self.memory_handler['bedroom'] = bedroom(self)
+        
         
         # player
         self.player = Player(self)
@@ -83,7 +85,8 @@ class Game():
             'light_wood' : bsk.Material(color = (142, 124, 94)),
             'dark_wood' : bsk.Material(color = (59, 34, 24)),
             'dry_wall' : bsk.Material(color = (181, 190, 179)),
-            'dirty_carpet' : bsk.Material(color = (90, 70, 35))
+            'dirty_carpet' : bsk.Material(color = (90, 70, 35)),
+            'bloom_white' : bsk.Material(color = (255, 255, 255), emissive_color=(300, 300, 300))
         }
         
     def load_meshes(self) -> None:
