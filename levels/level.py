@@ -39,3 +39,4 @@ class Level():
         if node not in self.interactables: return None
         return self.interactables[node]
             
+    def render(self): self.scene.render()

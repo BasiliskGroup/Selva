@@ -27,18 +27,21 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
         game.player.velocity = glm.vec3() # reset player velocity to prevent player sliding away
         interact.step_lerp = 1 # reset steps from previous calls of this function
         game.mouse.position = glm.vec2(game.engine.win_size) // 2
+        forced_stay = True # force the player to stay in the lerp for one frame to prevent instant leaving bug
 
         # generate update function for the game
         def update():
+            nonlocal forced_stay
             interact.percent_lerp = glm.clamp(interact.percent_lerp + game.engine.delta_time / time * interact.step_lerp, 0, 1)
             game.camera.position = glm.mix(original_position, final_position, interact.percent_lerp)
             game.camera.rotation = glm.slerp(original_rotation, final_rotation, interact.percent_lerp)
 
             if interact.percent_lerp == 1 and game.key_down(bsk.pg.K_e): interact.step_lerp = -1 # initiate reverse lerp
-            if not (interact.percent_lerp == 0 and interact.step_lerp == -1): game.update = update # "recurse" through this function if not exiting
+            if not (interact.percent_lerp == 0 and interact.step_lerp == -1) or forced_stay: game.update = update # "recurse" through this function if not exiting
             else: game.camera = game.player.camera # reapply the player camera when fully exited
             if loop_func and interact.percent_lerp == 1 and interact.step_lerp == 1: loop_func(dt) # placed after game.update reset to allow breaking without panning out
 
+            forced_stay = False
             level.update()
             bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
             game.engine.update()

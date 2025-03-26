@@ -113,16 +113,21 @@ class Game():
         """
         Updates all adjacent scenes and the engine
         """
-         # update player data and actions
+        # tick physics and interact updates
+        for level in self.adjacent_levels(self.current_level): level.update(render = False)
+        
+        # update player data and actions
         self.player.update(self.engine.delta_time)
-        
-        # render and tick physics # TODO Jonah, I'm guessing you're going to need to separate a lot of stuff for render portals, 
-        bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
-        for level in self.adjacent_levels(self.current_level): level.update()
-        
         self.track_io_holds()
-        self.ui_scene.update()
-        self.overlay_scene.update()
+        
+        # self.ui_scene.update()
+        # self.overlay_scene.update()
+        
+        # standard ui
+        bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
+        
+        # render all levels
+        for level in self.adjacent_levels(self.current_level): level.render()
         self.engine.update()
         
     def track_io_holds(self) -> None:

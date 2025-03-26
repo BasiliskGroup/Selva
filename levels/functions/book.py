@@ -19,9 +19,11 @@ def book(interact: Interactable, pages: list[Callable]) -> Callable:
         camera.rotation = game.camera.rotation
         game.camera = camera
         game.player.body_node.velocity = glm.vec3(0)
+        forced_stay = True
         
         def update():
             # update every frame
+            nonlocal forced_stay
             win_size = glm.vec2(engine.win_size)
             margin = 15
             transforms = {
@@ -51,8 +53,9 @@ def book(interact: Interactable, pages: list[Callable]) -> Callable:
             button('circled_x', 'exit', set_exit)
             
             # continue/exit function
-            if not game.key_down(bsk.pg.K_e) and not exit: game.update = update
+            if not game.key_down(bsk.pg.K_e) and not exit or forced_stay: game.update = update
             else: game.camera = game.player.camera
+            forced_stay = False
             
             # update page and game
             pages[interact.page_number](dt)
