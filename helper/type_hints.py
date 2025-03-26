@@ -25,6 +25,7 @@ class Game():
     ui_scene: bsk.Scene
     overlay_scene: bsk.Scene
     sounds: list[bsk.Sound]
+    images: list[bsk.Image]
     
     def adjacent_levels(self, origin_level: Any) -> set[Any]: ...
     def key_down(self, key: int) -> bool: ...

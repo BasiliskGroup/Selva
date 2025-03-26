@@ -10,7 +10,7 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
     Lerps camera back to player position
     """
     # attributes created dynamically so that they can be accessed outside function call
-    setattr(interact, 'camera', bsk.StaticCamera()) # position and rotation do not matter for init
+    camera = bsk.StaticCamera() # position and rotation do not matter for init
     setattr(interact, 'percent_lerp', 0)
     setattr(interact, 'step_lerp', 1)
     level = interact.level
@@ -19,11 +19,11 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
     def func(dt: float) -> None:
         # prepare variables for lerp
         if not game.key_down(bsk.pg.K_e): return
-        original_position = interact.camera.position = glm.vec3(*game.camera.position)
-        original_rotation = interact.camera.rotation = glm.quat(*game.camera.rotation)
+        original_position = camera.position = glm.vec3(*game.camera.position)
+        original_rotation = camera.rotation = glm.quat(*game.camera.rotation)
         final_position = glm.vec3(position) if position else original_position
         final_rotation = glm.quat(rotation) if rotation else original_rotation
-        game.camera = interact.camera
+        game.camera = camera
         game.player.velocity = glm.vec3() # reset player velocity to prevent player sliding away
         interact.step_lerp = 1 # reset steps from previous calls of this function
         game.mouse.position = glm.vec2(game.engine.win_size) // 2
