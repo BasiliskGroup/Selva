@@ -18,8 +18,28 @@ def boat(game: Game) -> Level:
     fishing(level)
     load_boat(level)
     bucket(level)
+    fish_book(level)
     
     return level
+
+def fish_book(level: Level) -> None:
+    game = level.game
+    engine = game.engine
+    
+    fish_book = Interactable(level, bsk.Node(
+        position = glm.vec3(-2.75, 1.5, 4.5),
+        scale = (0.5, 0.1, 0.5),
+        
+    ))
+    
+    def p1(dt: float) -> None: bsk.draw.text(engine, 'page1', glm.vec2(engine.win_size) // 2)
+    def p2(dt: float) -> None: bsk.draw.text(engine, 'page2', glm.vec2(engine.win_size) // 2)
+    def p3(dt: float) -> None: bsk.draw.text(engine, 'page3', glm.vec2(engine.win_size) // 2)
+
+    pages = [p1, p2, p3]
+    fish_book.active = book(fish_book, pages)
+    
+    level.add(fish_book)
 
 def fishing(level: Level) -> None:
     game = level.game

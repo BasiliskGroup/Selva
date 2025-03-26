@@ -25,8 +25,8 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        self.memory_handler['void'] = void(self)
-        # self.memory_handler['boat'] = boat(self)
+        # self.memory_handler['void'] = void(self)
+        self.memory_handler['boat'] = boat(self)
         # self.memory_handler['office'] = office(self)
         # self.memory_handler['bedroom'] = bedroom(self)
         
