@@ -29,7 +29,6 @@ def fish_book(level: Level) -> None:
     fish_book = Interactable(level, bsk.Node(
         position = glm.vec3(3, 1.5, 3),
         scale = (0.5, 0.1, 0.5),
-        
     ))
     
     def p1(dt: float) -> None: bsk.draw.text(engine, 'page1', glm.vec2(engine.win_size) // 2)
@@ -156,8 +155,17 @@ def fishing(level: Level) -> None:
             case 'win':
                 # give the player their fish
                 bait_tag = rod.held_item.node.tags[0]
-                if bait_tag == 'copper_wire': ...
+                if not game.day:
+                    # 
+                    ...
+                elif bait_tag == 'copper_wire': 
+                    # give battery
+                    ...
+                elif bait_tag == 'coffee':
+                    # 
+                    ...
                 else:
+                    # give the player a fish
                     fish = game.player.fish_tracker.get_fish()
                     new_record = game.player.fish_tracker.log(fish)
                     print(new_record, fish)

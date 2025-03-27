@@ -79,6 +79,7 @@ class Game():
             'bass' : bsk.Material(texture = images['bass.png']),
             'bait_bucket' : bsk.Material(texture = images['bait_bucket.png']),
             'worm' : bsk.Material(texture = images['worm.png']),
+            
             # pure colors
             'white' : bsk.Material(color = (220, 220, 220)),
             'red' : bsk.Material(color = (255, saturation, saturation)),
