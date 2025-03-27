@@ -46,12 +46,12 @@ class Player():
             if self.game.right_mouse_time > 1.5: self.item_r_ui.drop()
         
         # update user node to preserve direction
-        horizontal_quat = glm.conjugate(glm.quat((0, self.camera.yaw, self.camera.roll)))
-        self.body_node.rotation = horizontal_quat
+        self.body_node.rotation = self.horizontal_quat
         self.body_node.rotational_velocity = glm.vec3(0, 0, 0)
         
         # hover TODO remove maybe
         self.position.y = 2.1
+        self.velocity.y = 0
     
     def move(self, dt: float) -> None:
         """
@@ -89,6 +89,9 @@ class Player():
     def position(self, value: glm.vec3): self.body_node.position = value
     @velocity.setter
     def velocity(self, value: glm.vec3): self.body_node.velocity = value
+    
+    @property
+    def horizontal_quat(self) -> glm.quat: return glm.conjugate(glm.quat((0, self.camera.yaw, self.camera.roll)))
     
     # derived properties from the game
     @property

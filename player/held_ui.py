@@ -54,7 +54,7 @@ class HeldUI():
         
         # freeze interact node from any previous movement
         interact.node.position = self.game.camera.position - glm.vec3(0, 0.5, 0)
-        interact.node.rotation = glm.quat()
+        interact.node.rotation = glm.conjugate(glm.quatLookAt(self.game.camera.horizontal, (0, 1, 0)))
         interact.node.velocity = glm.vec3()
         interact.node.rotational_velocity = glm.vec3()
         

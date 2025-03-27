@@ -57,16 +57,18 @@ class Game():
         saturation = 70
         self.materials = {
             # textured
-            'battery' : bsk.Material(texture = images['battery.png']),
-            'crt' : bsk.Material(texture = images['crt.png']),
-            'picture_frame' : bsk.Material(texture = images['uv_map.png']),
             'john' : bsk.Material(texture = images['john.png']),
             'wheel_eight' : bsk.Material(texture = images['wheel_eight.png']),
             'box_three' : bsk.Material(texture = images['box_three.png']),
+            'picture_frame' : bsk.Material(texture = images['uv_map.png']),
+            
+            'crt' : bsk.Material(texture = images['crt.png']),
             'suits' : bsk.Material(texture = images['suits.png']),
             'battery_box' : bsk.Material(texture = images['battery_box.png']),
             'office_window' : bsk.Material(texture = images['office_window.png']),
             'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
+            'battery' : bsk.Material(texture = images['battery.png']),
+            
             'boat' : bsk.Material(texture = images['boat.png']),
             'ocean' : bsk.Material(texture = images['ocean.jpg']),
             'fishing_rod' : bsk.Material(texture = images['fishing_rod.png']),
@@ -75,6 +77,8 @@ class Game():
             'tilapia' : bsk.Material(texture = images['tilapia.png']),
             'herring' : bsk.Material(texture = images['herring.png']),
             'bass' : bsk.Material(texture = images['bass.png']),
+            'bait_bucket' : bsk.Material(texture = images['bait_bucket.png']),
+            'worm' : bsk.Material(texture = images['worm.png']),
             # pure colors
             'white' : bsk.Material(color = (220, 220, 220)),
             'red' : bsk.Material(color = (255, saturation, saturation)),

@@ -27,7 +27,7 @@ def fish_book(level: Level) -> None:
     engine = game.engine
     
     fish_book = Interactable(level, bsk.Node(
-        position = glm.vec3(-2.75, 1.5, 4.5),
+        position = glm.vec3(3, 1.5, 3),
         scale = (0.5, 0.1, 0.5),
         
     ))
@@ -222,16 +222,18 @@ def bucket(level: Level) -> None:
     game = level.game
     
     bucket = Interactable(level, bsk.Node(
-        position = (-8, 1.5, 6.5),
-        scale = glm.vec3(0.8),
-        material = game.materials['green'],
-        # mesh = game.meshes['tuna']
+        position = (-3, 1.75, 4.75),
+        scale = glm.vec3(0.6),
+        rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
+        material = game.materials['bait_bucket'],
+        mesh = game.meshes['bait_bucket']
     ))
     
     worm_node = bsk.Node(
         position = glm.vec3(0, -100, 0),
-        scale = glm.vec3(0.1),
-        material = game.materials['red'],
+        scale = glm.vec3(0.075),
+        material = game.materials['worm'],
+        mesh = game.meshes['worm'],
         tags = ['worm']
     )
     bucket.active = interact_give_hold(bucket, HeldItem(game, worm_node))

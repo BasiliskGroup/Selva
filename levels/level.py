@@ -8,7 +8,7 @@ class Level():
     def __init__(self, game: Game) -> None:
         self.game = game
         self.scene = bsk.Scene(self.game.engine)
-        self.scene.physics_engine.accelerations = []
+        # self.scene.physics_engine.accelerations = []
         
         self.interactables: dict[bsk.Node, Interactable] = {}
         
