@@ -26,8 +26,8 @@ class Game():
         # level layout
         self.memory_handler = MemoryHandler(self)
         # self.memory_handler['void'] = void(self)
-        self.memory_handler['boat'] = boat(self)
-        # self.memory_handler['office'] = office(self)
+        # self.memory_handler['boat'] = boat(self)
+        self.memory_handler['office'] = office(self)
         # self.memory_handler['bedroom'] = bedroom(self)
         
         
@@ -63,7 +63,7 @@ class Game():
             'picture_frame' : bsk.Material(texture = images['uv_map.png']),
             
             'crt' : bsk.Material(texture = images['crt.png']),
-            'suits' : bsk.Material(texture = images['suits.png']),
+            'suits' : bsk.Material(texture = images['fortune_dresser.png']),
             'battery_box' : bsk.Material(texture = images['battery_box.png']),
             'office_window' : bsk.Material(texture = images['office_window.png']),
             'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
