@@ -13,14 +13,6 @@ def bedroom(game: Game) -> Level:
     # create basic layout for bedroom level
     bedroom = Level(game)
     bedroom.add(*rect_room(0, 0, 5.75, 6.75, 4, game.materials['light_white']))
-    
-    # poster
-    bedroom.add(bsk.Node(
-        position = (4.75, 5, -2),
-        scale = (0.01, 1.2, 1.7),
-        rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
-        material = game.materials['suits']
-    ))
 
     # locked box
     locked_box_interact = locked_box(bedroom)

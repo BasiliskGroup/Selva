@@ -22,7 +22,7 @@ def office(game: Game) -> Level:
     
     # TODO temporary
     mug = Interactable(office, bsk.Node(
-        position = (3.5, 2.25, 4.35),
+        position = (2.5, 2.25, 4.35),
         scale = glm.vec3(0.1),
         mesh = game.meshes['mug'],
         tags = ['empty_mug']
@@ -37,7 +37,7 @@ def puzzle(office: Level) -> None:
     
     # computer
     computer = Interactable(office, bsk.Node(
-        position = (0.5, 2.4, 0),
+        position = (-0.5, 2.4, 0),
         scale    = glm.vec3(0.4),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh     = game.meshes['crt'],
@@ -51,13 +51,13 @@ def puzzle(office: Level) -> None:
             game.update = game.primary_update
     
     def computer_active(dt: float) -> None:
-        pan_loop(computer, time = 0.5, position = (1.5, 2.4, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func)(dt)
+        pan_loop(computer, time = 0.5, position = (0.5, 2.4, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func)(dt)
     
     computer.active = computer_active
     
     # coffee maker
     coffee_maker = Interactable(office, bsk.Node(
-        position = (-1.8, 2.25, 0.6),
+        position = (-2.8, 2.25, 0.6),
         scale = glm.vec3(0.5),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['coffee_maker'],
@@ -75,8 +75,8 @@ def puzzle(office: Level) -> None:
     setattr(coffee_maker, 'bottom', glm.vec3(0, 99, 0))
     setattr(coffee_maker, 'width', 0.001)
     
-    top = glm.vec3(-1.8, 2.5, 0.6)
-    bottom = glm.vec3(-1.8, 2, 0.6)
+    top = glm.vec3(-2.8, 2.5, 0.6)
+    bottom = glm.vec3(-2.8, 2, 0.6)
     vel = glm.vec3(0, 10, 0)
     
     def coffee_check_out(dt: float) -> bool: return game.key_down(bsk.pg.K_e) and coffee_maker.stage == 'done'
@@ -121,7 +121,7 @@ def puzzle(office: Level) -> None:
     coffee_maker.passive = coffee_passive # TODO make coffee
     
     coffee_icon = bsk.Node(
-        position = (-2.125, 2.675, 0.6),
+        position = (-3.125, 2.675, 0.6),
         scale = glm.vec3(0.05),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['coffee_icon'],
@@ -130,7 +130,7 @@ def puzzle(office: Level) -> None:
     
     # add the battery into the scene
     battery = Interactable(office, bsk.Node(
-        position = (-2, 1.8, 3),
+        position = (-3, 1.8, 3),
         scale    = glm.vec3(0.2),
         mesh     = game.meshes['battery'],
         material = game.materials['battery'],
@@ -161,7 +161,7 @@ def puzzle(office: Level) -> None:
     sockets = [Interactable(
         office,
         bsk.Node(
-            position = (-1.8, 2.1, 0.25 * z - 1),
+            position = (-2.8, 2.1, 0.25 * z - 1),
             scale    = glm.vec3(0.2),
             rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
             mesh     = game.meshes['battery_box'],
@@ -177,7 +177,7 @@ def desk(office: Level) -> None:
     game = office.game
     
     desk = bsk.Node(
-        position = (0.5, 1.75, 0),
+        position = (-0.5, 1.75, 0),
         scale    = glm.vec3(0.85),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh     = game.meshes['work_desk'],
@@ -185,7 +185,7 @@ def desk(office: Level) -> None:
     )
     
     drawers = [Interactable(office, bsk.Node(
-        position = (0.7, 0.5 + i * 0.8, 0.9),
+        position = (-0.3, 0.5 + i * 0.8, 0.9),
         scale    = glm.vec3(0.65),
         mesh     = game.meshes['drawer'],
         material = game.materials['light_wood']
@@ -201,7 +201,7 @@ def coffee_table(office: Level) -> None:
     game = office.game
     
     table = bsk.Node(
-        position = (-1.5, 1.65, 0),
+        position = (-2.5, 1.65, 0),
         scale    = glm.vec3(0.8),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh     = game.meshes['desk'],
@@ -213,22 +213,33 @@ def coffee_table(office: Level) -> None:
 def decor(office: Level) -> None:
     game = office.game
     
-    window = bsk.Node(
-        position = (6.9, 3.5, 0),
+    windows = [bsk.Node(
+        position = (6.9, 3.5, 1.8 * i),
         scale = glm.vec3(0.85),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['office_window'],
         material = game.materials['office_window']
-    )
+    ) for i in range(-1, 2)] + [bsk.Node(
+        position = (-6.9, 3.5, 1.8 * i),
+        scale = glm.vec3(0.85),
+        rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
+        mesh = game.meshes['office_window'],
+        material = game.materials['office_window']
+    ) for i in range(-1, 2)]
     
     cubicle = bsk.Node(
-        position = (1, 1.5, 0),
+        position = (0, 1.5, 0),
         scale = glm.vec3(0.65),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['cubicle'],
         material = game.materials['dark_wood']
     )
     
+    poster = bsk.Node(
+        position = (0, 4, 7),
+        scale = (2.5, 1.5, 0.002),
+        rotation = glm.angleAxis(glm.pi() / 2, (0, 0, 1)),
+        material = game.materials['fortune_dresser']
+    )
     
-    
-    office.add(window, cubicle)
+    office.add(windows, cubicle, poster)
