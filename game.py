@@ -4,7 +4,7 @@ from levels.level import Level
 from levels.generators.imports import *
 
 from player.player import Player
-from materials.images import images
+from images.images import images
 from memories.memory_handler import MemoryHandler
 
 
@@ -91,7 +91,8 @@ class Game():
             'dark_wood' : bsk.Material(color = (59, 34, 24)),
             'dry_wall' : bsk.Material(color = (181, 190, 179)),
             'dirty_carpet' : bsk.Material(color = (90, 70, 35)),
-            'bloom_white' : bsk.Material(color = (255, 255, 255), emissive_color=(300, 300, 300))
+            'bloom_white' : bsk.Material(color = (255, 255, 255), emissive_color=(300, 300, 300)),
+            'copper' : bsk.Material(color = (209, 131, 85))
         }
         
     def load_meshes(self) -> None:

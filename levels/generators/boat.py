@@ -10,7 +10,7 @@ from levels.interactable import Interactable
 from levels.functions.imports import *
 from helper.transforms import connect
 from levels.classes.fish import FishTracker
-from materials.images import images
+from images.images import images
 
 def boat(game: Game) -> Level:
     level = Level(game)
@@ -19,6 +19,8 @@ def boat(game: Game) -> Level:
     load_boat(level)
     bucket(level)
     fish_book(level)
+    
+    temp(level)
     
     return level
 
@@ -80,8 +82,11 @@ def fishing(level: Level) -> None:
         material = game.materials['white']
     )
     fishing_reel = bsk.Node(
-        position = glm.normalize(tip_pos - handle_pos) * 1.3 + handle_pos - glm.vec3(0, 0.2, 0) - ortho_vector * 0.15,
-        scale = glm.vec3(0.1),
+        position = glm.normalize(tip_pos - handle_pos) * -6 + handle_pos - glm.vec3(0, 0.2, 0) - ortho_vector * 0.4,
+        scale = glm.vec3(0.5),
+        rotation = glm.conjugate(glm.quatLookAt(ortho_vector, (0, 1, 0))),
+        mesh = game.meshes['crank'],
+        relative_scale=False
     )
     rod.node.add(fishing_reel)
     rod.node.add(tip_tracker)
@@ -90,7 +95,7 @@ def fishing(level: Level) -> None:
     setattr(rod, 'bobber_pos', glm.vec3(tip_pos))
     rod_pivot.add(rod.node)
     
-    def rod_check_in(dt: float) -> bool: return game.player.item_r and game.player.item_r.node.tags in [['worm'], ['place holder']] # must be type list[list[str]]
+    def rod_check_in(dt: float) -> bool: return game.player.item_r and game.player.item_r.node.tags in [['worm'], ['copper_wire']] # must be type list[list[str]]
     def rod_put_in(dt: float) -> None: rod.stage = 'ready'
     def rod_pull_out(dt: float) -> None: rod.stage = 'bait'
     def rod_lerp_end_func(dt: float) -> None: 
@@ -160,7 +165,13 @@ def fishing(level: Level) -> None:
                     ...
                 elif bait_tag == 'copper_wire': 
                     # give battery
-                    ...
+                    fished_item = HeldItem(game, bsk.Node(
+                        position = (-2, 1.8, 3),
+                        scale    = glm.vec3(0.2),
+                        mesh     = game.meshes['battery'],
+                        material = game.materials['battery'],
+                        tags     = ['battery']
+                    ))
                 elif bait_tag == 'coffee':
                     # 
                     ...
@@ -170,13 +181,13 @@ def fishing(level: Level) -> None:
                     new_record = game.player.fish_tracker.log(fish)
                     print(new_record, fish)
                     
-                    fish_item = HeldItem(game, bsk.Node(
+                    fished_item = HeldItem(game, bsk.Node(
                         scale = glm.vec3(fish.length),
                         mesh = game.meshes[fish.kind],
                         material = game.materials[fish.kind]
                     ))
                     
-                    game.player.item_r = fish_item
+                game.player.item_r = fished_item
                 
                 # remove bait from rod
                 rod.held_item = None
@@ -200,6 +211,7 @@ def fishing(level: Level) -> None:
     rod_pan_loop = pan_loop(rod, time = 0.5, position = glm.vec3(-1.75, 2, 6), rotation = glm.angleAxis(glm.pi(), (0, 1, 0)), loop_func = rod_loop)
     
     def rod_active(dt: float) -> None:
+        if rod.held_item: rod.stage = 'ready'
         match rod.stage:
             case 'bait': rod_place(dt)
             case 'ready': rod_pan_loop(dt)
@@ -247,3 +259,18 @@ def bucket(level: Level) -> None:
     bucket.active = interact_give_hold(bucket, HeldItem(game, worm_node))
     
     level.add(bucket, worm_node)
+    
+def temp(level: Level) -> None:
+    game = level.game
+    
+    wire = Interactable(level, bsk.Node(
+        position = (0, 2, 0),
+        scale = glm.vec3(0.3),
+        mesh = game.meshes['wire'],
+        material = game.materials['copper'],
+        tags = ['copper_wire']
+    ))
+    
+    wire.active = pickup_function(wire, interact_to_hold(wire, HeldItem(game, wire.node)))
+    
+    level.add(wire)
