@@ -75,8 +75,8 @@ def puzzle(office: Level) -> None:
     setattr(coffee_maker, 'bottom', glm.vec3(0, 99, 0))
     setattr(coffee_maker, 'width', 0.001)
     
-    top = glm.vec3(-2.8, 2.5, 0.6)
-    bottom = glm.vec3(-2.8, 2, 0.6)
+    top = glm.vec3(-2.85, 2.5, 0.6)
+    bottom = glm.vec3(-2.85, 2, 0.6)
     vel = glm.vec3(0, 10, 0)
     
     def coffee_check_out(dt: float) -> bool: return game.key_down(bsk.pg.K_e) and coffee_maker.stage == 'done'
@@ -103,7 +103,7 @@ def puzzle(office: Level) -> None:
                 coffee_maker.time = 0
             case 'filling':
                 coffee_maker.time += dt
-                coffee_maker.width += random.uniform(-0.01, 0.01)
+                coffee_maker.width = 0.01 + 0.005 * glm.sin(coffee_maker.time)
                 if coffee_maker.time > 2: coffee_maker.stage = 'stopping'
             case 'stopping':
                 coffee_maker.time += dt
@@ -117,15 +117,30 @@ def puzzle(office: Level) -> None:
                 coffee_maker.bottom = glm.vec3(0, 99, 0)
                 
                 # set mug to coffee mug
-                coffee_maker.held_item.node.mesh = game.meshes['coffee_mug']
-                coffee_maker.held_item.node.material = game.materials['coffee_mug']
-                coffee_maker.held_item.node.tags = ['coffee_mug']
-                mug_lerp = lerp_held(coffee_maker.held_item, position = glm.vec3(-0.42, -0.05, -0.6), rotation = glm.angleAxis(-glm.pi() / 4, (1, 0, 0)))
+                held_item = coffee_maker.held_item
+                held_item.node.mesh = game.meshes['coffee_mug']
+                held_item.node.material = game.materials['coffee_mug']
+                held_item.node.tags = ['coffee_mug']
+                setattr(held_item, 'coffee_remaining', 5)
                 
+                def coffee_mug_end_func(dt: float) -> None:
+                    # TODO play slerp sound effect
+                    print(game.player.item_r.coffee_remaining)
+                    game.player.item_r.coffee_remaining -= dt
+                    if game.player.item_r.coffee_remaining > 0: return
+                    game.player.item_r.node.mesh = game.meshes['mug']
+                    game.player.item_r.node.material = game.materials['white']
+                    game.player.item_r.node.tags = ['empty_mug']
+                    
+                    game.player.item_r_ui.node.mesh = game.meshes['mug']
+                    game.player.item_r_ui.node.material = game.materials['white']
+                    game.player.item_r_ui.node.tags = ['empty_mug']
+                
+                mug_lerp = lerp_held(held_item, time = 0.5, position = glm.vec3(-0.42, -0.05, -0.6), rotation = glm.angleAxis(-glm.pi() / 4, (1, 0, 0)), end_func = coffee_mug_end_func)
                 def coffee_mug_func(dt: float) -> None:
                     mug_lerp(dt)
                     
-                coffee_maker.held_item.func = coffee_mug_func
+                held_item.func = coffee_mug_func
     
     coffee_maker.active = place(coffee_maker, coffee_maker.node.position.data + glm.vec3(-0.1, -0.25, 0), check_in_func = coffee_check_in, check_out_func = coffee_check_out, put_in_func = None, pull_out_func = None)
     coffee_maker.passive = coffee_passive # TODO make coffee

@@ -10,10 +10,9 @@ def lerp_held(held_item: HeldItem, time: float=1, position: glm.vec3=None, rotat
     game = held_item.game
     
     def func(dt: float) -> None:
-        was1 = held_item.percent_moved == 1
         held_item.percent_moved = glm.clamp(held_item.percent_moved + dt / time * (2 * game.mouse.left_down - 1), 0, 1)
         held_item.offset = glm.mix(original_offset, position, held_item.percent_moved)
         held_item.rotation = glm.slerp(original_rotation, rotation, held_item.percent_moved)
-        if not was1 and held_item.percent_moved == 1 and end_func: end_func(dt)
+        if held_item.percent_moved == 1 and end_func: end_func(dt)
         
     return func
