@@ -8,7 +8,7 @@ from levels.level import Level
 from levels.helper import rect_room
 from levels.interactable import Interactable
 from levels.functions.imports import *
-from player.held_item import HeldItem, PictureFrame
+from player.held_items.held_item import HeldItem, PictureFrame
 
 def void(game: Game) -> Level:
     void = Level(game)

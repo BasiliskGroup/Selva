@@ -3,7 +3,7 @@ import basilisk as bsk
 import glm
 from helper.type_hints import Game
 from levels.interactable import Interactable
-from player.held_item import HeldItem
+from player.held_items.held_item import HeldItem
 from levels.functions.imports import interact_to_hold, simulate_gravity_node
 
 

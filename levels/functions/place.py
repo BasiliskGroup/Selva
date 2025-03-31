@@ -1,8 +1,6 @@
 import glm
-import basilisk as bsk
 from typing import Callable
 from levels.interactable import Interactable
-from levels.functions.imports import interact_to_hold
 
 def place(interact: Interactable, position: glm.vec3=None, rotation: glm.quat=None, check_in_func: Callable=None, check_out_func: Callable=None, put_in_func: Callable=None, pull_out_func: Callable=None) -> Callable:
     """

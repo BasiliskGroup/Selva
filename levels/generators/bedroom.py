@@ -7,7 +7,7 @@ from levels.level import Level
 from levels.helper import rect_room
 from levels.interactable import Interactable
 from levels.functions.imports import *
-from player.held_item import HeldItem, PictureFrame
+from player.held_items.held_item import HeldItem, PictureFrame
 
 def bedroom(game: Game) -> Level:
     # create basic layout for bedroom level
@@ -85,7 +85,7 @@ def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Inter
     )
     drawer = Interactable(level, node)
     
-    drawer.passive = lerp_difference(drawer, time = 0.02, delta_position = (0, 0, 1))
+    drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (0, 0, 1))
     drawer.active = lerp_interact(drawer, check_func = check_func)
     return drawer
 
@@ -108,7 +108,6 @@ def drawers(bedroom: Level, key: Interactable) -> None:
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)) * glm.angleAxis(glm.pi() / 2, (1, 0, 0)) * glm.angleAxis(glm.pi() / 3, (0, 1, 0))
     )
     john_interact = Interactable(bedroom, john)
-    john_interact.active = pickup_function(john_interact, pickup_return_function(john_interact))
     drawers[2].node.add(john)
     bedroom.add(john_interact)
     
@@ -173,7 +172,7 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
     ) for i in range(-1, 2)]
     bedroom.add(wheels)
     
-    locked_wheels = {wheel : free_axis_xy(locked_box, (1, 0, 0), wheel) for wheel in wheels}
+    locked_wheels = {wheel : free_axis_xy(locked_box, (1, 0, 0), wheel, sensitivity = 0.6) for wheel in wheels}
     setattr(locked_box, 'wheels', locked_wheels)
     setattr(locked_box, 'timer', 0)
     setattr(locked_box, 'selected', None)

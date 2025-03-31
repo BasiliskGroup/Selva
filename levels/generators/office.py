@@ -1,8 +1,8 @@
 import basilisk as bsk
 import glm
 import random
-from typing import Callable
-from player.held_item import HeldItem
+from player.held_items.held_item import HeldItem
+from player.held_items.interpolate import lerp_held
 from helper.type_hints import Game
 from levels.level import Level
 from levels.helper import rect_room
@@ -83,21 +83,18 @@ def puzzle(office: Level) -> None:
     def coffee_check_in(dt: float) -> bool:  return game.key_down(bsk.pg.K_e) and coffee_maker.stage == 'done' and game.player.item_r and game.player.item_r.node.tags == ['empty_mug']
     def coffee_passive(dt: float) -> None:
         pos, sca, rot = connect(coffee_maker.top, coffee_maker.bottom, coffee_maker.width)
-        print(sca)
         coffee_node.position = pos
         coffee_node.scale = sca
         coffee_node.rotation = rot
         if not coffee_maker.held_item: return
         match coffee_maker.stage:
             case 'done': 
-                print('done')
                 if not coffee_maker.held_item.node.tags == ['empty_mug'] or not coffee_maker.on: return
                 coffee_maker.stage = 'starting'
                 coffee_maker.time = 0
                 coffee_maker.top = glm.vec3(top)
                 coffee_maker.bottom = top - (0, 0.01, 0)
             case 'starting': 
-                print('starting')
                 coffee_maker.time += dt
                 coffee_maker.width += 0.1 * dt
                 coffee_maker.bottom -= vel * dt
@@ -105,17 +102,30 @@ def puzzle(office: Level) -> None:
                 coffee_maker.stage = 'filling'
                 coffee_maker.time = 0
             case 'filling':
-                coffee_maker.stage = 'stopping'
+                coffee_maker.time += dt
+                coffee_maker.width += random.uniform(-0.01, 0.01)
+                if coffee_maker.time > 2: coffee_maker.stage = 'stopping'
             case 'stopping':
-                print('stopping')
                 coffee_maker.time += dt
                 coffee_maker.width -= 0.1 * dt
                 coffee_maker.top -= vel * dt
                 if coffee_maker.time < 0.1: return 
+                
                 coffee_maker.stage = 'done'
                 coffee_maker.time = 0
                 coffee_maker.top = glm.vec3(0, 100, 0)
                 coffee_maker.bottom = glm.vec3(0, 99, 0)
+                
+                # set mug to coffee mug
+                coffee_maker.held_item.node.mesh = game.meshes['coffee_mug']
+                coffee_maker.held_item.node.material = game.materials['coffee_mug']
+                coffee_maker.held_item.node.tags = ['coffee_mug']
+                mug_lerp = lerp_held(coffee_maker.held_item, position = glm.vec3(-0.42, -0.05, -0.6), rotation = glm.angleAxis(-glm.pi() / 4, (1, 0, 0)))
+                
+                def coffee_mug_func(dt: float) -> None:
+                    mug_lerp(dt)
+                    
+                coffee_maker.held_item.func = coffee_mug_func
     
     coffee_maker.active = place(coffee_maker, coffee_maker.node.position.data + glm.vec3(-0.1, -0.25, 0), check_in_func = coffee_check_in, check_out_func = coffee_check_out, put_in_func = None, pull_out_func = None)
     coffee_maker.passive = coffee_passive # TODO make coffee

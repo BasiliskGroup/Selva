@@ -2,7 +2,7 @@ import basilisk as bsk
 import glm
 import random
 from typing import Callable
-from player.held_item import HeldItem
+from player.held_items.held_item import HeldItem
 from helper.type_hints import Game
 from levels.level import Level
 from levels.helper import rect_room

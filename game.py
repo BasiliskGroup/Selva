@@ -14,7 +14,12 @@ class Game():
         # Basilisk Engine overhead
         self.engine = bsk.Engine()
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
+        self.ui_scene.sky = None
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
+        self.overlay_scene.sky = None
+        self.overlay_scene.add(bsk.Node(scale = (1, 10, 1)))
+        
+        # global puzzle variables
         self.day = True
         
         # game components
@@ -27,8 +32,8 @@ class Game():
         self.memory_handler = MemoryHandler(self)
         # self.memory_handler['void'] = void(self)
         # self.memory_handler['boat'] = boat(self)
-        # self.memory_handler['office'] = office(self)
-        self.memory_handler['bedroom'] = bedroom(self)
+        self.memory_handler['office'] = office(self)
+        # self.memory_handler['bedroom'] = bedroom(self)
         
         
         # player
@@ -57,18 +62,22 @@ class Game():
         saturation = 70
         self.materials = {
             # textured
+            # bedroom
             'john' : bsk.Material(texture = images['john.png']),
             'wheel_eight' : bsk.Material(texture = images['wheel_eight.png']),
             'box_three' : bsk.Material(texture = images['box_three.png']),
             'picture_frame' : bsk.Material(texture = images['uv_map.png']),
             
+            # office
             'crt' : bsk.Material(texture = images['crt.png']),
             'fortune_dresser' : bsk.Material(texture = images['fortune_dresser.png']),
             'battery_box' : bsk.Material(texture = images['battery_box.png']),
             'office_window' : bsk.Material(texture = images['office_window.png']),
             'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
             'battery' : bsk.Material(texture = images['battery.png']),
+            'coffee_mug' : bsk.Material(texture = images['coffee_mug.png']),
             
+            # ocean
             'boat' : bsk.Material(texture = images['boat.png']),
             'ocean' : bsk.Material(texture = images['ocean.jpg']),
             'fishing_rod' : bsk.Material(texture = images['fishing_rod.png']),
@@ -126,14 +135,15 @@ class Game():
         self.player.update(self.engine.delta_time)
         self.track_io_holds()
         
-        # self.ui_scene.update()
-        # self.overlay_scene.update()
-        
         # standard ui
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
         
         # render all levels
         for level in self.adjacent_levels(self.current_level): level.render()
+        
+        self.ui_scene.update()
+        self.overlay_scene.update()
+        
         self.engine.update()
         
     def track_io_holds(self) -> None:

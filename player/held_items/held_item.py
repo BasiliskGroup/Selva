@@ -31,9 +31,9 @@ class PictureFrame(HeldItem):
         )
         super().__init__(game, node, self.func, rotation = glm.angleAxis(glm.pi(), (0, 1, 0)))
         
-        # animation variables
+        # ANIMATION variables
         self.percent_moved = 0
-        self.ANIMAtION_TIME = 0.5
+        self.ANIMATION_TIME = 0.5
         
         self.original_offset = glm.vec3(self.offset) # left hand offset (-0.45, -0.25, 1.2)
         self.original_rotation = glm.quat(self.rotation)
@@ -45,13 +45,13 @@ class PictureFrame(HeldItem):
         Mouse Left Down - holds the frame in front of the user for a short period of time, shakes, plays portal opening sound effect, and opens a portal
         Mouse Left Up - moves the frame back to starting position
         """
-        # play animation and store lerp value
+        # play ANIMATION and store lerp value
         was1 = self.percent_moved == 1
-        self.percent_moved = glm.clamp(self.percent_moved + dt / self.ANIMAtION_TIME * (2 * self.game.mouse.left_down - 1), 0, 1)
+        self.percent_moved = glm.clamp(self.percent_moved + dt / self.ANIMATION_TIME * (2 * self.game.mouse.left_down - 1), 0, 1)
         self.offset = glm.mix(self.original_offset, self.final_offset, self.percent_moved)
         self.rotation = glm.slerp(self.original_rotation, self.final_rotation, self.percent_moved)
         
-        # interact with current scene if animation is at it's maximum
+        # interact with current scene if ANIMATION is at it's maximum
         if self.percent_moved == 1 and not was1: print('*farts*')
         
         

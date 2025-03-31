@@ -1,9 +1,9 @@
 import glm
 import basilisk as bsk
 from helper.type_hints import Game, Level
-from player.held_item import HeldItem, PictureFrame
+from player.held_items.held_item import HeldItem, PictureFrame
 from player.player_nodes import player_nodes
-from player.held_ui import HeldUI
+from player.held_items.held_ui import HeldUI
 from levels.functions.imports import simulate_gravity_node
 from levels.classes.fish import FishTracker
 
