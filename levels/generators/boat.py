@@ -95,7 +95,7 @@ def fishing(level: Level) -> None:
     setattr(rod, 'bobber_pos', glm.vec3(tip_pos))
     rod_pivot.add(rod.node)
     
-    def rod_check_in(dt: float) -> bool: return game.player.item_r and game.player.item_r.node.tags in [['worm'], ['copper_wire']] # must be type list[list[str]]
+    def rod_check_in(dt: float) -> bool: return game.player.item_r and game.player.item_r.node.tags in [['worm'], ['copper_wire'], ['pyjama_squid']]
     def rod_put_in(dt: float) -> None: rod.stage = 'ready'
     def rod_pull_out(dt: float) -> None: rod.stage = 'bait'
     def rod_lerp_end_func(dt: float) -> None: 
@@ -172,7 +172,7 @@ def fishing(level: Level) -> None:
                         material = game.materials['battery'],
                         tags     = ['battery']
                     ))
-                elif bait_tag == 'coffee':
+                elif bait_tag == 'pyjama_squid':
                     # 
                     ...
                 else:
@@ -205,10 +205,12 @@ def fishing(level: Level) -> None:
                 
         if rod.stage == 'ready': 
             ...
+            
+    def rod_loop_check_func(dt: float) -> None: return rod.stage == 'win'
         
     rod_lerp = lerp(rod, rod_pivot, time = 0.3, rotation = glm.angleAxis(glm.pi() / 3, (1, 0, 0)), end_func = rod_lerp_end_func)
     rod_place = place(rod, tip_pos, check_in_func = rod_check_in, put_in_func = rod_put_in, pull_out_func = rod_pull_out)
-    rod_pan_loop = pan_loop(rod, time = 0.5, position = glm.vec3(-1.75, 2, 6), rotation = glm.angleAxis(glm.pi(), (0, 1, 0)), loop_func = rod_loop)
+    rod_pan_loop = pan_loop(rod, time = 0.5, position = glm.vec3(-1.75, 2, 6), rotation = glm.angleAxis(glm.pi(), (0, 1, 0)), loop_func = rod_loop, leave_check_func = rod_loop_check_func)
     
     def rod_active(dt: float) -> None:
         if rod.held_item: rod.stage = 'ready'

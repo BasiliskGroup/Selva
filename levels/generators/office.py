@@ -77,7 +77,7 @@ def puzzle(office: Level) -> None:
     
     top = glm.vec3(-2.85, 2.5, 0.6)
     bottom = glm.vec3(-2.85, 2, 0.6)
-    vel = glm.vec3(0, 10, 0)
+    vel = glm.vec3(0, 1, 0)
     
     def coffee_check_out(dt: float) -> bool: return game.key_down(bsk.pg.K_e) and coffee_maker.stage == 'done'
     def coffee_check_in(dt: float) -> bool:  return game.key_down(bsk.pg.K_e) and coffee_maker.stage == 'done' and game.player.item_r and game.player.item_r.node.tags == ['empty_mug']
@@ -96,20 +96,25 @@ def puzzle(office: Level) -> None:
                 coffee_maker.bottom = top - (0, 0.01, 0)
             case 'starting': 
                 coffee_maker.time += dt
-                coffee_maker.width += 0.1 * dt
+                coffee_maker.width += 0.01 * dt
                 coffee_maker.bottom -= vel * dt
-                if coffee_maker.time < 0.1: return 
+                if coffee_maker.time < 0.8: return 
                 coffee_maker.stage = 'filling'
                 coffee_maker.time = 0
             case 'filling':
                 coffee_maker.time += dt
                 coffee_maker.width = 0.01 + 0.005 * glm.sin(coffee_maker.time)
-                if coffee_maker.time > 2: coffee_maker.stage = 'stopping'
+                if coffee_maker.time > 2: 
+                    coffee_maker.stage = 'stopping'
+                    coffee_maker.time = 0
+                    held_item = coffee_maker.held_item
+                    held_item.node.material = game.materials['coffee_mug']
+                    held_item.node.mesh = game.meshes['coffee_mug']
             case 'stopping':
                 coffee_maker.time += dt
-                coffee_maker.width -= 0.1 * dt
+                coffee_maker.width -= 0.01 * dt
                 coffee_maker.top -= vel * dt
-                if coffee_maker.time < 0.1: return 
+                if coffee_maker.time < 0.8: return 
                 
                 coffee_maker.stage = 'done'
                 coffee_maker.time = 0
@@ -118,10 +123,10 @@ def puzzle(office: Level) -> None:
                 
                 # set mug to coffee mug
                 held_item = coffee_maker.held_item
-                held_item.node.mesh = game.meshes['coffee_mug']
-                held_item.node.material = game.materials['coffee_mug']
                 held_item.node.tags = ['coffee_mug']
                 setattr(held_item, 'coffee_remaining', 5)
+                held_item.offset = glm.vec3(0)
+                held_item.rotation = glm.quat()
                 
                 def coffee_mug_end_func(dt: float) -> None:
                     # TODO play slerp sound effect
@@ -136,7 +141,7 @@ def puzzle(office: Level) -> None:
                     game.player.item_r_ui.node.material = game.materials['white']
                     game.player.item_r_ui.node.tags = ['empty_mug']
                 
-                mug_lerp = lerp_held(held_item, time = 0.5, position = glm.vec3(-0.42, -0.05, -0.6), rotation = glm.angleAxis(-glm.pi() / 4, (1, 0, 0)), end_func = coffee_mug_end_func)
+                mug_lerp = lerp_held(held_item, time = 0.2, position = glm.vec3(-0.42, -0.05, -0.6), rotation = glm.angleAxis(-glm.pi() / 4, (1, 0, 0)), end_func = coffee_mug_end_func)
                 def coffee_mug_func(dt: float) -> None:
                     mug_lerp(dt)
                     
