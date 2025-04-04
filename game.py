@@ -30,9 +30,10 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
+        self.memory_handler['art'] = art(self)
         # self.memory_handler['void'] = void(self)
         # self.memory_handler['boat'] = boat(self)
-        self.memory_handler['office'] = office(self)
+        # self.memory_handler['office'] = office(self)
         # self.memory_handler['bedroom'] = bedroom(self)
         
         
@@ -89,11 +90,16 @@ class Game():
             'bait_bucket' : bsk.Material(texture = images['bait_bucket.png']),
             'worm' : bsk.Material(texture = images['worm.png']),
             
-            # pure colors
+            # standard
             'white' : bsk.Material(color = (220, 220, 220)),
             'red' : bsk.Material(color = (255, saturation, saturation)),
             'green' : bsk.Material(color = (saturation, 255, saturation)),
             'blue' : bsk.Material(color = (saturation, saturation, 255)),
+            'purple' : bsk.Material(color = (117, 45, 112)),
+            'orange' : bsk.Material(color = (223, 114, 60)),
+            'yellow' : bsk.Material(color = (211, 198, 74)),
+            
+            # specific
             'light_white' : bsk.Material(color = [240 for _ in range(3)]),
             'bright_wood' : bsk.Material(color = (183, 170, 131)),
             'light_wood' : bsk.Material(color = (142, 124, 94)),

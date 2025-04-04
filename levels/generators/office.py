@@ -124,7 +124,7 @@ def puzzle(office: Level) -> None:
                 # set mug to coffee mug
                 held_item = coffee_maker.held_item
                 held_item.node.tags = ['coffee_mug']
-                setattr(held_item, 'coffee_remaining', 5)
+                setattr(held_item, 'coffee_remaining', 2)
                 held_item.offset = glm.vec3(0)
                 held_item.rotation = glm.quat()
                 
