@@ -53,11 +53,24 @@ def paint_buckets(art: Level) -> None:
             tags: list[str] = held_node.tags
             if not 'paint_brush' in tags: return
             color_index = tags[0] == 'paint_brush'
-            if tags[color_index] == 'none' or True: 
+            if tags[color_index] == 'none': 
                 held_node.material = game.materials[color] # set material of HeldItem
                 game.player.item_r_ui.node.material = game.materials[color] # set material of Node
                 held_node.tags[color_index] = color
                 return
+            
+            # if color is mixed or identical ignore
+            if tags[color_index] in (color, 'orange', 'purple', 'green'): return # ignore double same color
+            colors = (color, tags[color_index])
+            new_color = None
+            
+            # mixing colors
+            if 'red' in colors and 'blue' in colors: new_color = 'purple'
+            elif 'red' in colors and 'yellow' in colors: new_color = 'orange'
+            elif 'blue' in colors and 'yellow' in colors: new_color = 'green'
+            held_node.material = game.materials[new_color] # set material of HeldItem
+            game.player.item_r_ui.node.material = game.materials[new_color] # set material of Node
+            held_node.tags[color_index] = new_color
             
         paint_buckets[color].active = mix
           
