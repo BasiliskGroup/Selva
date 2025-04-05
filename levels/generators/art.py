@@ -49,6 +49,7 @@ def paint_buckets(art: Level) -> None:
         paint_buckets[color] = bucket
         
         def mix(dt: float, color = color) -> None:
+            if not game.key_down(bsk.pg.K_e): return # enforce key press to interact
             held_node = game.player.item_r.node
             tags: list[str] = held_node.tags
             if not 'paint_brush' in tags: return
@@ -85,6 +86,7 @@ def paint_buckets(art: Level) -> None:
     ))
     
     def clear(dt: float) -> None:
+        if not game.key_down(bsk.pg.K_e): return # enforce key press to interact
         held_node = game.player.item_r.node
         tags: list[str] = held_node.tags
         if not 'paint_brush' in tags: return

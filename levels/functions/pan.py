@@ -2,6 +2,8 @@ import glm
 import basilisk as bsk
 from typing import Callable
 from levels.interactable import Interactable
+import time as time_package
+
 
 def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rotation: glm.quat=None, loop_func: Callable=None, leave_check_func: Callable=None) -> Callable:
     """
@@ -36,8 +38,8 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
             game.camera.position = glm.mix(original_position, final_position, interact.percent_lerp)
             game.camera.rotation = glm.slerp(original_rotation, final_rotation, interact.percent_lerp)
 
-            if interact.percent_lerp == 1 and game.key_down(bsk.pg.K_e): interact.step_lerp = -1 # initiate reverse lerp
-            if not (interact.percent_lerp == 0 and interact.step_lerp == -1) or forced_stay or (leave_check_func and not leave_check_func(dt)): game.update = update # "recurse" through this function if not exiting
+            if interact.percent_lerp == 1 and game.key_down(bsk.pg.K_e) and (not leave_check_func or leave_check_func(dt)): interact.step_lerp = -1 # initiate reverse lerp
+            if not (interact.percent_lerp == 0 and interact.step_lerp == -1) or forced_stay: game.update = update # "recurse" through this function if not exiting
             else: game.camera = game.player.camera # reapply the player camera when fully exited
             if loop_func and interact.percent_lerp == 1 and interact.step_lerp == 1: loop_func(dt) # placed after game.update reset to allow breaking without panning out
 
@@ -45,6 +47,8 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
             level.update()
             bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
             game.engine.update()
+            
+            print('in loop', time_package.time())
         
         # exit procedure for pan
         game.update = update

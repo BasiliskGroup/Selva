@@ -206,7 +206,7 @@ def fishing(level: Level) -> None:
         if rod.stage == 'ready': 
             ...
             
-    def rod_loop_check_func(dt: float) -> None: return rod.stage == 'win'
+    def rod_loop_check_func(dt: float) -> None: return rod.stage in ['bait']
         
     rod_lerp = lerp(rod, rod_pivot, time = 0.3, rotation = glm.angleAxis(glm.pi() / 3, (1, 0, 0)), end_func = rod_lerp_end_func)
     rod_place = place(rod, tip_pos, check_in_func = rod_check_in, put_in_func = rod_put_in, pull_out_func = rod_pull_out)
