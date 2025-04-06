@@ -13,18 +13,22 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
     level = interact.level
     game = level.game
     actions = free(interact)
+    force_stay = True
 
     def update() -> None:
+        nonlocal force_stay
         actions(game.engine.delta_time)
         bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
         
         # TODO grey out background
         
         # if the function is not exiting
-        if game.key_down(bsk.pg.K_e): 
+        if game.key_down(bsk.pg.K_e) and not force_stay: 
             game.camera = game.player.camera
             if end_func: end_func(game.engine.delta_time)
-        else: game.update = update
+        else: 
+            game.update = update
+            force_stay = False
         
         level.update() # TODO change this to only update HUD scene and render background scenes
         # game.ui_scene.update(collisions = False)

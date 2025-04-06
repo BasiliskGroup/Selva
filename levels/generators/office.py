@@ -269,7 +269,7 @@ def decor(office: Level) -> None:
         position = (0, 4, 7),
         scale = (2.5, 1.5, 0.002),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 0, 1)),
-        material = game.materials['fortune_dresser']
+        material = game.materials['hang_in_there']
     )
     
     office.add(windows, cubicle, poster)

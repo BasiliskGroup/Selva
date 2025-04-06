@@ -14,6 +14,7 @@ def interact_to_hold(interact: Interactable, held: HeldItem) -> Callable:
     def func(dt: float) -> None:
         if not game.key_down(bsk.pg.K_e): return
         interact.node.node_handler.scene.remove(interact.node)
+        interact.node.rotational_velocity = glm.vec3()
         game.player.item_r_ui.drop()
         game.player.item_r = held
         
@@ -31,6 +32,7 @@ def interact_give_hold(interact: Interactable, held: HeldItem) -> Callable:
         game.player.item_r_ui.drop()
         held_copy = held
         held_copy.node = held.node.deep_copy()
+        held_copy.node.rotational_velocity = glm.vec3()
         game.player.item_r = held_copy
         
     return func
@@ -45,6 +47,7 @@ def interact_to_frame(interact: Interactable, held: HeldItem) -> Callable:
     def func(dt: float) -> None:
         if not game.key_down(bsk.pg.K_e): return
         interact.node.node_handler.scene.remove(interact.node)
+        interact.node.rotational_velocity = glm.vec3()
         game.player.item_l = held
         
     return func

@@ -68,10 +68,11 @@ class Game():
             'wheel_eight' : bsk.Material(texture = images['wheel_eight.png']),
             'box_three' : bsk.Material(texture = images['box_three.png']),
             'picture_frame' : bsk.Material(texture = images['uv_map.png']),
+            'fortune_dresser' : bsk.Material(texture = images['fortune_dresser.png']),
             
             # office
             'crt' : bsk.Material(texture = images['crt.png']),
-            'fortune_dresser' : bsk.Material(texture = images['fortune_dresser.png']),
+            'hang_in_there' : bsk.Material(texture = images['hang_in_there.png']),
             'battery_box' : bsk.Material(texture = images['battery_box.png']),
             'office_window' : bsk.Material(texture = images['office_window.png']),
             'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
