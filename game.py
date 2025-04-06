@@ -6,13 +6,14 @@ from levels.generators.imports import *
 from player.player import Player
 from images.images import images
 from memories.memory_handler import MemoryHandler
+from ui.effects import *
 
 
 class Game():
     
     def __init__(self) -> None:
         # Basilisk Engine overhead
-        self.engine = bsk.Engine()
+        self.engine = bsk.Engine()    
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.ui_scene.sky = None
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
@@ -27,6 +28,10 @@ class Game():
         self.load_materials()
         self.load_meshes()
         self.load_sounds()
+        
+        # ui
+        self.ui = UI(self)
+        self.ui.add(ImageBounce(self.ui, self.images['reel.png'], position1 = self.win_size // 2, scale1 = glm.vec2(40, 20), position2 = None, scale2 = glm.vec2(400, 200), effect_time = 4))
         
         # level layout
         self.memory_handler = MemoryHandler(self)
@@ -144,6 +149,7 @@ class Game():
         
         # standard ui
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
+        self.ui.update(self.engine.delta_time)
         
         # render all levels
         for level in self.adjacent_levels(self.current_level): level.render()
@@ -190,4 +196,5 @@ class Game():
     def update(self, value):
         self._update = value
         
-    
+    @property
+    def win_size(self) -> glm.vec2: return glm.vec2(self.engine.win_size)

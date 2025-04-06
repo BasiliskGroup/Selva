@@ -1,3 +1,4 @@
+import glm
 import basilisk as bsk
 from helper.type_hints import Game
 from levels.interactable import Interactable
@@ -8,7 +9,7 @@ class Level():
     def __init__(self, game: Game) -> None:
         self.game = game
         self.scene = bsk.Scene(self.game.engine)
-        # self.scene.physics_engine.accelerations = []
+        self.scene.physics_engine.accelerations = [glm.vec3(0, -25, 0)]
         
         self.interactables: dict[bsk.Node, Interactable] = {}
         
