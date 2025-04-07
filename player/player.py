@@ -49,7 +49,7 @@ class Player():
         self.body_node.rotation = self.horizontal_quat
         self.body_node.rotational_velocity = glm.vec3(0, 0, 0)
         
-        # hover TODO remove maybe
+        # hover stabilizes camera and prevents player from falling
         self.position.y = 2.1
         self.velocity.y = 0
     

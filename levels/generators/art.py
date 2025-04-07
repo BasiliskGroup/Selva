@@ -20,15 +20,14 @@ def art(game: Game) -> Level:
     paint_brush = Interactable(art, bsk.Node(
         position = (2.5, 2.25, 4.35),
         scale = glm.vec3(0.1),
+        mesh = game.meshes['squid'],
+        material = game.materials['squid'],
         tags = ['paint_brush', 'none']
     ))
     paint_brush.active = pickup_function(paint_brush, interact_to_hold(paint_brush, HeldItem(game, paint_brush.node)))
     art.add(paint_brush)
     
     return art
-
-def room(art: Level) -> None:
-    art.add(rect_room(0, 0, 6, 6, 4, floor_material = None, wall_material = None, ceil_material = None))
     
 def paint_buckets(art: Level) -> None:
     game = art.game
@@ -36,9 +35,9 @@ def paint_buckets(art: Level) -> None:
     # adds paint buckets
     paint_buckets = {}
     for color, data in zip(['red', 'yellow', 'blue'], [
-        ((4, 1, 0), glm.vec3(0.5)),
-        ((4, 1, 1), glm.vec3(0.5)),
-        ((4, 1, -1), glm.vec3(0.5)),
+        ((-2, 1.7, -5.3), glm.vec3(0.4)),
+        ((-2.7, 1.7, -4.8), glm.vec3(0.4)),
+        ((-3.4, 1.7, -5.2), glm.vec3(0.4)),
     ]):
         bucket = Interactable(art, bsk.Node(
             position = data[0],
@@ -49,14 +48,14 @@ def paint_buckets(art: Level) -> None:
         paint_buckets[color] = bucket
         
         def mix(dt: float, color = color) -> None:
-            if not game.key_down(bsk.pg.K_e): return # enforce key press to interact
+            if not game.key_down(bsk.pg.K_e) or not game.player.item_r: return # enforce key press to interact
             held_node = game.player.item_r.node
             tags: list[str] = held_node.tags
             if not 'paint_brush' in tags: return
             color_index = tags[0] == 'paint_brush'
             if tags[color_index] == 'none': 
-                held_node.material = game.materials[color] # set material of HeldItem
-                game.player.item_r_ui.node.material = game.materials[color] # set material of Node
+                held_node.material = game.materials[f'squid_{color}'] # set material of HeldItem
+                game.player.item_r_ui.node.material = game.materials[f'squid_{color}'] # set material of Node
                 held_node.tags[color_index] = color
                 return
             
@@ -69,8 +68,8 @@ def paint_buckets(art: Level) -> None:
             if 'red' in colors and 'blue' in colors: new_color = 'purple'
             elif 'red' in colors and 'yellow' in colors: new_color = 'orange'
             elif 'blue' in colors and 'yellow' in colors: new_color = 'green'
-            held_node.material = game.materials[new_color] # set material of HeldItem
-            game.player.item_r_ui.node.material = game.materials[new_color] # set material of Node
+            held_node.material = game.materials[f'squid_{new_color}'] # set material of HeldItem
+            game.player.item_r_ui.node.material = game.materials[f'squid_{new_color}'] # set material of Node
             held_node.tags[color_index] = new_color
             
         paint_buckets[color].active = mix
@@ -79,20 +78,20 @@ def paint_buckets(art: Level) -> None:
     
     # adds water
     water = Interactable(art, bsk.Node(
-        position = (4, 1, -2),
-        scale = glm.vec3(0.3),
+        position = (-1.7, 1.7, -4.8),
+        scale = glm.vec3(0.15),
         material = game.materials['dark_wood'],
         mesh = game.meshes['mug']
     ))
     
     def clear(dt: float) -> None:
-        if not game.key_down(bsk.pg.K_e): return # enforce key press to interact
+        if not game.key_down(bsk.pg.K_e) or not game.player.item_r: return # enforce key press to interact
         held_node = game.player.item_r.node
         tags: list[str] = held_node.tags
         if not 'paint_brush' in tags: return
         color_index = tags[0] == 'paint_brush'
-        held_node.material = game.materials['white'] # set material of HeldItem
-        game.player.item_r_ui.node.material = game.materials['white'] # set material of Node
+        held_node.material = game.materials['squid'] # set material of HeldItem
+        game.player.item_r_ui.node.material = game.materials['squid'] # set material of Node
         held_node.tags[color_index] = 'none'
     water.active = clear  
     art.add(water)
@@ -119,6 +118,7 @@ def painting_puzzle(art: Level) -> None:
         setattr(paint_part, 'happy', False)
         
         def coloring(dt: float, paint_part = paint_part, color = color) -> None:
+            if not game.player.item_r: return
             tags: list[str] = game.player.item_r.node.tags
             if not 'paint_brush' in tags: return
             brush_color = tags[0] if tags[1] == 'paint_brush' else tags[1]
@@ -131,4 +131,74 @@ def painting_puzzle(art: Level) -> None:
     
     art.add([p for p in painting_interacts.values()])
     
+    # easel
+    art.add(bsk.Node(
+        position = (-5, 2, -2),
+        scale = glm.vec3(0.6),
+        rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
+        mesh = game.meshes['easel'],
+        material = game.materials['light_wood']
+    ))
     
+    # paint stand
+    art.add(bsk.Node(
+        position = (-2.5, 1.2, -5),
+        scale = glm.vec3(0.7),
+        mesh = game.meshes['desk'],
+        material = game.materials['dark_wood']
+    ))
+    
+def room(art: Level) -> None:
+    game = art.game
+    
+    # box
+    art.add(rect_room(0, 0, 10, 12, 5.5, floor_material = game.materials['bright_wood'], wall_material = game.materials['art_wall'], ceil_material = game.materials['art_ceiling']))
+    
+    # desks
+    def add_table(pos: glm.vec3, rot: float = 0) -> None:
+        table_position = pos + glm.vec3(0, 1, 0)
+        art.add(bsk.Node(
+            position = table_position,
+            scale = glm.vec3(1.5),
+            rotation = glm.angleAxis(rot + glm.pi() / 4, (0, 1, 0)),
+            mesh = game.meshes['art_table'],
+            material = game.materials['art_table']
+        ))
+        table_horizontal = glm.vec3(table_position.x, 0, table_position.z)
+        
+        for i in range(4):
+            r = 3
+            position = pos + glm.vec3(r * glm.cos(glm.pi() * i / 2 + rot), 0.85, r * glm.sin(glm.pi() * i / 2 + rot))
+            horizontal = glm.vec3(position.x, 0, position.z)
+            
+            art.add(bsk.Node(
+                position = position,
+                scale = glm.vec3(0.7),
+                rotation = glm.conjugate(glm.quatLookAt(glm.normalize(table_horizontal - horizontal), (0, 1, 0))) * glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
+                mesh = game.meshes['bear_chair'],
+                material = game.materials['bear_chair']
+            ))
+        
+    add_table(glm.vec3(5, 0, 5), rot = 0.2)
+    add_table(glm.vec3(-5, 0, 5), rot = 0.7)
+    add_table(glm.vec3(5, 0, -5), rot = 1)
+
+    # floor colors
+    center = glm.vec3(-2, 0, -4)
+    scale = 1.5
+    for x in range(-1, 2):
+        for z in range(-1, 2):
+            color = random.choice(['red', 'orange', 'yellow', 'green', 'blue', 'purple'])
+            art.add(bsk.Node(
+                position = center + glm.vec3(2 * scale * x, 0, 2 * scale * z),
+                scale = (scale, 0.025, scale),
+                material = game.materials[color]
+            ))
+            
+    art.add(bsk.Node(
+        position = (0, 3.5, 11),
+        scale = glm.vec3(0.9),
+        rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
+        mesh = game.meshes['fake_door'],
+        material = game.materials['fake_door']
+    ))

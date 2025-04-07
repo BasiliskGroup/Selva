@@ -4,7 +4,7 @@ import random
     
 def rect_room(centerx: float, centerz: float, width: float, depth: float, height: float, floor_material: Material=None, wall_material: Material=None, ceil_material: Material=None) -> list[Node]:
     nodes = [Node(
-        position = (data[0], -1 + height, data[1]), 
+        position = (data[0], height - 0.5, data[1]), 
         scale = (data[2], height, data[3]),
         collision = True,
         material = wall_material
@@ -16,7 +16,7 @@ def rect_room(centerx: float, centerz: float, width: float, depth: float, height
     )]
     
     nodes += [Node(
-        scale = (width, 1, depth),
+        scale = (width - 1, 1, depth - 1),
         collision = True,
         position=(centerx, y, centerz),
         material = floor_material if y == -1 else ceil_material

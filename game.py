@@ -31,16 +31,14 @@ class Game():
         
         # ui
         self.ui = UI(self)
-        self.ui.add(ImageBounce(self.ui, self.images['reel.png'], position1 = self.win_size // 2, scale1 = glm.vec2(40, 20), position2 = None, scale2 = glm.vec2(400, 200), effect_time = 4))
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        # self.memory_handler['art'] = art(self)
+        self.memory_handler['art'] = art(self)
         # self.memory_handler['void'] = void(self)
-        self.memory_handler['boat'] = boat(self)
+        # self.memory_handler['boat'] = boat(self)
         # self.memory_handler['office'] = office(self)
         # self.memory_handler['bedroom'] = bedroom(self)
-        
         
         # player
         self.player = Player(self)
@@ -74,6 +72,7 @@ class Game():
             'box_three' : bsk.Material(texture = images['box_three.png']),
             'picture_frame' : bsk.Material(texture = images['uv_map.png']),
             'fortune_dresser' : bsk.Material(texture = images['fortune_dresser.png']),
+            'fake_door' : bsk.Material(texture = images['fake_door.png']),
             
             # office
             'crt' : bsk.Material(texture = images['crt.png']),
@@ -95,6 +94,19 @@ class Game():
             'bass' : bsk.Material(texture = images['bass.png']),
             'bait_bucket' : bsk.Material(texture = images['bait_bucket.png']),
             'worm' : bsk.Material(texture = images['worm.png']),
+            'squid' : bsk.Material(texture = images['squid.png']),
+            'squid_red' : bsk.Material(texture = images['squid_red.png']),
+            'squid_orange' : bsk.Material(texture = images['squid_orange.png']),
+            'squid_yellow' : bsk.Material(texture = images['squid_yellow.png']),
+            'squid_green' : bsk.Material(texture = images['squid_green.png']),
+            'squid_blue' : bsk.Material(texture = images['squid_blue.png']),
+            'squid_purple' : bsk.Material(texture = images['squid_purple.png']),
+            
+            # art
+            'art_table' : bsk.Material(texture = images['art_table.png']),
+            'bear_chair' : bsk.Material(texture = images['bear_chair.png']),
+            'art_wall' : bsk.Material(texture = images['art_wall.png']),
+            'art_ceiling' : bsk.Material(texture = images['art_ceiling.png']),
             
             # standard
             'white' : bsk.Material(color = (220, 220, 220)),
