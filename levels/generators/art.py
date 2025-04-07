@@ -42,8 +42,8 @@ def paint_buckets(art: Level) -> None:
         bucket = Interactable(art, bsk.Node(
             position = data[0],
             scale = data[1],
-            material = game.materials[color],
-            mesh = game.meshes['cylinder']
+            material = game.materials[f'paint_bucket_{color}'],
+            mesh = game.meshes['paint_bucket']
         ))
         paint_buckets[color] = bucket
         
@@ -202,3 +202,13 @@ def room(art: Level) -> None:
         mesh = game.meshes['fake_door'],
         material = game.materials['fake_door']
     ))
+    
+    # add window
+    for z in range(-1, 2):
+        art.add(bsk.Node(
+            position = (8.85, 5, 6 * z),
+            scale = glm.vec3(1.75),
+            rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
+            mesh = game.meshes['window_two_pane'],
+            material = game.materials['window_two_pane']
+        ))

@@ -107,6 +107,10 @@ class Game():
             'bear_chair' : bsk.Material(texture = images['bear_chair.png']),
             'art_wall' : bsk.Material(texture = images['art_wall.png']),
             'art_ceiling' : bsk.Material(texture = images['art_ceiling.png']),
+            'paint_bucket_red' : bsk.Material(texture = images['paint_bucket_red.png']),
+            'paint_bucket_yellow' : bsk.Material(texture = images['paint_bucket_yellow.png']),
+            'paint_bucket_blue' : bsk.Material(texture = images['paint_bucket_blue.png']),
+            'window_two_pane' : bsk.Material(texture = images['window_two_pane.png']),
             
             # standard
             'white' : bsk.Material(color = (220, 220, 220)),
