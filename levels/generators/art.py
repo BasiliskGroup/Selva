@@ -99,20 +99,34 @@ def paint_buckets(art: Level) -> None:
 def painting_puzzle(art: Level) -> None:
     game = art.game
     
+    # TODO temp
+    key = Interactable(art, bsk.Node(
+        position = (1, 1.5, 0),
+        scale = glm.vec3(0.1),
+        mesh = game.meshes['key'],
+        material = game.materials['red']
+    ))
+    key.active = pickup_function(key, interact_to_hold(key, HeldItem(game, key.node)))
+    art.add(key)
+    
     # the painting nodes
     painting_interacts = {}
+    s = 0.03
+    position = glm.vec3(-4.775, 2.75, -1.825)
     for color, data in zip(['red', 'orange', 'yellow', 'green', 'blue', 'purple'], [
-        ((3, 3, 3), glm.vec3(0.5)),
-        ((2, 2, 2), glm.vec3(0.5)),
-        ((1, 1, 1), glm.vec3(0.5)),
-        ((0, 1, 0), glm.vec3(0.5)),
-        ((-1, 2, -1), glm.vec3(0.5)),
-        ((-2, 3, -2), glm.vec3(0.5)),
+        ((0, 0, 0), glm.vec3(0.1), glm.quat(), 'half_torus'),
+        ((0, 0, 0), glm.vec3(0.1), glm.quat(), 'other_half_torus'),
+        ((0, 0, -5.5*s), glm.vec3(s, 2.5*s, s), glm.angleAxis(glm.pi() / 2, (1, 0, 0)), 'cylinder'),
+        ((0, -1.5*s, -8*s), glm.vec3(s), glm.quat(), 'cylinder'),
+        ((0, 0, -10.5*s), glm.vec3(s, 2.5*s, s), glm.angleAxis(glm.pi() / 2, (1, 0, 0)), 'cylinder'),
+        ((0, -2*s, -11*s), glm.vec3(s, 1.5*s, s), glm.quat(), 'cylinder'),
     ]):
         paint_part = Interactable(art, bsk.Node(
-            position = data[0],
+            position = position + data[0],
             scale = data[1],
-            material = game.materials['white']
+            rotation = data[2],
+            material = game.materials['white'],
+            mesh = game.meshes[data[3]]
         ))
         painting_interacts[color] = paint_part
         setattr(paint_part, 'happy', False)
@@ -138,6 +152,13 @@ def painting_puzzle(art: Level) -> None:
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['easel'],
         material = game.materials['light_wood']
+    ))
+    
+    # canvas
+    art.add(bsk.Node(
+        position = (-4.85, 2.75, -2),
+        scale = (0.05, 1.2, 0.7),
+        material = game.materials['light_white']
     ))
     
     # paint stand
@@ -182,6 +203,11 @@ def room(art: Level) -> None:
     add_table(glm.vec3(5, 0, 5), rot = 0.2)
     add_table(glm.vec3(-5, 0, 5), rot = 0.7)
     add_table(glm.vec3(5, 0, -5), rot = 1)
+    
+    # clues
+    art.add(bsk.Node(
+        
+    ))
 
     # floor colors
     center = glm.vec3(-2, 0, -4)

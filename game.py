@@ -28,6 +28,8 @@ class Game():
         self.load_materials()
         self.load_meshes()
         self.load_sounds()
+        self.load_shaders()
+        self.load_fbos()
         
         # ui
         self.ui = UI(self)
@@ -152,12 +154,24 @@ class Game():
             if file_name.endswith('.mp3')
         }
     
+    def load_shaders(self) -> None:
+        """
+        
+        """
+        self.kuwahara_shader = bsk.Shader(self.engine, vert="shaders/frame.vert", frag="shaders/kuwahara.frag")
+        
+    def load_fbos(self) -> None:
+        """
+        
+        """
+        self.kuwahara_fbo = bsk.Framebuffer(self.engine, self.kuwahara_shader)
+    
     def primary_update(self) -> None:
         """
         Updates all adjacent scenes and the engine
         """
         # tick physics and interact updates
-        for level in self.adjacent_levels(self.current_level): level.update(render = False)
+        for level in self.adjacent_levels(self.current_level): level.update(render=False)
         
         # update player data and actions
         self.player.update(self.engine.delta_time)
@@ -168,12 +182,14 @@ class Game():
         self.ui.update(self.engine.delta_time)
         
         # render all levels
-        for level in self.adjacent_levels(self.current_level): level.render()
+        for level in self.adjacent_levels(self.current_level): level.render(self.kuwahara_fbo)
         
         self.ui_scene.update()
         self.overlay_scene.update()
         
-        self.engine.update()
+        self.kuwahara_fbo.render()
+        
+        self.engine.update(render=False)
         
     def track_io_holds(self) -> None:
         """
