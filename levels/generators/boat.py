@@ -149,7 +149,7 @@ def fishing(level: Level) -> None:
                 b = glm.angle(rot_end) if glm.dot(glm.axis(rot_end), ortho_vector) > 0 else -glm.angle(rot_end)
                 reeled = b - a if a > b and a * b > 0 else 0
                 # control bait movement in the water plus fighting the fish
-                fish_velocity = rod.time * 2 - glm.cos(rod.time) * 2 + 2
+                fish_velocity = rod.time * 1.5 - glm.cos(rod.time) * 2 + 2
                 rod_node.position.z += reeled + dt * fish_velocity
                 
                 # when the fish is successfully caught

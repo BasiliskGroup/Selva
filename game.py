@@ -36,9 +36,9 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        self.memory_handler['art'] = art(self)
+        # self.memory_handler['art'] = art(self)
         # self.memory_handler['void'] = void(self)
-        # self.memory_handler['boat'] = boat(self)
+        self.memory_handler['boat'] = boat(self)
         # self.memory_handler['office'] = office(self)
         # self.memory_handler['bedroom'] = bedroom(self)
         
@@ -156,15 +156,19 @@ class Game():
     
     def load_shaders(self) -> None:
         """
-        
+        Loads all shaders from the shaders folder
         """
-        self.kuwahara_shader = bsk.Shader(self.engine, vert="shaders/frame.vert", frag="shaders/kuwahara.frag")
+        self.shaders = {
+            'kuwahara' : bsk.Shader(self.engine, vert="shaders/frame.vert", frag="shaders/kuwahara.frag")
+        }
         
     def load_fbos(self) -> None:
         """
         
         """
-        self.kuwahara_fbo = bsk.Framebuffer(self.engine, self.kuwahara_shader)
+        self.fbos = {
+            'kuwahara' : bsk.Framebuffer(self.engine, self.shaders['kuwahara'])
+        }
     
     def primary_update(self) -> None:
         """
@@ -182,12 +186,12 @@ class Game():
         self.ui.update(self.engine.delta_time)
         
         # render all levels
-        for level in self.adjacent_levels(self.current_level): level.render(self.kuwahara_fbo)
+        for level in self.adjacent_levels(self.current_level): level.render(self.fbos['kuwahara'])
         
         self.ui_scene.update()
         self.overlay_scene.update()
         
-        self.kuwahara_fbo.render()
+        self.fbos['kuwahara'].render()
         
         self.engine.update(render=False)
         
