@@ -10,15 +10,30 @@ from levels.interactable import Interactable
 from levels.functions.imports import *
 from helper.transforms import connect
 
+def generate_chain(level: Level, positions: list[glm.vec3]) -> list[bsk.Node]:
+    positions = [glm.vec3(p) for p in positions]
+    nodes = []
+    for i in range(len(positions) - 1):
+        pos, sca, rot = connect(positions[i], positions[i + 1])
+        nodes.append(bsk.Node(
+            position = pos,
+            scale = sca,
+            rotation = rot,
+            material = level.game.materials['black']
+        ))
+    return nodes
+
 def office(game: Game) -> Level:
     # create basic layout for bedroom level
-    office = Level(game)
+    office = Level(game, 'office', glm.vec3(0, 0, 3))
     office.add(*rect_room(0, 0, 8, 8, 4, game.materials['dirty_carpet'], game.materials['bright_wood'], game.materials['bright_wood']))
     
     desk(office)
     puzzle(office)
     coffee_table(office)
     decor(office)
+    wires(office)
+    note(office)
     
     # TODO temporary
     mug = Interactable(office, bsk.Node(
@@ -266,10 +281,74 @@ def decor(office: Level) -> None:
     )
     
     poster = bsk.Node(
-        position = (0, 4, 7),
-        scale = (2.5, 1.5, 0.002),
+        position = (2, 4, 7),
+        scale = (1.25, 0.75, 0.002),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 0, 1)),
         material = game.materials['hang_in_there']
     )
     
-    office.add(windows, cubicle, poster)
+    calendar = bsk.Node(
+        position = (3.5, 3, 7),
+        scale = (0.333, 0.5, 0.002),
+        rotation = glm.angleAxis(glm.pi() / 2, (0, 0, 1)),
+        material = game.materials['calendar']
+    )
+    
+    door = bsk.Node(
+        position = (0, 2.65, -7),
+        scale = glm.vec3(0.65),
+        rotation = glm.angleAxis(0, (0, 1, 0)),
+        mesh = game.meshes['fake_door'],
+        material = game.materials['fake_door']
+    )
+    
+    office.add(windows, cubicle, poster, door, calendar)
+    
+    # add bulb
+    office.add(bsk.Node(
+        position = (0, 4.9, 0),
+        scale = glm.vec3(0.1),
+        material = game.materials['bulb'],
+        mesh = game.meshes['bulb']
+    ))
+    
+    # chair
+    office.add(bsk.Node(
+        position = (1.1, 0.75, -1),
+        scale = glm.vec3(0.4),
+        rotation = glm.angleAxis(0.7, (0, 1, 0)),
+        mesh = game.meshes['office_chair'],
+        material = game.materials['black']
+    ))
+    
+def wires(office: Level) -> None:
+    chains = [
+        # computer
+        [(-2.65, 1.8, -1.25), (-2.65, 1.8, -1.62), (-2.65, 0.1, -1.62), (-2.65, 0.1, -2.3), (1.85, 0.1, -2.3), (1.85, 0.1, -1.8), (-0.5, 0.1, -1.8), (-0.5, 1.9, -1.8), (-0.5, 1.9, 0)],
+        # light
+        [(-2.65, 1.8, -1), (-2.45, 1.8, -1), (-2.45, 7, -1), (0, 7, -1), (0, 7, 0), (0, 5, 0)],
+        # coffee
+        [(-2.65, 1.8, -0.75), (-2.65, 1.8, 0.8)],
+    ]
+    
+    for chain in chains: office.add(generate_chain(office, chain))
+
+def note(level: Level) -> None:
+    game = level.game
+    engine = game.engine
+    
+    note = Interactable(level, bsk.Node(
+        position = glm.vec3(-0.3, 1.9, 1),
+        scale = (0.4, 0.01, 0.5),
+        rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
+        material = game.materials['paper'],
+        mesh = game.meshes['paper']
+    ))
+    
+    def p1(dt: float) -> None: 
+        bsk.draw.text(engine, 'page1', glm.vec2(engine.win_size) // 2)
+
+    pages = [p1]
+    note.active = book(note, pages)
+    
+    level.add(note)

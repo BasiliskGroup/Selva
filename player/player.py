@@ -7,7 +7,6 @@ from helper.type_hints import Game, Level
 from player.held_items.held_item import HeldItem, PictureFrame
 from player.player_nodes import player_nodes
 from player.held_items.held_ui import HeldUI
-from levels.functions.imports import simulate_gravity_node
 from levels.classes.fish import FishTracker
 
 
@@ -75,12 +74,6 @@ class Player():
             self.previous_position = glm.vec3(position)
             return
         
-        # update player position based on collision
-        level: Level = self.game.memory_handler[collision.node.tags[1]]
-        
-        
-        print('teleporting', time.time())
-        
         # transform position/rotation relative to portal
         pc, pl = (self.game.entry_portal, self.game.exit_portal) if self.game.entry_portal == collision.node else (self.game.exit_portal, self.game.entry_portal)
         position = plane_mirror(self.previous_position, pc.position.data, collision.normal)
@@ -89,8 +82,6 @@ class Player():
         position = glm.vec3(mc[3])
         self.position = glm.vec3(position)
         self.body_node.rotation = self.body_node.rotation * glm.inverse(pc.rotation.data) * pl.rotation.data
-        
-        print(position)
         
         # update for next frame
         self.previous_position = glm.vec3(position)

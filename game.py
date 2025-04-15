@@ -49,12 +49,11 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
+        # self.memory_handler['bedroom'] = bedroom(self)
         # self.memory_handler['art'] = art(self)
         # self.memory_handler['void'] = void(self)
         # self.memory_handler['boat'] = boat(self)
-        # self.memory_handler['office'] = office(self)
-        br = bedroom(self)
-        self.memory_handler['bedroom'] = br
+        self.memory_handler['office'] = office(self)
         
         # player
         self.player = Player(self)
@@ -89,6 +88,7 @@ class Game():
             'picture_frame' : bsk.Material(texture = images['uv_map.png']),
             'fortune_dresser' : bsk.Material(texture = images['fortune_dresser.png']),
             'fake_door' : bsk.Material(texture = images['fake_door.png']),
+            'paper' : bsk.Material(texture = images['paper.png']),
             
             # office
             'crt' : bsk.Material(texture = images['crt.png']),
@@ -98,6 +98,8 @@ class Game():
             'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
             'battery' : bsk.Material(texture = images['battery.png']),
             'coffee_mug' : bsk.Material(texture = images['coffee_mug.png']),
+            'bulb' : bsk.Material(texture = images['bulb.png']),
+            'calendar' : bsk.Material(texture = images['calendar.png']),
             
             # ocean
             'boat' : bsk.Material(texture = images['boat.png']),
@@ -130,6 +132,7 @@ class Game():
             
             # standard
             'white' : bsk.Material(color = (220, 220, 220)),
+            'black' : bsk.Material(color = (20, 20, 20)),
             'red' : bsk.Material(color = (255, saturation, saturation)),
             'green' : bsk.Material(color = (saturation, 255, saturation)),
             'blue' : bsk.Material(color = (saturation, saturation, 255)),
@@ -200,14 +203,14 @@ class Game():
         self.ui.update(self.engine.delta_time)
         
         # render all levels
-        for level in self.adjacent_levels(self.current_level): level.render(self.fbos['kuwahara'])
+        for level in self.adjacent_levels(self.current_level): level.render(self.fbos['kuwahara']) # 
         
         self.ui_scene.update()
         self.overlay_scene.update()
         
         self.fbos['kuwahara'].render()
         
-        self.engine.update(render=False)
+        self.engine.update(render=True)
         
     def track_io_holds(self) -> None:
         """

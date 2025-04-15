@@ -25,13 +25,11 @@ def place(interact: Interactable, position: glm.vec3=None, rotation: glm.quat=No
             game.player.item_r_ui.remove(player_item)
             placed = placed_interactable(interact, position, rotation, check_out_func, pull_out_func)
             interact.held_interact = placed
-            print('placing')
             level.add(placed) # NOTE this is not a child of the current interactable, change if needed
             
             if put_in_func: put_in_func(dt)
         else: 
             if check_out_func and not check_out_func(dt): return
-            print('takign back')
             take_back(dt, interact, check_out_func, pull_out_func)
         
     return func

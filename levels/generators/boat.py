@@ -13,7 +13,7 @@ from levels.classes.fish import FishTracker
 from images.images import images
 
 def boat(game: Game) -> Level:
-    level = Level(game)
+    level = Level(game, 'boat', glm.vec3(0, 0, 0))
     
     fishing(level)
     load_boat(level)
