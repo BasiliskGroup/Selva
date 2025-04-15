@@ -19,7 +19,7 @@ class Game():
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
         self.overlay_scene.sky = None
         self.overlay_scene.add(bsk.Node(scale = (1, 10, 1)))
-        
+
         # global puzzle variables
         self.day = True
         
@@ -31,6 +31,19 @@ class Game():
         self.load_shaders()
         self.load_fbos()
         
+        # portals
+        self.entry_portal = bsk.Node(
+            scale = (1, 2.5, 0.001),
+            tags = ['portal', ''],
+            material = self.materials['red']
+        )
+        
+        self.exit_portal = bsk.Node(
+            scale = (1, 2.5, 0.001),
+            tags = ['portal', ''],
+            material = self.materials['red']
+        )
+        
         # ui
         self.ui = UI(self)
         
@@ -40,7 +53,8 @@ class Game():
         # self.memory_handler['void'] = void(self)
         # self.memory_handler['boat'] = boat(self)
         # self.memory_handler['office'] = office(self)
-        self.memory_handler['bedroom'] = bedroom(self)
+        br = bedroom(self)
+        self.memory_handler['bedroom'] = br
         
         # player
         self.player = Player(self)
@@ -201,6 +215,33 @@ class Game():
         """
         self.right_mouse_time = self.engine.delta_time + self.right_mouse_time if self.engine.mouse.right_down else 0
         self.left_mouse_time = self.engine.delta_time + self.left_mouse_time if self.engine.mouse.left_down else 0
+        
+    def open(self, exit: Level) -> None:
+        """
+        Despawns current portals and opens them in new scenes
+        """
+        entry = self.current_level
+        
+        # do this if it is not the first time spawning a portal
+        if self.entry_portal.node_handler: 
+            self.entry_portal.node_handler.scene.remove(self.entry_portal)
+            self.exit_portal.node_handler.scene.remove(self.exit_portal)
+            
+        # prevent opening a portal in the same scene
+        # if entry == exit: return TODO uncomment
+        rotation = glm.conjugate(glm.quatLookAt(self.camera.horizontal, (0, 1, 0)))
+            
+        # add entry portal at player location
+        self.entry_portal.position = self.player.position + self.camera.forward * 0.2
+        self.entry_portal.rotation = rotation
+        self.entry_portal.tags[1] = entry.name
+        self.current_level.add(self.entry_portal)
+        
+        # add portal at destination level
+        self.exit_portal.position = exit.portal_position + glm.vec3(0, 2, 0)
+        self.exit_portal.rotation = rotation
+        self.exit_portal.tags[1] = exit.name
+        exit.add(self.exit_portal)
         
     @property
     def camera(self): return self.current_scene.camera

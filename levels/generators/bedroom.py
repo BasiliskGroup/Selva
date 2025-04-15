@@ -11,7 +11,7 @@ from player.held_items.held_item import HeldItem, PictureFrame
 
 def bedroom(game: Game) -> Level:
     # create basic layout for bedroom level
-    bedroom = Level(game)
+    bedroom = Level(game, 'bedroom', glm.vec3(0, 0, 0))
     bedroom.add(*rect_room(0, 0, 5.75, 6.75, 4, game.materials['light_white']))
 
     # locked box

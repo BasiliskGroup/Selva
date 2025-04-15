@@ -16,3 +16,11 @@ def connect(p1: glm.vec3, p2: glm.vec3, width: float=0.02) -> tuple[glm.vec3, gl
     rotation = glm.normalize(glm.angleAxis(glm.pi() / 2, (1, 0, 0)) * glm.conjugate(glm.quatLookAt(direction, (0, 1, 0))))
     
     return position, scale, rotation
+
+def plane_mirror(point: glm.vec3, plane_point: glm.vec3, plane_normal: glm.vec3) -> glm.vec3:
+    """
+    Mirrors the given point along the plane 
+    """
+    plane_normal = glm.normalize(plane_normal)
+    proj = glm.dot(plane_point - point, plane_normal) * plane_normal
+    return point + 2 * proj

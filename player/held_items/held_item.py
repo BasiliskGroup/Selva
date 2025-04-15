@@ -23,6 +23,10 @@ class PictureFrame(HeldItem):
     def __init__(self, game: Game, level: Level):
         # Information for creating portals
         self.level = level
+        self.portal = Node(
+            scale = (1, 2.5, 0.01),
+            material = game.materials['red']
+        )
         
         # variables to be sent to the parent
         node = Node(
@@ -30,6 +34,7 @@ class PictureFrame(HeldItem):
             material = game.materials['picture_frame'],
             mesh = game.meshes['picture_frame']
         )
+        
         super().__init__(game, node, self.func, rotation = glm.angleAxis(glm.pi(), (0, 1, 0)))
         
         # ANIMATION variables
@@ -61,18 +66,7 @@ class PictureFrame(HeldItem):
         self.rotation = glm.slerp(self.original_rotation, self.final_rotation, self.percent_moved)
         
         # interact with current scene if ANIMATION is at it's maximum
-        if self.percent_moved == 1 and not was1: self.spawn_portal()
-        
-    def spawn_portal(self) -> None:
-        """
-        Spawns a portal to this picture frame's scene
-        """
-        self.game.current_level.add(Node(
-            position = self.player.position + self.camera.forward * 0.2,
-            scale = (1, 2.5, 0.01),
-            rotation = glm.conjugate(glm.quatLookAt(self.camera.horizontal, (0, 1, 0))), # * glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
-            material = self.game.materials['red']
-        ))
+        if self.percent_moved == 1 and not was1: self.game.open(self.level)
         
     @property
     def player(self) -> Player: return self.game.player

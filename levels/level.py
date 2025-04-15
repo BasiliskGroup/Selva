@@ -6,12 +6,15 @@ from levels.interactable import Interactable
 
 class Level():
     
-    def __init__(self, game: Game) -> None:
+    def __init__(self, game: Game, name: str, portal_position: glm.vec3) -> None:
         self.game = game
+        self.name = name
         self.scene = bsk.Scene(self.game.engine)
         self.scene.physics_engine.accelerations = [glm.vec3(0, -25, 0)]
         
         self.interactables: dict[bsk.Node, Interactable] = {}
+        
+        self.portal_position = glm.vec3(portal_position)
         
     def update(self, render: bool=True, nodes: bool=True, particles: bool=True, collisions: bool=True) -> None:
         """

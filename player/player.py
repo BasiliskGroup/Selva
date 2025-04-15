@@ -1,5 +1,8 @@
+import time
+from typing import Any
 import glm
 import basilisk as bsk
+from helper.transforms import plane_mirror
 from helper.type_hints import Game, Level
 from player.held_items.held_item import HeldItem, PictureFrame
 from player.player_nodes import player_nodes
@@ -33,10 +36,15 @@ class Player():
         self.control_disabled = False
         self.camera = self.current_scene.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0)) # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
         
+        self.previous_position = glm.vec3(self.camera.position)
+        
     def update(self, dt: float) -> None:
         """
         Updates the players movement, Nodes, and controls
         """
+        self.teleport()
+        
+        # player controls
         if not self.control_disabled: 
             # player controls
             self.move(dt)
@@ -52,6 +60,53 @@ class Player():
         # hover stabilizes camera and prevents player from falling
         self.position.y = 2.1
         self.velocity.y = 0
+        
+    def teleport(self) -> None: # TODO enable with multiple scenes
+        """
+        Teleports the player through a portal if they have collided with one between frames
+        """
+        # test if the player has gone through a portal
+        position = glm.vec3(self.camera.position)
+        if self.previous_position == position: return
+        
+        # checks for collision with a portal
+        collision = self.collide()
+        if not collision:
+            self.previous_position = glm.vec3(position)
+            return
+        
+        # update player position based on collision
+        level: Level = self.game.memory_handler[collision.node.tags[1]]
+        
+        
+        print('teleporting', time.time())
+        
+        # transform position/rotation relative to portal
+        pc, pl = (self.game.entry_portal, self.game.exit_portal) if self.game.entry_portal == collision.node else (self.game.exit_portal, self.game.entry_portal)
+        position = plane_mirror(self.previous_position, pc.position.data, collision.normal)
+        
+        mc = pl.model_matrix * glm.inverse(pc.model_matrix) * self.camera_model_matrix
+        position = glm.vec3(mc[3])
+        self.position = glm.vec3(position)
+        self.body_node.rotation = self.body_node.rotation * glm.inverse(pc.rotation.data) * pl.rotation.data
+        
+        print(position)
+        
+        # update for next frame
+        self.previous_position = glm.vec3(position)
+        
+    def collide(self) -> None | Any:
+        """
+        Determines if the camera has collided with an object between frames 
+        """
+        diff = self.camera.position - self.previous_position
+        direction, move_distance = glm.normalize(diff), glm.length(diff)
+        cast = self.game.current_scene.raycast(position=self.previous_position, forward=direction)
+        if not cast.node or len(cast.node.tags) != 2 or cast.node.tags[0] != 'portal': return
+        
+        cast_distance = glm.length(cast.position - self.previous_position)
+        if cast_distance > move_distance: return
+        return cast
     
     def move(self, dt: float) -> None:
         """
@@ -116,3 +171,9 @@ class Player():
     def item_l(self) -> HeldItem: return self.item_l_ui.item
     @item_l.setter
     def item_l(self, value) -> HeldItem: self.item_l_ui.item = value
+    
+    @property
+    def camera_model_matrix(self) -> glm.mat4x4:
+        m_mat = glm.translate(glm.mat4x4(1.0), self.camera.position)
+        m_mat *= glm.mat4_cast(self.body_node.rotation.data)
+        return m_mat
