@@ -207,6 +207,7 @@ class Game():
         
         self.ui_scene.update()
         self.overlay_scene.update()
+        self.overlay_scene.render(self.fbos['kuwahara'])
         
         self.fbos['kuwahara'].render()
         
