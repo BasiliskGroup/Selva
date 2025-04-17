@@ -49,11 +49,12 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        # self.memory_handler['bedroom'] = bedroom(self)
-        # self.memory_handler['art'] = art(self)
         # self.memory_handler['void'] = void(self)
+        # self.memory_handler['bedroom1'] = bedroom1(self)
+        # self.memory_handler['office'] = office(self)
         # self.memory_handler['boat'] = boat(self)
-        self.memory_handler['office'] = office(self)
+        # self.memory_handler['art'] = art(self)
+        self.memory_handler['bedroom2'] = bedroom2(self)
         
         # player
         self.player = Player(self)
@@ -129,6 +130,9 @@ class Game():
             'paint_bucket_yellow' : bsk.Material(texture = images['paint_bucket_yellow.png']),
             'paint_bucket_blue' : bsk.Material(texture = images['paint_bucket_blue.png']),
             'window_two_pane' : bsk.Material(texture = images['window_two_pane.png']),
+            'color_combos' : bsk.Material(texture = images['color_combos.png']),
+            'color_key' : bsk.Material(texture = images['color_key.png']),
+            'key_key' : bsk.Material(texture = images['key_key.png']),
             
             # standard
             'white' : bsk.Material(color = (220, 220, 220)),

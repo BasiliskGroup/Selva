@@ -11,11 +11,12 @@ from levels.functions.imports import *
 from helper.transforms import connect
 
 def art(game: Game) -> Level:
-    art = Level(game)
+    art = Level(game, 'art', glm.vec3(-1, 0, -1))
     
     room(art)
     painting_puzzle(art)
     paint_buckets(art)
+    hints(art)
     
     paint_brush = Interactable(art, bsk.Node(
         position = (2.5, 2.25, 4.35),
@@ -238,3 +239,29 @@ def room(art: Level) -> None:
             mesh = game.meshes['window_two_pane'],
             material = game.materials['window_two_pane']
         ))
+        
+def hints(art: Level) -> None:
+    game = art.game
+    
+    height, w, l, h = 2, 1, 1, 0.01
+    
+    art.add(bsk.Node(
+        position = glm.vec3(4, height, 4),
+        scale = (w, h, l),
+        rotation = glm.angleAxis(2.1, (0, 1, 0)),
+        material = game.materials['color_key']
+    ))
+    
+    art.add(bsk.Node(
+        position = glm.vec3(-5, height, 3.5),
+        scale = (w, h, l),
+        rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
+        material = game.materials['color_combos']
+    ))
+    
+    art.add(bsk.Node(
+        position = glm.vec3(4, height, -4),
+        scale = (w, h, l),
+        rotation = glm.angleAxis(0.6, (0, 1, 0)),
+        material = game.materials['key_key']
+    ))
