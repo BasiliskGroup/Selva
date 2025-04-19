@@ -50,11 +50,11 @@ class Game():
         # level layout
         self.memory_handler = MemoryHandler(self)
         # self.memory_handler['void'] = void(self)
-        # self.memory_handler['bedroom1'] = bedroom1(self)
+        self.memory_handler['bedroom1'] = bedroom1(self)
         # self.memory_handler['office'] = office(self)
         # self.memory_handler['boat'] = boat(self)
         # self.memory_handler['art'] = art(self)
-        self.memory_handler['bedroom2'] = bedroom2(self)
+        # self.memory_handler['bedroom2'] = bedroom2(self)
         
         # player
         self.player = Player(self)
@@ -82,10 +82,10 @@ class Game():
         saturation = 70
         
         png_names = [
-            'john', 'wheel_eight', 'box_three', 'picture_frame', 'fortune_dresser', 'fake_door', 'paper',
+            'john', 'wheel_eight', 'box_three', 'picture_frame', 'fortune_dresser', 'fake_door', 'paper', 'safe_door', 'lamp', 'bed',
             'crt', 'hang_in_there', 'battery_box', 'office_window', 'coffee_maker', 'battery', 'coffee_mug', 'bulb', 'calendar',
             'boat', 'fishing_rod', 'flounder', 'tuna', 'tilapia', 'herring', 'bass', 'bait_bucket', 'worm', 'squid', 'squid_red', 'squid_orange', 'squid_yellow', 'squid_green', 'squid_blue', 'squid_purple',
-            'art_table', 'bear_chair', 'art_wall', 'art_ceiling', 'paint_bucket_red', 'paint_bucket_blue', 'paint_bucket_green', 'window_two_pane', 'color_combos', 'color_key', 'key_key',
+            'art_table', 'bear_chair', 'art_wall', 'art_ceiling', 'paint_bucket_red', 'paint_bucket_blue', 'paint_bucket_yellow', 'window_two_pane', 'color_combos', 'color_key', 'key_key',
         ] + [f'key{i}' for i in range(1, 10)]
         
         self.materials = {name : bsk.Material(texture = images[f'{name}.png']) for name in png_names}
@@ -106,6 +106,8 @@ class Game():
         self.materials['dirty_carpet'] = bsk.Material(color = (90, 70, 35))
         self.materials['bloom_white'] = bsk.Material(color = (255, 255, 255), emissive_color=(300, 300, 300))
         self.materials['cooper'] = bsk.Material(color = (209, 131, 85))
+        self.materials['bedroom_floor'] = bsk.Material(color = (105, 94, 86))
+        self.materials['bedroom_wall'] = bsk.Material(color = (195, 190, 183))
         
     def load_meshes(self) -> None:
         """

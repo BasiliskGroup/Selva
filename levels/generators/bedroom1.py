@@ -211,7 +211,7 @@ def safe(level: Level) -> None:
         rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
         scale = (0.7, 0.7, 0.7),
         mesh = game.meshes['safe'],
-        material = game.materials['red']
+        material = game.materials['black']
     ))
     setattr(safe, 'buttons', [])
     setattr(safe, 'code', [0 for _ in range(4)])
@@ -223,7 +223,7 @@ def safe(level: Level) -> None:
         rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
         scale = (0.7, 0.7, 0.7),
         mesh = game.meshes['safe_door_handle'],
-        material = game.materials['red']
+        material = game.materials['black']
     ))
     setattr(safe_handle, 'open', False)
     setattr(safe, 'handle', safe_handle)
@@ -254,7 +254,8 @@ def safe(level: Level) -> None:
         position = (1.5, 0.95, 4),
         rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
         scale = (0.7, 0.7, 0.7),
-        mesh = game.meshes['safe_door']
+        mesh = game.meshes['safe_door'],
+        material = game.materials['safe_door']
     ))
     hinge = bsk.Node(
         position = (1, 0.95, 4),
@@ -277,10 +278,10 @@ def safe(level: Level) -> None:
             position = glm.vec3(1.3 - 0.1 * x, 0.95 - 0.1 * y, 3.9)
             keycap = Interactable(level, bsk.Node(
                 position = position,
-                rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
+                rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)) * glm.angleAxis(glm.pi(), (0, 0, 1)),
                 scale = (0.8, 0.8, 0.8),
                 mesh = game.meshes['keycap'],
-                material = game.materials['red'],
+                material = game.materials[f'key{(x + 2) + (y + 1) * 3}'],
             ))
             setattr(keycap, 'safe', safe)
             setattr(keycap, 'number', (x + 2) + (y + 1) * 3)

@@ -10,7 +10,6 @@ while game.engine.running:
 """
 TODO
 art room wall paintings
-key cap textures
 paint key interactible drop
 lock office drawer
 """
