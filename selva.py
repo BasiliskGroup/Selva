@@ -8,8 +8,11 @@ while game.engine.running:
 # Fortnite
 
 """
-TODO
-art room wall paintings
-paint key interactible drop
 lock office drawer
+bedroom notes (needs jonah to bring back blit)
+frame in bedroom drawer and safe
+coffee mug starting location
+fishing frames
+fix drawers and bedroom puzzles
+make pickup function look better (needs more scenes)
 """

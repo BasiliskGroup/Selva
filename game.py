@@ -85,7 +85,7 @@ class Game():
             'john', 'wheel_eight', 'box_three', 'picture_frame', 'fortune_dresser', 'fake_door', 'paper', 'safe_door', 'lamp', 'bed',
             'crt', 'hang_in_there', 'battery_box', 'office_window', 'coffee_maker', 'battery', 'coffee_mug', 'bulb', 'calendar',
             'boat', 'fishing_rod', 'flounder', 'tuna', 'tilapia', 'herring', 'bass', 'bait_bucket', 'worm', 'squid', 'squid_red', 'squid_orange', 'squid_yellow', 'squid_green', 'squid_blue', 'squid_purple',
-            'art_table', 'bear_chair', 'art_wall', 'art_ceiling', 'paint_bucket_red', 'paint_bucket_blue', 'paint_bucket_yellow', 'window_two_pane', 'color_combos', 'color_key', 'key_key',
+            'art_table', 'bear_chair', 'art_wall', 'art_ceiling', 'paint_bucket_red', 'paint_bucket_blue', 'paint_bucket_yellow', 'window_two_pane', 'color_combos', 'color_key', 'key_key', 'water_mug', 'key_color'
         ] + [f'key{i}' for i in range(1, 10)]
         
         self.materials = {name : bsk.Material(texture = images[f'{name}.png']) for name in png_names}

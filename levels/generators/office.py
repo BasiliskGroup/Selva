@@ -35,16 +35,6 @@ def office(game: Game) -> Level:
     wires(office)
     note(office)
     
-    # TODO temporary
-    mug = Interactable(office, bsk.Node(
-        position = (2.5, 2.25, 4.35),
-        scale = glm.vec3(0.1),
-        mesh = game.meshes['mug'],
-        tags = ['empty_mug']
-    ))
-    mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)))
-    office.add(mug)
-    
     return office
     
 def puzzle(office: Level) -> None:

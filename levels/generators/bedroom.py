@@ -32,12 +32,6 @@ def decor(bedroom: Level) -> None:
         material = game.materials['fake_door']
     ))
     bedroom.add(bsk.Node(
-        position = (4.75, 3.2, 0),
-        scale = (0.01, 0.9, 1.4),
-        rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
-        material = game.materials['fortune_dresser']
-    ))
-    bedroom.add(bsk.Node(
         position = (2.5, 1, -4.5),
         scale = (1, 0.8, 1),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),

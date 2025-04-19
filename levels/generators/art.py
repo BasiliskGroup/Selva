@@ -79,10 +79,10 @@ def paint_buckets(art: Level) -> None:
     
     # adds water
     water = Interactable(art, bsk.Node(
-        position = (-1.7, 1.7, -4.8),
+        position = (-1.7, 1.45, -4.8),
         scale = glm.vec3(0.15),
-        material = game.materials['dark_wood'],
-        mesh = game.meshes['mug']
+        material = game.materials['water_mug'],
+        mesh = game.meshes['coffee_mug']
     ))
     
     def clear(dt: float) -> None:
@@ -100,18 +100,19 @@ def paint_buckets(art: Level) -> None:
 def painting_puzzle(art: Level) -> None:
     game = art.game
     
-    # TODO temp
     key = Interactable(art, bsk.Node(
-        position = (1, 1.5, 0),
+        position = (0, 100, 0),
         scale = glm.vec3(0.1),
         mesh = game.meshes['key'],
-        material = game.materials['red']
+        material = game.materials['key_color'],
+        tags = ['color_key']
     ))
     key.active = pickup_function(key, interact_to_hold(key, HeldItem(game, key.node)))
     art.add(key)
     
+    
     # the painting nodes
-    painting_interacts = {}
+    painting_interacts: dict[str, Interactable] = {}
     s = 0.03
     position = glm.vec3(-4.775, 2.75, -1.825)
     for color, data in zip(['red', 'orange', 'yellow', 'green', 'blue', 'purple'], [
@@ -140,7 +141,14 @@ def painting_puzzle(art: Level) -> None:
             if brush_color == 'none': return
             paint_part.node.material = game.materials[brush_color]
             paint_part.happy = brush_color == color
-            print([p.happy for p in painting_interacts.values()])
+            
+            # when puzzle has been completed
+            if all([p.happy for p in painting_interacts.values()]):
+                for p in painting_interacts.values(): p.node.position.y = 100 # remove from scene
+                
+                # summon key
+                key.node.position = position + glm.vec3(0.05, 0, -0.2)
+                key.passive = simulate_gravity_node(game, art.scene, key, key.node)
             
         paint_part.active = coloring
     
@@ -204,11 +212,6 @@ def room(art: Level) -> None:
     add_table(glm.vec3(5, 0, 5), rot = 0.2)
     add_table(glm.vec3(-5, 0, 5), rot = 0.7)
     add_table(glm.vec3(5, 0, -5), rot = 1)
-    
-    # clues
-    art.add(bsk.Node(
-        
-    ))
 
     # floor colors
     center = glm.vec3(-2, 0, -4)
