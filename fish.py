@@ -7,7 +7,7 @@ scene = bsk.Scene(engine)
 scene.sky = None
 
 # load fish
-names = ['battery', 'squid']
+names = ['battery', 'squid', 'picture_frame']
 materials = [bsk.Material(texture = images[f'{name}.png']) for name in names]
 meshes = [bsk.Mesh(f'./meshes/{name}.obj') for name in names]
 

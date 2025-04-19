@@ -80,80 +80,32 @@ class Game():
         Loads all materials for the game from images and basic colors
         """
         saturation = 70
-        self.materials = {
-            # textured
-            # bedroom
-            'john' : bsk.Material(texture = images['john.png']),
-            'wheel_eight' : bsk.Material(texture = images['wheel_eight.png']),
-            'box_three' : bsk.Material(texture = images['box_three.png']),
-            'picture_frame' : bsk.Material(texture = images['uv_map.png']),
-            'fortune_dresser' : bsk.Material(texture = images['fortune_dresser.png']),
-            'fake_door' : bsk.Material(texture = images['fake_door.png']),
-            'paper' : bsk.Material(texture = images['paper.png']),
-            
-            # office
-            'crt' : bsk.Material(texture = images['crt.png']),
-            'hang_in_there' : bsk.Material(texture = images['hang_in_there.png']),
-            'battery_box' : bsk.Material(texture = images['battery_box.png']),
-            'office_window' : bsk.Material(texture = images['office_window.png']),
-            'coffee_maker' : bsk.Material(texture = images['coffee_maker.png']),
-            'battery' : bsk.Material(texture = images['battery.png']),
-            'coffee_mug' : bsk.Material(texture = images['coffee_mug.png']),
-            'bulb' : bsk.Material(texture = images['bulb.png']),
-            'calendar' : bsk.Material(texture = images['calendar.png']),
-            
-            # ocean
-            'boat' : bsk.Material(texture = images['boat.png']),
-            'ocean' : bsk.Material(texture = images['ocean.jpg']),
-            'fishing_rod' : bsk.Material(texture = images['fishing_rod.png']),
-            'flounder' : bsk.Material(texture = images['flounder.png']),
-            'tuna' : bsk.Material(texture = images['tuna.png']),
-            'tilapia' : bsk.Material(texture = images['tilapia.png']),
-            'herring' : bsk.Material(texture = images['herring.png']),
-            'bass' : bsk.Material(texture = images['bass.png']),
-            'bait_bucket' : bsk.Material(texture = images['bait_bucket.png']),
-            'worm' : bsk.Material(texture = images['worm.png']),
-            'squid' : bsk.Material(texture = images['squid.png']),
-            'squid_red' : bsk.Material(texture = images['squid_red.png']),
-            'squid_orange' : bsk.Material(texture = images['squid_orange.png']),
-            'squid_yellow' : bsk.Material(texture = images['squid_yellow.png']),
-            'squid_green' : bsk.Material(texture = images['squid_green.png']),
-            'squid_blue' : bsk.Material(texture = images['squid_blue.png']),
-            'squid_purple' : bsk.Material(texture = images['squid_purple.png']),
-            
-            # art
-            'art_table' : bsk.Material(texture = images['art_table.png']),
-            'bear_chair' : bsk.Material(texture = images['bear_chair.png']),
-            'art_wall' : bsk.Material(texture = images['art_wall.png']),
-            'art_ceiling' : bsk.Material(texture = images['art_ceiling.png']),
-            'paint_bucket_red' : bsk.Material(texture = images['paint_bucket_red.png']),
-            'paint_bucket_yellow' : bsk.Material(texture = images['paint_bucket_yellow.png']),
-            'paint_bucket_blue' : bsk.Material(texture = images['paint_bucket_blue.png']),
-            'window_two_pane' : bsk.Material(texture = images['window_two_pane.png']),
-            'color_combos' : bsk.Material(texture = images['color_combos.png']),
-            'color_key' : bsk.Material(texture = images['color_key.png']),
-            'key_key' : bsk.Material(texture = images['key_key.png']),
-            
-            # standard
-            'white' : bsk.Material(color = (220, 220, 220)),
-            'black' : bsk.Material(color = (20, 20, 20)),
-            'red' : bsk.Material(color = (255, saturation, saturation)),
-            'green' : bsk.Material(color = (saturation, 255, saturation)),
-            'blue' : bsk.Material(color = (saturation, saturation, 255)),
-            'purple' : bsk.Material(color = (117, 45, 112)),
-            'orange' : bsk.Material(color = (223, 114, 60)),
-            'yellow' : bsk.Material(color = (211, 198, 74)),
-            
-            # specific
-            'light_white' : bsk.Material(color = [240 for _ in range(3)]),
-            'bright_wood' : bsk.Material(color = (183, 170, 131)),
-            'light_wood' : bsk.Material(color = (142, 124, 94)),
-            'dark_wood' : bsk.Material(color = (59, 34, 24)),
-            'dry_wall' : bsk.Material(color = (181, 190, 179)),
-            'dirty_carpet' : bsk.Material(color = (90, 70, 35)),
-            'bloom_white' : bsk.Material(color = (255, 255, 255), emissive_color=(300, 300, 300)),
-            'copper' : bsk.Material(color = (209, 131, 85))
-        }
+        
+        png_names = [
+            'john', 'wheel_eight', 'box_three', 'picture_frame', 'fortune_dresser', 'fake_door', 'paper',
+            'crt', 'hang_in_there', 'battery_box', 'office_window', 'coffee_maker', 'battery', 'coffee_mug', 'bulb', 'calendar',
+            'boat', 'fishing_rod', 'flounder', 'tuna', 'tilapia', 'herring', 'bass', 'bait_bucket', 'worm', 'squid', 'squid_red', 'squid_orange', 'squid_yellow', 'squid_green', 'squid_blue', 'squid_purple',
+            'art_table', 'bear_chair', 'art_wall', 'art_ceiling', 'paint_bucket_red', 'paint_bucket_blue', 'paint_bucket_green', 'window_two_pane', 'color_combos', 'color_key', 'key_key',
+        ] + [f'key{i}' for i in range(1, 10)]
+        
+        self.materials = {name : bsk.Material(texture = images[f'{name}.png']) for name in png_names}
+        self.materials['ocean'] = bsk.Material(texture = images['ocean.jpg'])
+        self.materials['white'] = bsk.Material(color = (220, 220, 220))
+        self.materials['black'] = bsk.Material(color = (20, 20, 20))
+        self.materials['red'] = bsk.Material(color = (255, saturation, saturation))
+        self.materials['green'] = bsk.Material(color = (saturation, 255, saturation))
+        self.materials['blue'] = bsk.Material(color = (saturation, saturation, 255))
+        self.materials['purple'] = bsk.Material(color = (117, 45, 112))
+        self.materials['orange'] = bsk.Material(color = (223, 114, 60))
+        self.materials['yellow'] = bsk.Material(color = (211, 198, 74))
+        self.materials['light_white'] = bsk.Material(color = [240 for _ in range(3)])
+        self.materials['bright_wood'] = bsk.Material(color = (183, 170, 131))
+        self.materials['light_wood'] = bsk.Material(color = (142, 124, 94))
+        self.materials['dark_wood'] = bsk.Material(color = (59, 34, 24))
+        self.materials['dry_wall'] = bsk.Material(color = (181, 190, 179))
+        self.materials['dirty_carpet'] = bsk.Material(color = (90, 70, 35))
+        self.materials['bloom_white'] = bsk.Material(color = (255, 255, 255), emissive_color=(300, 300, 300))
+        self.materials['cooper'] = bsk.Material(color = (209, 131, 85))
         
     def load_meshes(self) -> None:
         """
