@@ -113,11 +113,15 @@ class Game():
         """
         Loads all meshes from the meshes folder
         """
-        self.meshes = {
-            file_name[:-4] : bsk.Mesh(f'./meshes/{file_name}') 
-            for file_name in os.listdir('./meshes') 
-            if file_name.endswith('.obj')
-        }
+        
+        self.meshes = {}
+        for file_name in os.listdir('./meshes'):
+            if not file_name.endswith('.obj'): continue
+            self.meshes[file_name[:-4]] = bsk.Mesh(f'./meshes/{file_name}') if file_name != 'cylinder.obj' else bsk.Mesh(f'./meshes/{file_name}', generate_bvh=False)
+        
+        #  : 
+            # 
+            # 
         
     def load_sounds(self) -> None:
         """
