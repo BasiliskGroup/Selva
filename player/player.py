@@ -83,6 +83,8 @@ class Player():
         self.position = glm.vec3(position)
         self.body_node.rotation = self.body_node.rotation * glm.inverse(pc.rotation.data) * pl.rotation.data
         
+        # TODO update player scene and possibly portal node scene
+        
         # update for next frame
         self.previous_position = glm.vec3(position)
         

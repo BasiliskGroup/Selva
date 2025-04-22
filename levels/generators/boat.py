@@ -20,8 +20,6 @@ def boat(game: Game) -> Level:
     bucket(level)
     fish_book(level)
     
-    temp(level)
-    
     return level
 
 def fish_book(level: Level) -> None:
@@ -258,18 +256,3 @@ def bucket(level: Level) -> None:
     bucket.active = interact_give_hold(bucket, HeldItem(game, worm_node))
     
     level.add(bucket, worm_node)
-    
-def temp(level: Level) -> None:
-    game = level.game
-    
-    wire = Interactable(level, bsk.Node(
-        position = (0, 2, 0),
-        scale = glm.vec3(0.3),
-        mesh = game.meshes['wire'],
-        material = game.materials['copper'],
-        tags = ['copper_wire']
-    ))
-    
-    wire.active = pickup_function(wire, interact_to_hold(wire, HeldItem(game, wire.node)))
-    
-    level.add(wire)

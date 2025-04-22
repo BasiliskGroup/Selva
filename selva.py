@@ -8,11 +8,9 @@ while game.engine.running:
 # Fortnite
 
 """
-lock office drawer
 bedroom notes (needs jonah to bring back blit)
-frame in bedroom drawer and safe
-coffee mug starting location
+frame in bedroom safe - to where? (change safe code)
 fishing frames
-fix drawers and bedroom puzzles
 make pickup function look better (needs more scenes)
+add testing teleportation - add picture frame teleportation
 """

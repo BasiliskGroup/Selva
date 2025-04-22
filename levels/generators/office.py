@@ -219,18 +219,48 @@ def desk(office: Level) -> None:
         material = game.materials['bright_wood']
     )
     
-    drawers = [Interactable(office, bsk.Node(
-        position = (-0.3, 0.5 + i * 0.8, 0.9),
+    # add drawers
+    bottom_drawer = Interactable(office, bsk.Node(
+        position = (-0.3, 0.5, 0.9),
         scale    = glm.vec3(0.65),
         mesh     = game.meshes['drawer'],
         material = game.materials['light_wood']
-    )) for i in range(2)]
-    for drawer in drawers:
-        drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (1, 0, 0))
-        drawer.active  = lerp_interact(drawer)
+    ))
+    bottom_drawer.passive = lerp_difference(bottom_drawer, time = 0.25, delta_position = (1, 0, 0))
+    bottom_drawer.active = lerp_interact(bottom_drawer)
     
-    office.add(drawers)
-    office.add(desk)
+    def lock_drawer_check(dt: float=0) -> bool:
+        if not game.key_down(bsk.pg.K_e) or not game.player.item_r or not game.player.item_r.node.tags == ['color_key']: return False
+        game.player.item_r_ui.remove(game.player.item_r)
+        return True
+        
+    top_drawer = Interactable(office, bsk.Node(
+        position = (-0.3, 1.3, 0.9),
+        scale    = glm.vec3(0.65),
+        mesh     = game.meshes['drawer'],
+        material = game.materials['drawer_color']
+    ))
+    top_drawer.passive = lerp_difference(top_drawer, time = 0.25, delta_position = (1, 0, 0))
+    top_drawer.active = lerp_interact(top_drawer, check_func = lock_drawer_check)
+    
+    # add copper wire
+    wire = Interactable(office, bsk.Node(
+        position = (-0.3, 0.5, 0.9),
+        scale = glm.vec3(0.3),
+        mesh = game.meshes['wire'],
+        material = game.materials['copper'],
+        tags = ['copper_wire']
+    ))
+    wire_pickup = pickup_function(wire, interact_to_hold(wire, HeldItem(game, wire.node)))
+    def wire_active(dt: float) -> None:
+        wire.passive = None
+        wire_pickup(dt)
+    
+    def wire_passive(dt: float) -> None: wire.node.position.x = bottom_drawer.node.position.x
+    wire.passive = wire_passive
+    wire.active = wire_active
+    
+    office.add(desk, bottom_drawer, top_drawer, wire)
     
 def coffee_table(office: Level) -> None:
     game = office.game
