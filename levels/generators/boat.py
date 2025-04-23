@@ -2,7 +2,7 @@ import basilisk as bsk
 import glm
 import random
 from typing import Callable
-from player.held_items.held_item import HeldItem
+from player.held_items.held_item import HeldItem, PictureFrame
 from helper.type_hints import Game
 from levels.level import Level
 from levels.helper import rect_room
@@ -152,7 +152,7 @@ def fishing(level: Level) -> None:
                 b = glm.angle(rot_end) if glm.dot(glm.axis(rot_end), ortho_vector) > 0 else -glm.angle(rot_end)
                 reeled = b - a if a > b and a * b > 0 else 0
                 # control bait movement in the water plus fighting the fish
-                fish_velocity = rod.time * 1.5 - glm.cos(rod.time) * 2 + 2
+                fish_velocity = rod.time * 0.1 - glm.cos(rod.time) + 1
                 rod_node.position.z += reeled + dt * fish_velocity
                 
                 # when the fish is successfully caught
@@ -160,15 +160,19 @@ def fishing(level: Level) -> None:
                 if distance < 8: rod.stage = 'win'
                 elif distance > 50: rod.stage = 'lose'
                     
+            # TODO swap to pick up function
             case 'win':
                 # give the player their fish
                 bait_tag = rod.held_item.node.tags[0]
                 if not game.day:
-                    # 
-                    ...
+                    caught = Interactable(level, bsk.Node(
+                        scale = glm.vec3(1),
+                        mesh = game.meshes['squid'],
+                        material = game.materials['squid'],
+                        tags = ['paint_brush', 'none']
+                    ))
                 elif bait_tag == 'copper_wire': 
-                    # give battery
-                    fished_item = HeldItem(game, bsk.Node(
+                    caught = Interactable(level, bsk.Node(
                         position = (-2, 1.8, 3),
                         scale    = glm.vec3(0.2),
                         mesh     = game.meshes['battery'],
@@ -176,21 +180,33 @@ def fishing(level: Level) -> None:
                         tags     = ['battery']
                     ))
                 elif bait_tag == 'pyjama_squid':
-                    # 
-                    ...
+                    caught = Interactable(level, bsk.Node( # TODO swap to picture frame
+                        position = (-2, 1.8, 3),
+                        scale    = glm.vec3(0.2),
+                        mesh     = game.meshes['picture_frame'],
+                        material = game.materials['battery'],
+                    ))
                 else:
                     # give the player a fish
                     fish = game.player.fish_tracker.get_fish()
                     new_record = game.player.fish_tracker.log(fish)
                     print(new_record, fish)
                     
-                    fished_item = HeldItem(game, bsk.Node(
+                    caught = Interactable(level, bsk.Node(
                         scale = glm.vec3(fish.length),
                         mesh = game.meshes[fish.kind],
                         material = game.materials[fish.kind]
                     ))
                     
-                game.player.item_r = fished_item
+                # frame = Interactable(bedroom, bsk.Node(position = (1, 1, 1), mesh = game.meshes['picture_frame'], scale = (0.1, 0.1, 0.1)))
+                # frame.active = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, bedroom)))
+                
+                def always_false() -> bool: return False
+                
+                if isinstance(caught, PictureFrame): game.player.item_l = caught
+                else: 
+                    pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false)(dt)
+                    # game.player.item_r = caught
                 
                 # remove bait from rod
                 rod.held_item = None
@@ -199,12 +215,16 @@ def fishing(level: Level) -> None:
                 fishing_line.position = (0, -100, 0)
                     
                 rod.stage = 'bait'
+                rod.percent_lerp = 0
+                rod.step_lerp = -1
             
             case 'lose':
                 
                 rod_node.position = tip_pos
                 fishing_line.position = (0, -100, 0)
                 rod.stage = 'bait'
+                rod.percent_lerp = 0
+                rod.step_lerp = -1
             
     def rod_loop_check_func(dt: float) -> None: return rod.stage in ['bait']
         

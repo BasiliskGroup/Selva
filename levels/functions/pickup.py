@@ -3,8 +3,9 @@ import basilisk as bsk
 from typing import Callable
 from levels.interactable import Interactable
 from levels.functions.tactile import free
+from levels.functions.helper import down
 
-def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable:
+def pickup_function(interact: Interactable, end_func: Callable=None, check_func: Callable=None) -> Callable:
     """
     Generates a "pick up" function for the given interactable.
     func will be activated when the player closes the pick up menu in the accept termination.
@@ -14,6 +15,8 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
     game = level.game
     actions = free(interact)
     force_stay = True
+    
+    check = check_func if check_func else down(game)
 
     def update() -> None:
         nonlocal force_stay
@@ -36,7 +39,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None) -> Callable
         game.engine.update()
         
     def func(dt: float) -> None:
-        if not game.key_down(bsk.pg.K_e): return # only allow the user to call this function on a full left click
+        if check(): return # only allow the user to call this function on a full left click
         
         # prevent the player from moving camera and position
         game.camera = bsk.StaticCamera(
