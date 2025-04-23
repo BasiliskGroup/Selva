@@ -12,7 +12,6 @@ materials = [bsk.Material(texture = images[f'{name}.png']) for name in names]
 meshes = [bsk.Mesh(f'./meshes/{name}.obj') for name in names]
 
 for i, (mesh, material) in enumerate(zip(meshes, materials)):
-    print(mesh)
     scene.add(bsk.Node(
         position = (0, i * 3, 0),
         mesh = mesh,

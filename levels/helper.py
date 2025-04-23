@@ -7,6 +7,7 @@ def rect_room(centerx: float, centerz: float, width: float, depth: float, height
         position = (data[0], height - 0.5, data[1]), 
         scale = (data[2], height, data[3]),
         collision = True,
+        static = True,
         material = wall_material
     ) for data in (
         (centerx + width, centerz, 1, depth), 

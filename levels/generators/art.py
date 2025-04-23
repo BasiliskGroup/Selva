@@ -110,7 +110,6 @@ def painting_puzzle(art: Level) -> None:
     key.active = pickup_function(key, interact_to_hold(key, HeldItem(game, key.node)))
     art.add(key)
     
-    
     # the painting nodes
     painting_interacts: dict[str, Interactable] = {}
     s = 0.03
@@ -156,11 +155,17 @@ def painting_puzzle(art: Level) -> None:
     
     # easel
     art.add(bsk.Node(
-        position = (-5, 2, -2),
+        position = (-5, 1.5, -2),
         scale = glm.vec3(0.6),
         rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['easel'],
         material = game.materials['light_wood']
+    ))
+    art.add(bsk.Node(
+        position = (-5, 2, -2),
+        scale = glm.vec3(0.3, 2, 1),
+        collision = True,
+        static = True
     ))
     
     # canvas
@@ -177,6 +182,12 @@ def painting_puzzle(art: Level) -> None:
         mesh = game.meshes['desk'],
         material = game.materials['dark_wood']
     ))
+    art.add(bsk.Node(
+        position = (-2.5, 0.6, -5),
+        scale = glm.vec3(1.4, 0.6, 0.7),
+        collision = True,
+        static = True
+    ))
     
 def room(art: Level) -> None:
     game = art.game
@@ -186,6 +197,7 @@ def room(art: Level) -> None:
     
     # desks
     def add_table(pos: glm.vec3, rot: float = 0) -> None:
+        # add table and collider
         table_position = pos + glm.vec3(0, 1, 0)
         art.add(bsk.Node(
             position = table_position,
@@ -194,8 +206,15 @@ def room(art: Level) -> None:
             mesh = game.meshes['art_table'],
             material = game.materials['art_table']
         ))
-        table_horizontal = glm.vec3(table_position.x, 0, table_position.z)
+        art.add(bsk.Node(
+            position = table_position,
+            scale = glm.vec3(3, 1, 3),
+            collision = True,
+            static = True,
+            mesh = game.meshes['cylinder']
+        ))
         
+        table_horizontal = glm.vec3(table_position.x, 0, table_position.z)
         for i in range(4):
             r = 3
             position = pos + glm.vec3(r * glm.cos(glm.pi() * i / 2 + rot), 0.85, r * glm.sin(glm.pi() * i / 2 + rot))

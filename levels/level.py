@@ -21,6 +21,8 @@ class Level():
         Updates the scene as normal and all interactables in the level
         """
         self.scene.update(render, nodes, particles, collisions)
+        self.game.player.body_node.position.y = 2.1
+        self.game.player.body_node.velocity.y = 0
         for interactable in self.interactables.values():
             if interactable.passive: interactable.passive(self.game.engine.delta_time)
         
