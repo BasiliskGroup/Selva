@@ -292,6 +292,7 @@ def decor(office: Level) -> None:
         material = game.materials['office_window']
     ) for i in range(-1, 2)]
     
+    # cubicle and colliders
     cubicle = bsk.Node(
         position = (0, 1.5, 0),
         scale = glm.vec3(0.65),
@@ -299,13 +300,53 @@ def decor(office: Level) -> None:
         mesh = game.meshes['cubicle'],
         material = game.materials['dark_wood']
     )
+    cubicle_colliders = [
+        bsk.Node(
+            position = (-1.5, 1.5, 0),
+            scale = (0.1, 2.5, 2),
+            collision = True,
+            static = True
+        ),
+        bsk.Node(
+            position = (0, 1.5, 2),
+            scale = (1.5, 2.5, 0.1),
+            collision = True,
+            static = True
+        ),
+        bsk.Node(
+            position = (0, 1.5, -2),
+            scale = (1.5, 2.5, 0.1),
+            collision = True,
+            static = True
+        ),
+        bsk.Node(
+            position = (-1.5, 0.75, 0),
+            scale = (2, 1, 2),
+            collision = True,
+            static = True
+        )
+    ]
     
-    poster = bsk.Node(
-        position = (2, 4, 7),
-        scale = (1.25, 0.75, 0.002),
-        rotation = glm.angleAxis(glm.pi() / 2, (0, 0, 1)),
-        material = game.materials['hang_in_there']
-    )
+    posters = [
+        bsk.Node(
+            position = (2, 4, 7),
+            scale = (1.25, 0.75, 0.002),
+            rotation = glm.angleAxis(glm.pi() / 2, (0, 0, 1)),
+            material = game.materials['hang_in_there']
+        ),
+        bsk.Node(
+            position = (-3.5, 3.5, 7),
+            scale = (1.25, 0.75, 0.002),
+            rotation = glm.angleAxis(glm.pi() / 2, (0, 0, 1)),
+            material = game.materials['scan_me']
+        ),
+        bsk.Node(
+            position = (-1, 4, 7),
+            scale = (0.75, 1.25, 0.002),
+            rotation = glm.angleAxis(glm.pi() / 2, (0, 0, 1)),
+            material = game.materials['i_love_barcodes']
+        ),
+    ]
     
     calendar = bsk.Node(
         position = (3.5, 3, 7),
@@ -322,12 +363,13 @@ def decor(office: Level) -> None:
         material = game.materials['fake_door']
     )
     
-    office.add(windows, cubicle, poster, door, calendar)
+    office.add(windows, cubicle, posters, door, calendar, cubicle_colliders)
     
     # add bulb
     office.add(bsk.Node(
         position = (0, 4.9, 0),
         scale = glm.vec3(0.1),
+        rotation = glm.angleAxis(glm.pi(), (1, 0, 0)),
         material = game.materials['bulb'],
         mesh = game.meshes['bulb']
     ))
@@ -366,7 +408,7 @@ def note(level: Level) -> None:
     ))
     
     def p1(dt: float) -> None: 
-        bsk.draw.text(engine, 'page1', glm.vec2(engine.win_size) // 2)
+        def p1(dt: float) -> None: bsk.draw.blit(engine, game.images['office_ad.png'], (0, 0, game.win_size.x, game.win_size.y))
 
     pages = [p1]
     note.active = book(note, pages)

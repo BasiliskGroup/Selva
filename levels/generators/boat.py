@@ -28,8 +28,10 @@ def fish_book(level: Level) -> None:
     images = game.images
     
     fish_book = Interactable(level, bsk.Node(
-        position = glm.vec3(3, 1.5, 3),
-        scale = (0.5, 0.1, 0.5),
+        position = glm.vec3(3, 1.4, 3),
+        scale = (0.75, 0.1, 0.75),
+        mesh = game.meshes['paper'],
+        material = game.materials['paper']
     ))
     
     def p1(dt: float) -> None: bsk.draw.blit(engine, images['fishopedia1.png'], (0, 0, game.win_size.x, game.win_size.y)) # repeated so win_size is updated on engine change
@@ -223,11 +225,6 @@ def fishing(level: Level) -> None:
 def load_boat(level: Level) -> None:
     game = level.game
     
-    floor = bsk.Node(
-        position = (0, -1, 0),
-        scale = (5, 1, 7.5),
-        collision = True
-    )
     boat = bsk.Node(
         position = (0, -0.9, 2),
         scale = glm.vec3(1),
@@ -235,8 +232,10 @@ def load_boat(level: Level) -> None:
         mesh = game.meshes['boat'],
         material = game.materials['boat']
     )
+    level.add(boat)
     
-    level.add(floor, boat)
+    # add colliders
+    # level.add(rect_room(0, 0, 3.5, 8.5, 4))
 
 def bucket(level: Level) -> None:
     game = level.game

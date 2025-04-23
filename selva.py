@@ -8,7 +8,6 @@ while game.engine.running:
 # Fortnite
 
 """
-bedroom notes (needs jonah to bring back blit)
 frame in bedroom safe - to where? (change safe code)
 fishing frames
 make pickup function look better (needs more scenes)

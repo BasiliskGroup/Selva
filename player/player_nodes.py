@@ -7,7 +7,7 @@ from helper.type_hints import Game
 def player_nodes(game: Game) -> Node:
     body = Node(
         position = (0, 2, 0),
-        scale = (1, 2, 1),
+        scale = (1, 1.5, 1),
         collision = True,
         physics = True
     )
