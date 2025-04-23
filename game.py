@@ -52,7 +52,7 @@ class Game():
         # self.memory_handler['void'] = void(self)
         # self.memory_handler['bedroom1'] = bedroom1(self)
         # self.memory_handler['office'] = office(self)
-        # self.memory_handler['boat'] = boat(self)
+        self.memory_handler['boat'] = boat(self)
         # self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
@@ -117,11 +117,7 @@ class Game():
         self.meshes = {}
         for file_name in os.listdir('./meshes'):
             if not file_name.endswith('.obj'): continue
-            self.meshes[file_name[:-4]] = bsk.Mesh(f'./meshes/{file_name}') if file_name != 'cylinder.obj' else bsk.Mesh(f'./meshes/{file_name}', generate_bvh=False)
-        
-        #  : 
-            # 
-            # 
+            self.meshes[file_name[:-4]] = bsk.Mesh(f'./meshes/{file_name}')
         
     def load_sounds(self) -> None:
         """

@@ -25,17 +25,20 @@ def boat(game: Game) -> Level:
 def fish_book(level: Level) -> None:
     game = level.game
     engine = game.engine
+    images = game.images
     
     fish_book = Interactable(level, bsk.Node(
         position = glm.vec3(3, 1.5, 3),
         scale = (0.5, 0.1, 0.5),
     ))
     
-    def p1(dt: float) -> None: bsk.draw.text(engine, 'page1', glm.vec2(engine.win_size) // 2)
-    def p2(dt: float) -> None: bsk.draw.text(engine, 'page2', glm.vec2(engine.win_size) // 2)
-    def p3(dt: float) -> None: bsk.draw.text(engine, 'page3', glm.vec2(engine.win_size) // 2)
+    def p1(dt: float) -> None: bsk.draw.blit(engine, images['fishopedia1.png'], (0, 0, game.win_size.x, game.win_size.y)) # repeated so win_size is updated on engine change
+    def p2(dt: float) -> None: bsk.draw.blit(engine, images['fishopedia2.png'], (0, 0, game.win_size.x, game.win_size.y))
+    def p3(dt: float) -> None: bsk.draw.blit(engine, images['fishopedia3.png'], (0, 0, game.win_size.x, game.win_size.y))
+    def p4(dt: float) -> None: bsk.draw.blit(engine, images['fishopedia4.png'], (0, 0, game.win_size.x, game.win_size.y))
+    def p5(dt: float) -> None: bsk.draw.blit(engine, images['fishopedia5.png'], (0, 0, game.win_size.x, game.win_size.y))
 
-    pages = [p1, p2, p3]
+    pages = [p1, p2, p3, p4, p5]
     fish_book.active = book(fish_book, pages)
     
     level.add(fish_book)
