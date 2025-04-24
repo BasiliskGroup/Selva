@@ -165,7 +165,8 @@ def painting_puzzle(art: Level) -> None:
         position = (-5, 2, -2),
         scale = glm.vec3(0.3, 2, 1),
         collision = True,
-        static = True
+        static = True,
+        shader = game.shaders['invisible']
     ))
     
     # canvas
@@ -186,7 +187,8 @@ def painting_puzzle(art: Level) -> None:
         position = (-2.5, 0.6, -5),
         scale = glm.vec3(1.4, 0.6, 0.7),
         collision = True,
-        static = True
+        static = True,
+        shader = game.shaders['invisible']
     ))
     
 def room(art: Level) -> None:
@@ -211,7 +213,8 @@ def room(art: Level) -> None:
             scale = glm.vec3(3, 1, 3),
             collision = True,
             static = True,
-            mesh = game.meshes['cylinder']
+            mesh = game.meshes['cylinder'],
+            shader = game.shaders['invisible']
         ))
         
         table_horizontal = glm.vec3(table_position.x, 0, table_position.z)

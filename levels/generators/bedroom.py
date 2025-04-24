@@ -17,7 +17,8 @@ def decor(bedroom: Level) -> None:
         position = (-2.5, 1, -2.5),
         scale = (2, 1, 3),
         collision = True,
-        static = True
+        static = True,
+        shader = game.shaders['invisible']
     ))
     
     # lamp
@@ -38,7 +39,8 @@ def decor(bedroom: Level) -> None:
         position = (2.5, 1, 4.5),
         scale = (2, 1, 1),
         collision = True,
-        static = True
+        static = True,
+        shader = game.shaders['invisible']
     ))
     
     # door
@@ -62,5 +64,6 @@ def decor(bedroom: Level) -> None:
         position = (2.5, 1, -4.5),
         scale = (2, 1, 1),
         collision = True,
-        static = True
+        static = True,
+        shader = game.shaders['invisible']
     ))

@@ -46,6 +46,7 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
             forced_stay = False
             level.update()
             bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
+            game.ui.update(dt)
             game.engine.update()
         
         # exit procedure for pan

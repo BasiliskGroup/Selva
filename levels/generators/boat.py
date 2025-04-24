@@ -143,7 +143,7 @@ def fishing(level: Level) -> None:
                     rod.time = 0
                     
                     # spawn reel icon
-                    game.ui.add(ImageBounce(game.ui, game.images['reel'], position1 = glm.vec2(100, 100), scale1 = glm.vec2(50, 50), position2 = glm.vec2(100, 100), scale2 = glm.vec2(75, 75), effect_time = 0.5))
+                    game.ui.add(ImageBounce(game.ui, game.images['reel.png'], position1 = glm.vec2(100, 100), scale1 = glm.vec2(75, 125), position2 = glm.vec2(100, 100), scale2 = glm.vec2(150, 250), effect_time = 2))
             case 'reel': 
                 # fishing minigame
                 rod.time += dt
@@ -173,7 +173,7 @@ def fishing(level: Level) -> None:
                         scale = glm.vec3(1),
                         mesh = game.meshes['squid'],
                         material = game.materials['squid'],
-                        tags = ['paint_brush', 'none']
+                        tags = ['paint_brush', 'none'],
                     ))
                 elif bait_tag == 'copper_wire': 
                     caught = Interactable(level, bsk.Node(
@@ -204,7 +204,7 @@ def fishing(level: Level) -> None:
                 
                 def always_false() -> bool: return False
                 
-                if caught.mesh == game.meshes['picture_frame']: pickup_function(caught, interact_to_frame(caught, PictureFrame(game, game.memory_handler['art'])), always_false)(dt)
+                if caught.node.mesh == game.meshes['picture_frame']: pickup_function(caught, interact_to_frame(caught, PictureFrame(game, game.memory_handler['art'])), always_false)(dt)
                 else: pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false)(dt)
                 
                 # remove bait from rod
@@ -218,7 +218,6 @@ def fishing(level: Level) -> None:
                 rod.step_lerp = -1
             
             case 'lose':
-                
                 rod_node.position = tip_pos
                 fishing_line.position = (0, -100, 0)
                 rod.stage = 'bait'
@@ -254,7 +253,7 @@ def load_boat(level: Level) -> None:
     level.add(boat)
     
     # add colliders
-    # level.add(rect_room(0, 0, 3.5, 8.5, 4))
+    level.add(rect_room(0, 0, 4, 8.5, 4, shader = game.shaders['invisible']))
 
 def bucket(level: Level) -> None:
     game = level.game

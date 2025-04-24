@@ -1,4 +1,5 @@
 import os
+import moderngl as mgl
 import basilisk as bsk
 from levels.level import Level
 from levels.generators.imports import *
@@ -17,7 +18,9 @@ class Game():
         # Basilisk Engine overhead
         self.engine = bsk.Engine()   
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
+        self.ui_fbo = bsk.Framebuffer(self.engine)
         self.ui_scene.sky = None
+        self.ui_scene.camera = bsk.FixedCamera()
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
         self.overlay_scene.sky = None
         self.overlay_scene.add(bsk.Node(scale = (1, 10, 1)))
@@ -29,6 +32,7 @@ class Game():
 
         # global puzzle variables
         self.day = True
+        self.portal_open = False
         
         # game components
         self.load_meshes()
@@ -42,7 +46,8 @@ class Game():
         self.entry_portal = bsk.Node(
             scale = (1, 2.5, 0.001),
             tags = ['portal', ''],
-            material = self.materials['red']
+            material = self.materials['red'],
+            shader = self.shaders['invisible']
         )
         
         self.exit_portal = bsk.Node(
@@ -57,13 +62,13 @@ class Game():
         # level layout
         self.memory_handler = MemoryHandler(self)
         # self.memory_handler['void'] = void(self)
-        # self.memory_handler['bedroom1'] = bedroom1(self)
+        self.memory_handler['bedroom1'] = bedroom1(self)
         # self.memory_handler['office'] = office(self)
-        self.memory_handler['boat'] = boat(self)
+        # self.memory_handler['boat'] = boat(self)
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['boat'].scene, self.memory_handler['bedroom2'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['bedroom1'].scene, self.memory_handler['art'].scene)
 
         # player
         self.player = Player(self)
@@ -156,7 +161,8 @@ class Game():
         Loads all shaders from the shaders folder
         """
         self.shaders = {
-            'kuwahara' : bsk.Shader(self.engine, vert="shaders/frame.vert", frag="shaders/kuwahara.frag")
+            'kuwahara' : bsk.Shader(self.engine, vert="shaders/frame.vert", frag="shaders/kuwahara.frag"),
+            'invisible': bsk.Shader(self.engine, vert="shaders/invisible.vert", frag="shaders/invisible.frag")
         }
         
     def load_fbos(self) -> None:
@@ -196,8 +202,21 @@ class Game():
         
         self.portal_handler.update()
         self.portal_handler.render()
+        
+        self.ui_scene.update(render=False)
+        self.ui_scene.camera.position = self.camera.position
+        self.ui_scene.camera.rotation = self.camera.rotation
+        self.ui_scene.render(self.ui_fbo)
+        self.engine.ctx.disable(mgl.DEPTH_TEST)
+        self.engine.ctx.enable(mgl.BLEND)
+        self.engine.ctx.blend_func = mgl.ADDITIVE_BLENDING
+        self.ui_fbo.render()
+        self.engine.ctx.enable(mgl.DEPTH_TEST)
+        self.engine.ctx.disable(mgl.BLEND)
 
         self.engine.update(render=True)
+        
+        print(self)
         
     def track_io_holds(self) -> None:
         """
@@ -210,6 +229,7 @@ class Game():
         """
         Despawns current portals and opens them in new scenes
         """
+        self.portal_open = True
         entry = self.current_level
         
         # do this if it is not the first time spawning a portal
@@ -232,6 +252,10 @@ class Game():
         self.exit_portal.rotation = rotation
         self.exit_portal.tags[1] = exit.name
         exit.add(self.exit_portal)
+        
+        # set portal positions in handler
+        self.portal_handler.set_positions(self.entry_portal.position, self.exit_portal.position)
+        self.portal_handler.set_rotations(rotation, rotation)
         
     @property
     def camera(self): return self.current_scene.camera
