@@ -9,7 +9,18 @@ while game.engine.running:
 
 """
 frame in bedroom safe - to where? (change safe code)
-fishing frames
+improve fishing - fishing frames, blit instructions
 make pickup function look better (needs more scenes)
 add testing teleportation - add picture frame teleportation
+"""
+
+"""
+Things we need to do tonight:
+Portals
+UI / Overlay scene
+Invisible shader
+Design end level
+
+Maybe:
+Fix blit
 """
