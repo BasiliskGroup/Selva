@@ -8,8 +8,8 @@ in vec2 uv;
 uniform sampler2D screenTexture;
 uniform vec2 viewportDimensions;
 
-const int size = 10;
-const int skip = 2;
+const int size = 2;
+const int skip = 1;
 
 
 float grayscale(vec3 color) {
