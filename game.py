@@ -6,6 +6,7 @@ from levels.generators.imports import *
 from player.player import Player
 from images.images import images
 from memories.memory_handler import MemoryHandler
+from render.loading_screen import LoadingScreen
 from ui.effects import *
 
 
@@ -13,20 +14,23 @@ class Game():
     
     def __init__(self) -> None:
         # Basilisk Engine overhead
-        self.engine = bsk.Engine()    
+        self.engine = bsk.Engine(grab_mouse=False)   
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.ui_scene.sky = None
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
         self.overlay_scene.sky = None
         self.overlay_scene.add(bsk.Node(scale = (1, 10, 1)))
 
+        # Create the loading screen
+        self.loading_screen = LoadingScreen(self)
+
         # global puzzle variables
         self.day = True
         
         # game components
-        self.images = images
-        self.load_materials()
         self.load_meshes()
+        self.load_images()
+        self.load_materials()
         self.load_sounds()
         self.load_shaders()
         self.load_fbos()
@@ -62,7 +66,7 @@ class Game():
         # frame by frame updating
         self.left_mouse_time = self.right_mouse_time = 0
         self.update = self.primary_update
-        
+
     def adjacent_levels(self, origin_level: Level) -> set[Level]:
         """
         Determines all "adjacent" scenes connected by portals
@@ -109,6 +113,17 @@ class Game():
         self.materials['bedroom_floor'] = bsk.Material(color = (105, 94, 86))
         self.materials['bedroom_wall'] = bsk.Material(color = (195, 190, 183))
         
+    def load_images(self) -> None:
+        """
+        Loads all images from the images folder
+        """
+
+        self.images = {}
+        for file_name in os.listdir('./images'):
+            self.loading_screen.update()
+            if not (file_name.endswith('.png') or file_name.endswith('.jpeg') or file_name.endswith('.jpg')): continue
+            self.images[file_name] = bsk.Image(f'./images/{file_name}', flip_y=False)
+
     def load_meshes(self) -> None:
         """
         Loads all meshes from the meshes folder
@@ -116,6 +131,7 @@ class Game():
         
         self.meshes = {}
         for file_name in os.listdir('./meshes'):
+            self.loading_screen.update()
             if not file_name.endswith('.obj'): continue
             self.meshes[file_name[:-4]] = bsk.Mesh(f'./meshes/{file_name}')
         
@@ -123,12 +139,13 @@ class Game():
         """
         Loads all sounds from the sounds folder
         """
-        self.sounds = {
-            file_name[:-4] : bsk.Sound(f'./sounds/{file_name}') 
-            for file_name in os.listdir('./sounds') 
-            if file_name.endswith('.mp3')
-        }
-    
+
+        self.sounds = {}
+        for file_name in os.listdir('./sounds'):
+            self.loading_screen.update()
+            if not file_name.endswith('.mp3'): continue
+            self.sounds[file_name[:-4]] = bsk.Sound(f'./sounds/{file_name}')
+
     def load_shaders(self) -> None:
         """
         Loads all shaders from the shaders folder
