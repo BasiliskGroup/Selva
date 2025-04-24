@@ -50,8 +50,10 @@ class PortalHandler:
         look_difference = self.other_scene.camera.rotation * glm.inverse(self.portal.rotation.data) * self.other_rotation
 
         self.other_scene.camera.position = self.other_position + position_difference
-        # self.other_scene.camera.rotation = look_difference
+        self.other_scene.camera.rotation = self.main_scene.camera.rotation
         
+        self.portal_scene.camera.position = self.main_scene.camera.position
+        self.portal_scene.camera.direction = self.main_scene.camera.direction
         self.portal_scene.update(render=False)
 
     def render(self):
