@@ -35,6 +35,7 @@ class PortalHandler:
         # Add a portal node
         self.portal = bsk.Node(position=(0, 0, 10), scale=(5, 5, .1))
         self.portal_scene.add(self.portal)
+        self.portal_scene.sky = None
 
         self.set_scenes(main_scene, other_scene)
         self.set_positions(glm.vec3(0, 0, 10), glm.vec3(5, 0, 5))
@@ -64,15 +65,21 @@ class PortalHandler:
         # Render the base scenes
         self.portal_scene.render(self.portal_fbo)
         self.other_shader.bind(self.portal_scene.frame.input_buffer.depth, 'testTexture', 1)
-        self.other_scene.render(self.other_fbo)
-        self.main_scene.render(self.main_fbo)
+        self.other_scene.render()
+        self.main_scene.render()
+        self.other_scene.frame.render(self.other_fbo)
+        self.main_fbo.clear()
+        self.main_scene.frame.render(self.main_fbo)
 
         # Render the portals, using the other fbo texture
         self.portal_fbo.clear()
         self.portal_scene.render(self.portal_fbo)
 
         # Render the combined scene
-        self.combine_fbo.render(auto_bind=False)
+        # self.main_fbo.save('main_fbo')
+        # self.other_fbo.save('other_fbo')
+        self.combine_shader.bind(self.main_scene.frame.output_buffer.texture, 'mainTexture', 3)
+        self.combine_fbo.render(self.ctx.screen, auto_bind=False)
 
     def set_scenes(self, main_scene: bsk.Scene, other_scene: bsk.Scene):
         """
@@ -97,8 +104,9 @@ class PortalHandler:
         # Bind all stages
         self.other_shader.bind  (self.portal_scene.frame.input_buffer.depth, 'testTexture', 1)
         self.portal_shader.bind (self.other_fbo.texture, 'otherTexture', 2)
+
         self.combine_shader.bind(self.main_fbo.texture, 'mainTexture', 3)
-        self.combine_shader.bind(self.portal_fbo.texture, 'portalTexture', 4)
+        self.combine_shader.bind(self.other_fbo.texture, 'portalTexture', 4)
         self.combine_shader.bind(self.main_scene.frame.input_buffer.depth,  'mainDepthTexture', 5)
         self.combine_shader.bind(self.portal_scene.frame.input_buffer.depth, 'portalDepthTexture', 6)
 
