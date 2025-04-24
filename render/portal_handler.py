@@ -33,7 +33,7 @@ class PortalHandler:
         # Create a scene for the portals
         self.portal_scene = bsk.Scene(self.engine, shader=self.portal_shader)
         # Add a portal node
-        self.portal = bsk.Node(position=(0, 0, 0), scale=(2, 5, .01))
+        self.portal = bsk.Node(position=(0, 0, 0), scale=(1, 2.5, .01))
         self.portal_scene.add(self.portal)
         self.portal_scene.sky = None
 
@@ -115,22 +115,21 @@ class PortalHandler:
         
         """
         
-        self.portal.position = main_position
-        self.other_position = other_position
+        self.portal.position = glm.vec3(main_position)
+        self.other_position = glm.vec3(other_position)
 
     def set_rotations(self, main_rotation: glm.quat, other_position: glm.quat):
         """
         
         """
 
-        self.portal.rotation = main_rotation
-        self.other_rotation = other_position
+        self.portal.rotation = glm.quat(main_rotation)
+        self.other_rotation = glm.quat(other_position)
 
     def swap(self):
         """
         
         """
-
         self.main_scene.camera.position = self.other_position + self.main_scene.camera.position - self.portal.position
         self.portal.rotation, self.other_rotation = self.other_rotation, self.portal.rotation
         self.portal.position, self.other_position = glm.vec3(self.other_position), glm.vec3(self.portal.position.data)

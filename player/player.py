@@ -33,7 +33,10 @@ class Player():
         
         self.gravity = glm.vec3(0, -9.8, 0)
         self.control_disabled = False
-        self.camera = self.current_scene.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0)) # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
+        
+        # camera swapping
+        self.game.hold_camera = self.current_scene.camera
+        self.camera = self.game.current_scene.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0))
         
         self.previous_position = glm.vec3(self.camera.position)
         
@@ -83,7 +86,20 @@ class Player():
         self.position = glm.vec3(position)
         self.body_node.rotation = self.body_node.rotation * glm.inverse(pc.rotation.data) * pl.rotation.data
         
-        # TODO update player scene and possibly portal node scene
+        # update player scene and possibly portal node scene
+        self.game.current_scene.remove(self.body_node)
+        
+        # swap scene and camera
+        self.game.current_scene.camera = self.game.hold_camera
+        self.game.memory_handler.current_level = self.game.memory_handler[pl.tags[1]]
+        self.game.hold_camera = self.game.current_scene.camera
+        self.game.current_scene.camera = self.camera
+        
+        # add player back to scene
+        self.game.current_scene.add(self.body_node)
+        
+        # swap rendering
+        self.game.portal_handler.swap()
         
         # update for next frame
         self.previous_position = glm.vec3(position)

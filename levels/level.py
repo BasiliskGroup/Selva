@@ -10,6 +10,7 @@ class Level():
         self.game = game
         self.name = name
         self.scene = bsk.Scene(self.game.engine)
+        self.scene.camera = bsk.FixedCamera()
         self.scene.physics_engine.accelerations = [glm.vec3(0, -25, 0)]
         
         self.interactables: dict[bsk.Node, Interactable] = {}

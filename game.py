@@ -33,6 +33,7 @@ class Game():
         # global puzzle variables
         self.day = True
         self.portal_open = False
+        self.hold_camera = None
         
         # game components
         self.load_meshes()
@@ -53,7 +54,8 @@ class Game():
         self.exit_portal = bsk.Node(
             scale = (1, 2.5, 0.001),
             tags = ['portal', ''],
-            material = self.materials['red']
+            material = self.materials['red'],
+            shader = self.shaders['invisible']
         )
         
         # ui
@@ -216,8 +218,6 @@ class Game():
 
         self.engine.update(render=True)
         
-        print(self)
-        
     def track_io_holds(self) -> None:
         """
         Tracks the in-game time that certain io elements have stayed on
@@ -238,7 +238,7 @@ class Game():
             self.exit_portal.node_handler.scene.remove(self.exit_portal)
             
         # prevent opening a portal in the same scene
-        # if entry == exit: return TODO uncomment
+        if entry == exit: return
         rotation = glm.conjugate(glm.quatLookAt(self.camera.horizontal, (0, 1, 0)))
             
         # add entry portal at player location
@@ -248,13 +248,14 @@ class Game():
         self.current_level.add(self.entry_portal)
         
         # add portal at destination level
+        print(exit.portal_position)
         self.exit_portal.position = exit.portal_position + glm.vec3(0, 2, 0)
         self.exit_portal.rotation = rotation
         self.exit_portal.tags[1] = exit.name
         exit.add(self.exit_portal)
         
         # set portal positions in handler
-        self.portal_handler.set_positions(self.entry_portal.position, self.exit_portal.position)
+        self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
         
     @property

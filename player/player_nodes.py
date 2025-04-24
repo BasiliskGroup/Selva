@@ -9,7 +9,8 @@ def player_nodes(game: Game) -> Node:
         position = (0, 2, 0),
         scale = (1, 1.5, 1),
         collision = True,
-        physics = True
+        physics = True,
+        shader = game.shaders['invisible']
     )
     # body.add(held) TODO fix children in basilisk engine 
     

@@ -20,9 +20,9 @@ class HeldItem():
     
 class PictureFrame(HeldItem):
     
-    def __init__(self, game: Game, level: Level):
+    def __init__(self, game: Game, level_name: str):
         # Information for creating portals
-        self.level = level
+        self.level_name = level_name
         self.portal = Node(
             scale = (1, 2.5, 0.01),
             material = game.materials['red']
@@ -108,3 +108,6 @@ class PictureFrame(HeldItem):
             vectors.append(forward)
             
         return vectors
+    
+    @property
+    def level(self) -> Level: return self.game.memory_handler[self.level_name]

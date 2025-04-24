@@ -11,7 +11,7 @@ from levels.generators.bedroom import decor
 from player.held_items.held_item import HeldItem, PictureFrame
 
 def bedroom2(game: Game) -> Level:
-    bedroom = Level(game, 'bedroom2', glm.vec3(0, 0, 0))
+    bedroom = Level(game, 'bedroom2', glm.vec3(2, 0, 2))
     decor(bedroom)
     safe(bedroom)
     drawers(bedroom)
