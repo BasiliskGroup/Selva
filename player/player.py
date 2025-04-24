@@ -53,6 +53,7 @@ class Player():
             self.item_r_ui.update(dt)
             self.item_l_ui.update(dt)
             self.interact(dt)
+            self.picture_swap(dt)
             if self.game.right_mouse_time > 1.5: self.item_r_ui.drop()
         
         # update user node to preserve direction
@@ -62,6 +63,16 @@ class Player():
         # hover stabilizes camera and prevents player from falling
         self.position.y = 2.1
         self.velocity.y = 0
+        
+    def picture_swap(self, dt) -> None:
+        """
+        Swaps the portal in the player's hand
+        """
+        nums = [bsk.pg.K_1, bsk.pg.K_2, bsk.pg.K_3, bsk.pg.K_4, bsk.pg.K_5, bsk.pg.K_6, bsk.pg.K_7, bsk.pg.K_8, bsk.pg.K_9]
+        for i, key in enumerate(nums): 
+            if not self.game.key_down(key): continue
+            self.item_l_ui.index = i
+            break
         
     def teleport(self) -> None: # TODO enable with multiple scenes
         """

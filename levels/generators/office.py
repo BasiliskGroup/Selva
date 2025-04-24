@@ -305,25 +305,29 @@ def decor(office: Level) -> None:
             position = (-1.5, 1.5, 0),
             scale = (0.1, 2.5, 2),
             collision = True,
-            static = True
+            static = True,
+            shader = game.shaders['invisible']
         ),
         bsk.Node(
             position = (0, 1.5, 2),
             scale = (1.5, 2.5, 0.1),
             collision = True,
-            static = True
+            static = True,
+            shader = game.shaders['invisible']
         ),
         bsk.Node(
             position = (0, 1.5, -2),
             scale = (1.5, 2.5, 0.1),
             collision = True,
-            static = True
+            static = True,
+            shader = game.shaders['invisible']
         ),
         bsk.Node(
             position = (-1.5, 0.75, 0),
             scale = (2, 1, 2),
             collision = True,
-            static = True
+            static = True,
+            shader = game.shaders['invisible']
         )
     ]
     

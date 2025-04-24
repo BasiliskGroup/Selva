@@ -32,6 +32,7 @@ class PortalHandler:
       
         # Create a scene for the portals
         self.portal_scene = bsk.Scene(self.engine, shader=self.portal_shader)
+        self.portal_scene.camera = bsk.FixedCamera()
         # Add a portal node
         self.portal = bsk.Node(position=(0, 0, 0), scale=(1, 2.5, .01))
         self.portal_scene.add(self.portal)

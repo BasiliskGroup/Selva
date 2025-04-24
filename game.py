@@ -192,12 +192,6 @@ class Game():
         
         # # render all levels
         # for level in self.adjacent_levels(self.current_level): level.render(self.fbos['kuwahara']) # 
-        
-        # self.ui_scene.update()
-        # self.overlay_scene.update()
-        # self.overlay_scene.render(self.fbos['kuwahara'])
-        
-        # self.fbos['kuwahara'].render()
 
         self.portal_handler.main_scene.update(render=False)
         self.portal_handler.other_scene.update(render=False)
@@ -248,7 +242,6 @@ class Game():
         self.current_level.add(self.entry_portal)
         
         # add portal at destination level
-        print(exit.portal_position)
         self.exit_portal.position = exit.portal_position + glm.vec3(0, 2, 0)
         self.exit_portal.rotation = rotation
         self.exit_portal.tags[1] = exit.name
