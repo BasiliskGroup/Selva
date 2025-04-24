@@ -65,8 +65,8 @@ class Game():
         self.memory_handler = MemoryHandler(self)
         # self.memory_handler['void'] = void(self)
         self.memory_handler['bedroom1'] = bedroom1(self)
-        # self.memory_handler['office'] = office(self)
-        # self.memory_handler['boat'] = boat(self)
+        self.memory_handler['office'] = office(self)
+        self.memory_handler['boat'] = boat(self)
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
@@ -255,6 +255,7 @@ class Game():
         exit.add(self.exit_portal)
         
         # set portal positions in handler
+        self.portal_handler.other_scene = self.memory_handler[exit.name].scene
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
         
