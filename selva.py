@@ -15,4 +15,5 @@ add testing teleportation - add picture frame teleportation
 queue the player when picking up the picture frame
 add frame cycling
 Fix ui delay
+hollow frame mesh
 """

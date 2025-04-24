@@ -20,7 +20,7 @@ class Game():
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.ui_fbo = bsk.Framebuffer(self.engine)
         self.ui_scene.sky = None
-        self.ui_scene.camera = bsk.FixedCamera()
+        self.ui_scene.camera = bsk.StaticCamera()
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
         self.overlay_scene.sky = None
         self.overlay_scene.add(bsk.Node(scale = (1, 10, 1)))
@@ -179,29 +179,26 @@ class Game():
         """
         Updates all adjacent scenes and the engine
         """
-        # tick physics and interact updates
-        for level in self.adjacent_levels(self.current_level): level.update(render=False)
-        
-        # update player data and actions
-        self.player.update(self.engine.delta_time)
-        self.track_io_holds()
         
         # standard ui
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
         self.ui.update(self.engine.delta_time)
         
-        # # render all levels
-        # for level in self.adjacent_levels(self.current_level): level.render(self.fbos['kuwahara']) # 
-
         self.portal_handler.main_scene.update(render=False)
         self.portal_handler.other_scene.update(render=False)
+        # self.portal_handler.other_scene.camera.m_view = self.portal_handler.other_scene.camera.get_view_matrix()
+        
+        self.ui_scene.camera.position = self.camera.position
+        self.ui_scene.camera.rotation = self.camera.rotation
+        self.ui_scene.update(render=False)
+        
+        # update player data and actions
+        self.player.update(self.engine.delta_time)
+        self.track_io_holds()
         
         self.portal_handler.update()
         self.portal_handler.render()
-        
-        self.ui_scene.update(render=False)
-        self.ui_scene.camera.position = self.camera.position
-        self.ui_scene.camera.rotation = self.camera.rotation
+
         self.ui_scene.render(self.ui_fbo)
         self.engine.ctx.disable(mgl.DEPTH_TEST)
         self.engine.ctx.enable(mgl.BLEND)
