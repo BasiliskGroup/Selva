@@ -11,6 +11,7 @@ from levels.functions.imports import *
 from helper.transforms import connect
 from levels.classes.fish import FishTracker
 from images.images import images
+from ui.effects import ImageBounce
 
 def boat(game: Game) -> Level:
     level = Level(game, 'boat', glm.vec3(0, 0, 0))
@@ -140,6 +141,9 @@ def fishing(level: Level) -> None:
                     rod_node.velocity = glm.vec3(0)
                     rod.stage = 'reel'
                     rod.time = 0
+                    
+                    # spawn reel icon
+                    game.ui.add(ImageBounce(game.ui, game.images['reel'], position1 = glm.vec2(100, 100), scale1 = glm.vec2(50, 50), position2 = glm.vec2(100, 100), scale2 = glm.vec2(75, 75), effect_time = 0.5))
             case 'reel': 
                 # fishing minigame
                 rod.time += dt
@@ -197,16 +201,11 @@ def fishing(level: Level) -> None:
                         mesh = game.meshes[fish.kind],
                         material = game.materials[fish.kind]
                     ))
-                    
-                # frame = Interactable(bedroom, bsk.Node(position = (1, 1, 1), mesh = game.meshes['picture_frame'], scale = (0.1, 0.1, 0.1)))
-                # frame.active = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, bedroom)))
                 
                 def always_false() -> bool: return False
                 
-                if isinstance(caught, PictureFrame): game.player.item_l = caught
-                else: 
-                    pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false)(dt)
-                    # game.player.item_r = caught
+                if caught.mesh == game.meshes['picture_frame']: pickup_function(caught, interact_to_frame(caught, PictureFrame(game, game.memory_handler['art'])), always_false)(dt)
+                else: pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false)(dt)
                 
                 # remove bait from rod
                 rod.held_item = None
