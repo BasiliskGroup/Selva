@@ -7,6 +7,7 @@ from player.player import Player
 from images.images import images
 from memories.memory_handler import MemoryHandler
 from render.loading_screen import LoadingScreen
+from render.portal_handler import PortalHandler
 from ui.effects import *
 
 
@@ -14,7 +15,7 @@ class Game():
     
     def __init__(self) -> None:
         # Basilisk Engine overhead
-        self.engine = bsk.Engine(grab_mouse=False)   
+        self.engine = bsk.Engine()   
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.ui_scene.sky = None
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
@@ -22,6 +23,8 @@ class Game():
         self.overlay_scene.add(bsk.Node(scale = (1, 10, 1)))
 
         # Create the loading screen
+        self.engine.mouse.grab = False
+        self.engine.mouse.visible = True
         self.loading_screen = LoadingScreen(self)
 
         # global puzzle variables
@@ -60,6 +63,8 @@ class Game():
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
+        self.portal_handler = PortalHandler(self, self.memory_handler['boat'].scene, self.memory_handler['bedroom2'].scene)
+
         # player
         self.player = Player(self)
         
@@ -177,15 +182,21 @@ class Game():
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
         self.ui.update(self.engine.delta_time)
         
-        # render all levels
-        for level in self.adjacent_levels(self.current_level): level.render(self.fbos['kuwahara']) # 
+        # # render all levels
+        # for level in self.adjacent_levels(self.current_level): level.render(self.fbos['kuwahara']) # 
         
-        self.ui_scene.update()
-        self.overlay_scene.update()
-        self.overlay_scene.render(self.fbos['kuwahara'])
+        # self.ui_scene.update()
+        # self.overlay_scene.update()
+        # self.overlay_scene.render(self.fbos['kuwahara'])
         
-        self.fbos['kuwahara'].render()
+        # self.fbos['kuwahara'].render()
+
+        self.portal_handler.main_scene.update(render=False)
+        self.portal_handler.other_scene.update(render=False)
         
+        self.portal_handler.update()
+        self.portal_handler.render()
+
         self.engine.update(render=True)
         
     def track_io_holds(self) -> None:
