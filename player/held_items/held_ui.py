@@ -16,7 +16,7 @@ class HeldUI():
         self.items: list[HeldItem] = []
         self.index = 0
         
-        self.game.current_scene.add(self.node)
+        self.game.ui_scene.add(self.node)
         
     def update(self, dt: float) -> None:
         """
@@ -27,6 +27,7 @@ class HeldUI():
             return
         
         # TODO this can probably be done better with a matrix transformation
+        print(self.game)
         self.node.position = self.camera.position + (self.offset.x + self.item.offset.x) * self.camera.right + (self.offset.y + self.item.offset.y) * self.camera.up + (self.offset.z + self.item.offset.z) * self.camera.forward
         self.node.rotation = self.item.rotation * glm.conjugate(self.camera.rotation)
         if self.item.func: self.item.func(dt)

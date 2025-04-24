@@ -253,7 +253,7 @@ def load_boat(level: Level) -> None:
     level.add(boat)
     
     # add colliders
-    # level.add(rect_room(0, 0, 3.5, 8.5, 4))
+    level.add(rect_room(0, 0, 4, 8.5, 4, shader = game.shaders['invisible']))
 
 def bucket(level: Level) -> None:
     game = level.game

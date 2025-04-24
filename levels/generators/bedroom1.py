@@ -22,6 +22,11 @@ def bedroom1(game: Game) -> Level:
     safe(bedroom)
     mug(bedroom)
     
+    # TODO temporary
+    frame = Interactable(bedroom, bsk.Node(position = (1, 1, 1), mesh = game.meshes['picture_frame'], scale = (0.1, 0.1, 0.1)))
+    frame.active = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, bedroom)))
+    bedroom.add(frame)
+    
     return bedroom
 
 def mug(bedroom: Level) -> None:

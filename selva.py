@@ -17,9 +17,7 @@ queue the player when picking up the picture frame
 
 """
 Things we need to do tonight:
-Portals
 UI / Overlay scene
-Invisible shader
 Design end level
 
 Maybe:
