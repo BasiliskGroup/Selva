@@ -68,11 +68,19 @@ class Player():
         """
         Swaps the portal in the player's hand
         """
+        if not self.item_l: return
+        
+        current_level_name = self.item_l.level_name
         nums = [bsk.pg.K_1, bsk.pg.K_2, bsk.pg.K_3, bsk.pg.K_4, bsk.pg.K_5, bsk.pg.K_6, bsk.pg.K_7, bsk.pg.K_8, bsk.pg.K_9]
         for i, key in enumerate(nums): 
             if not self.game.key_down(key): continue
             self.item_l_ui.index = i
             break
+        
+        if current_level_name == self.item_l.level_name: return # portal was not changed
+        self.game.close()
+        # update portal exit
+        self.game.portal_handler.scene_other = self.game.memory_handler[self.item_l.level_name].scene
         
     def teleport(self) -> None: # TODO enable with multiple scenes
         """

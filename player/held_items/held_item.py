@@ -32,7 +32,7 @@ class PictureFrame(HeldItem):
         node = Node(
             scale = (0.2, 0.2, 0.2),
             material = game.materials['picture_frame'],
-            mesh = game.meshes['picture_frame']
+            mesh = game.meshes['empty_frame']
         )
         
         super().__init__(game, node, self.func, rotation = glm.angleAxis(glm.pi(), (0, 1, 0)))

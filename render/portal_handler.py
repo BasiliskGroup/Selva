@@ -34,14 +34,14 @@ class PortalHandler:
         self.portal_scene = bsk.Scene(self.engine, shader=self.portal_shader)
         self.portal_scene.camera = bsk.StaticCamera()
         # Add a portal node
-        self.portal = bsk.Node(position=(0, 0, 0), scale=(1, 2.5, .01))
+        self.portal = bsk.Node(position=(0, -100, 0), scale=(1, 2.5, .01))
         self.portal_scene.add(self.portal)
-        self.frame_portal = bsk.Node(position = (0, -100, 0), scale=((0.15, 0.25, 0.01)))
+        self.frame_portal = bsk.Node(position = (0, -100, 0), scale=((0.175, 0.225, 0.01)))
         self.portal_scene.add(self.frame_portal)
         self.portal_scene.sky = None
 
         self.set_scenes(main_scene, other_scene)
-        self.set_positions(glm.vec3(0, 0, 0), glm.vec3(5, 0, 5))
+        self.set_positions(glm.vec3(0, -10000, 0), glm.vec3(5, -10000, 5))
         self.set_rotations(glm.quat(0, 0, 0, 0), glm.quat(0, 0, 0, 0))
 
     def update(self):

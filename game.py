@@ -70,7 +70,7 @@ class Game():
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['bedroom1'].scene, self.memory_handler['art'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['bedroom1'].scene, self.memory_handler['office'].scene)
 
         # player
         self.player = Player(self)
@@ -184,9 +184,12 @@ class Game():
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
         self.ui.update(self.engine.delta_time)
         
+        # update interactibles in the current level
+        for interact in self.current_level.interactables.values():
+            if interact.passive: interact.passive(self.engine.delta_time)
+        
         self.portal_handler.main_scene.update(render=False)
         self.portal_handler.other_scene.update(render=False)
-        # self.portal_handler.other_scene.camera.m_view = self.portal_handler.other_scene.camera.get_view_matrix()
         
         self.ui_scene.camera.position = self.camera.position
         self.ui_scene.camera.rotation = self.camera.rotation
@@ -216,20 +219,28 @@ class Game():
         self.right_mouse_time = self.engine.delta_time + self.right_mouse_time if self.engine.mouse.right_down else 0
         self.left_mouse_time = self.engine.delta_time + self.left_mouse_time if self.engine.mouse.left_down else 0
         
+    def close(self) -> None:
+        """
+        Closes both portals
+        """
+        self.portal_open = False
+        if not self.entry_portal.node_handler: return
+        self.entry_portal.node_handler.scene.remove(self.entry_portal)
+        self.exit_portal.node_handler.scene.remove(self.exit_portal)
+        self.portal_handler.portal.position.y = -100
+        
     def open(self, exit: Level) -> None:
         """
         Despawns current portals and opens them in new scenes
         """
-        self.portal_open = True
         entry = self.current_level
         
         # do this if it is not the first time spawning a portal
-        if self.entry_portal.node_handler: 
-            self.entry_portal.node_handler.scene.remove(self.entry_portal)
-            self.exit_portal.node_handler.scene.remove(self.exit_portal)
+        self.close()
             
         # prevent opening a portal in the same scene
         if entry == exit: return
+        self.portal_open = True
         rotation = glm.conjugate(glm.quatLookAt(self.camera.horizontal, (0, 1, 0)))
             
         # add entry portal at player location
