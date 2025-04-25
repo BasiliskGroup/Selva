@@ -4,7 +4,7 @@ from helper.type_hints import Game
 from levels.level import Level
 from levels.interactable import Interactable
 from levels.functions.imports import *
-from player.held_items.held_item import HeldItem, PictureFrame
+from player.held_items.held_item import PictureFrame
 
 def void(game: Game) -> Level:
     void = Level(game, 'void', glm.vec3(0, 0, 0))
@@ -41,6 +41,6 @@ def picture_frame(void: Level) -> None:
         pf.node.rotation = glm.normalize(glm.conjugate(glm.quatLookAt(direction , (0, 1, 0)))) * glm.angleAxis(glm.pi(), (0, 1, 0))
     
     pf.passive = float_down
-    pf.active = pickup_function(pf, interact_to_hold(pf, PictureFrame(game, 'bedroom1')))
+    pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'boat')))
     
     void.add(pf)
