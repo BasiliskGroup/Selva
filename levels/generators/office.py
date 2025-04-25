@@ -49,33 +49,35 @@ def puzzle(office: Level) -> None:
         material = game.materials['crt']
     ))
     setattr(computer, 'on', False)
-    setattr(computer, 'stage', 'off')
+    setattr(computer, 'cpu_stage', 'off')
     
-    def computer_leave_check_func(dt: float) -> bool:
+    def computer_leave_check_func(dt: float, computer=computer) -> bool:
         return not computer.on
     
-    def computer_loop_func(dt: float) -> None: 
+    def computer_loop_func(dt: float, computer=computer) -> None: 
         if not computer.on: return
-        match computer.stage:
+        match computer.cpu_stage:
             case 'off':
                 # create portal
                 game.close()
-                game.open(game.memory_handler['boat'])
-                # game.portal_handler.portal.scale = glm.vec3()
-                computer.stage = 'opening'
+                game.open(game.memory_handler['boat'], scale = (0.4, 0.01, 0.01), position = game.camera.position + game.camera.forward * 0.6)
+                computer.cpu_stage = 'opening'
+
             case 'opening':
                 # grow portal to edges of screen
-                # game.portal_handler.portal.scale = 
-                computer.stage = 'teleport'
+                game.portal_handler.portal.scale.y += dt / 2
+                if game.portal_handler.portal.scale.y > 0.35: computer.cpu_stage = 'teleport'
             case 'teleport':
-                # teleport the player
+                
                 # exit loop with variables
-                computer.stage = 'off'
+                computer.percent_lerp = 0
+                computer.step_lerp = -1
+                computer.cpu_stage = 'off'
+                
+                # teleport the player
+                game.player.swap_to_level('boat', glm.vec3(0, 1, 0))
     
-    def computer_active(dt: float) -> None:
-        pan_loop(computer, time = 0.5, position = (0.5, 2.4, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func, leave_check_func = computer_leave_check_func)(dt)
-    
-    computer.active = computer_active
+    computer.active = pan_loop(computer, time = 0.5, position = (0.5, 2.4, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func, leave_check_func=computer_leave_check_func)
     
     # coffee maker
     coffee_maker = Interactable(office, bsk.Node(

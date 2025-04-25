@@ -14,7 +14,7 @@ from images.images import images
 from ui.effects import ImageBounce
 
 def boat(game: Game) -> Level:
-    level = Level(game, 'boat', glm.vec3(0, 0, 0))
+    level = Level(game, 'boat', glm.vec3(0, -100, 0))
     
     fishing(level)
     load_boat(level)

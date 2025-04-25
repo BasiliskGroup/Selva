@@ -105,12 +105,17 @@ class Player():
         self.position = glm.vec3(position)
         self.body_node.rotation = self.body_node.rotation * glm.inverse(pc.rotation.data) * pl.rotation.data
         
+        self.swap_to_level(pl.tags[1], position)
+    
+    def swap_to_level(self, level_name: str, position: glm.vec3) -> None:
         # update player scene and possibly portal node scene
         self.game.current_scene.remove(self.body_node)
         
+        print('swapping to', level_name)
+        
         # swap scene and camera
         self.game.current_scene.camera = self.game.hold_camera
-        self.game.memory_handler.current_level = self.game.memory_handler[pl.tags[1]]
+        self.game.memory_handler.current_level = self.game.memory_handler[level_name] # swaps game current scene
         self.game.hold_camera = self.game.current_scene.camera
         self.game.current_scene.camera = self.camera
         

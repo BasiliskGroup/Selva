@@ -17,7 +17,7 @@ def void(game: Game) -> Level:
 def picture_frame(void: Level) -> None:
     game = void.game
     
-    starting_position = glm.vec3(0, 17, -20)
+    starting_position = glm.vec3(0, 0, -20)
     pf = Interactable(void, bsk.Node(
         position = starting_position,
         scale = glm.vec3(0.7),
@@ -28,6 +28,7 @@ def picture_frame(void: Level) -> None:
     setattr(pf, 'fall_time', 0)
     
     def float_down(dt: float) -> None:
+        return
         pf.fall_time += dt * 2.3
         if pf.node.position.y < 0: return
         

@@ -65,14 +65,14 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        # self.memory_handler['void'] = void(self)
-        # self.memory_handler['bedroom1'] = bedroom1(self)
-        # self.memory_handler['office'] = office(self)
+        self.memory_handler['void'] = void(self)
+        self.memory_handler['bedroom1'] = bedroom1(self)
+        self.memory_handler['office'] = office(self)
         self.memory_handler['boat'] = boat(self)
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['boat'].scene, self.memory_handler['bedroom2'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['void'].scene, self.memory_handler['bedroom2'].scene)
 
         # player
         self.player = Player(self)
@@ -239,7 +239,7 @@ class Game():
         self.exit_portal.node_handler.scene.remove(self.exit_portal)
         self.portal_handler.portal.position.y = -100
         
-    def open(self, exit: Level, forward_distance: float=0.2, scale: glm.vec3=None) -> None:
+    def open(self, exit: Level, forward_distance: float=0.2, scale: glm.vec3=None, position: glm.vec3=None) -> None:
         """
         Despawns current portals and opens them in new scenes
         """
@@ -254,7 +254,7 @@ class Game():
         rotation = glm.conjugate(glm.quatLookAt(self.camera.horizontal, (0, 1, 0)))
             
         # add entry portal at player location
-        self.entry_portal.position = self.player.position + self.camera.forward * forward_distance
+        self.entry_portal.position = self.player.position + self.camera.forward * forward_distance if position is None else glm.vec3(position)
         self.entry_portal.rotation = rotation
         self.entry_portal.tags[1] = entry.name
         self.current_level.add(self.entry_portal)
