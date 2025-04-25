@@ -64,6 +64,16 @@ class Player():
         self.position.y = 2.1
         self.velocity.y = 0
         
+        if not self.item_l: return
+        if self.game.current_level.name == self.item_l.level_name:
+            self.item_l_ui.node.material = self.game.materials['picture_frame_white']
+            self.item_l_ui.node.mesh = self.game.meshes['picture_frame']
+            print('same')
+        else:
+            self.item_l_ui.node.material = self.game.materials['picture_frame']
+            self.item_l_ui.node.mesh = self.game.meshes['empty_frame']
+            print('different')
+        
     def picture_swap(self, dt) -> None:
         """
         Swaps the portal in the player's hand
