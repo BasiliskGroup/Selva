@@ -99,7 +99,7 @@ def fishing(level: Level) -> None:
     setattr(rod, 'bobber_pos', glm.vec3(tip_pos))
     rod_pivot.add(rod.node)
     
-    def rod_check_in(dt: float) -> bool: return bool(game.player.item_r) and game.player.item_r.node.tags in [['worm'], ['copper_wire'], ['pyjama_squid']]
+    def rod_check_in(dt: float) -> bool: return bool(game.player.item_r) and len(game.player.item_r.node.tags) > 0 and game.player.item_r.node.tags[0] in ['worm', 'copper_wire', 'paint_brush']
     def rod_put_in(dt: float) -> None: rod.stage = 'ready'
     def rod_pull_out(dt: float) -> None: rod.stage = 'bait'
     def rod_lerp_end_func(dt: float) -> None: 
@@ -168,14 +168,8 @@ def fishing(level: Level) -> None:
             case 'win':
                 # give the player their fish
                 bait_tag = rod.held_item.node.tags[0]
-                if not game.day:
-                    caught = Interactable(level, bsk.Node(
-                        scale = glm.vec3(1),
-                        mesh = game.meshes['squid'],
-                        material = game.materials['squid'],
-                        tags = ['paint_brush', 'none'],
-                    ))
-                elif bait_tag == 'copper_wire': 
+                
+                if bait_tag == 'copper_wire': 
                     caught = Interactable(level, bsk.Node(
                         position = (-2, 1.8, 3),
                         scale    = glm.vec3(0.2),
@@ -183,12 +177,19 @@ def fishing(level: Level) -> None:
                         material = game.materials['battery'],
                         tags     = ['battery']
                     ))
-                elif bait_tag == 'pyjama_squid':
+                elif bait_tag == 'paint_brush':
                     caught = Interactable(level, bsk.Node( # TODO swap to picture frame
                         position = (-2, 1.8, 3),
                         scale    = glm.vec3(0.2),
                         mesh     = game.meshes['picture_frame'],
-                        material = game.materials['battery'],
+                        material = game.materials['picture_frame'],
+                    ))
+                elif not game.day:
+                    caught = Interactable(level, bsk.Node(
+                        scale = glm.vec3(0.1),
+                        mesh = game.meshes['squid'],
+                        material = game.materials['squid'],
+                        tags = ['paint_brush', 'none'],
                     ))
                 else:
                     # give the player a fish
@@ -204,8 +205,8 @@ def fishing(level: Level) -> None:
                 
                 def always_false() -> bool: return False
                 
-                if caught.node.mesh == game.meshes['picture_frame']: pickup_function(caught, interact_to_frame(caught, PictureFrame(game, game.memory_handler['art'])), always_false)(dt)
-                else: pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false)(dt)
+                if caught.node.mesh == game.meshes['picture_frame']: pickup_function(caught, interact_to_frame(caught, PictureFrame(game, 'art')), always_false)(dt)
+                else: pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false, distance = 4, rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)))(dt)
                 
                 # remove bait from rod
                 rod.held_item = None
@@ -216,6 +217,8 @@ def fishing(level: Level) -> None:
                 rod.stage = 'bait'
                 rod.percent_lerp = 0
                 rod.step_lerp = -1
+                game.player.control_disabled = False
+                game.player.camera.rotation = glm.conjugate(glm.quatLookAt((0, 0, 1), (0, 1, 0)))
             
             case 'lose':
                 rod_node.position = tip_pos
@@ -223,6 +226,8 @@ def fishing(level: Level) -> None:
                 rod.stage = 'bait'
                 rod.percent_lerp = 0
                 rod.step_lerp = -1
+                game.player.control_disabled = False
+                game.player.camera.rotation = glm.conjugate(glm.quatLookAt((1, 0, 0), (0, 1, 0)))
             
     def rod_loop_check_func(dt: float) -> None: return rod.stage in ['bait']
         

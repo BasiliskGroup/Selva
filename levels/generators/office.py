@@ -1,7 +1,7 @@
 import basilisk as bsk
 import glm
 import random
-from player.held_items.held_item import HeldItem
+from player.held_items.held_item import HeldItem, PictureFrame
 from player.held_items.interpolate import lerp_held
 from helper.type_hints import Game
 from levels.level import Level
@@ -34,6 +34,17 @@ def office(game: Game) -> Level:
     decor(office)
     wires(office)
     note(office)
+    
+    node = bsk.Node(
+        position = (3.5, 2.4, -4.35),
+        scale = (0.1, 0.1, 0.1),
+        rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)) * glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
+        mesh = office.game.meshes['key'],
+        tags = ['color_key']
+    )
+    key = Interactable(office, node)
+    key.active = pickup_function(key, interact_to_hold(key, HeldItem(office.game, key.node)))
+    office.add(key)
     
     return office
     
@@ -279,7 +290,24 @@ def desk(office: Level) -> None:
     wire.passive = wire_passive
     wire.active = wire_active
     
-    office.add(desk, bottom_drawer, top_drawer, wire)
+    # add bedroom2 frane
+    pf = Interactable(office, bsk.Node(
+        position = (-0.3, 1.3, 0.9),
+        scale = glm.vec3(0.3),
+        rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
+        mesh = game.meshes['picture_frame'],
+        material = game.materials['picture_frame'],
+    ))
+    pf_pickup = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'bedroom2')))
+    def pf_active(dt: float) -> None:
+        pf.passive = None
+        pf_pickup(dt)
+        
+    def pf_passive(dt: float) -> None: pf.node.position.x = top_drawer.node.position.x + 0.1
+    pf.passive = pf_passive
+    pf.active = pf_active
+    
+    office.add(desk, bottom_drawer, top_drawer, wire, pf)
     
 def coffee_table(office: Level) -> None:
     game = office.game

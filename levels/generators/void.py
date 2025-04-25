@@ -6,8 +6,8 @@ from levels.interactable import Interactable
 from levels.functions.imports import *
 from player.held_items.held_item import HeldItem, PictureFrame
 
-def void(game: Game) -> Level:
-    void = Level(game, 'void', glm.vec3(0, 0, 0))
+def void1(game: Game) -> Level:
+    void = Level(game, 'void1', glm.vec3(0, 0, 0))
     void.scene.sky = None
     
     picture_frame(void)
@@ -17,7 +17,7 @@ def void(game: Game) -> Level:
 def picture_frame(void: Level) -> None:
     game = void.game
     
-    starting_position = glm.vec3(0, 17, -20)
+    starting_position = glm.vec3(0, 25.65, -20)
     pf = Interactable(void, bsk.Node(
         position = starting_position,
         scale = glm.vec3(0.7),
@@ -33,7 +33,7 @@ def picture_frame(void: Level) -> None:
         if pf.node.position.y < 0: 
             pf.falling = False
             return
-        pf.fall_time += dt * 2.3
+        pf.fall_time += dt * 3
         
         t = pf.fall_time
         pf.node.position = starting_position + (
@@ -48,3 +48,13 @@ def picture_frame(void: Level) -> None:
     pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'bedroom1')), rotation=glm.angleAxis(glm.pi(), (0, 1, 0)), distance=4)
     
     void.add(pf)
+    
+    
+    
+def void2(game: Game) -> Level:
+    void = Level(game, 'void2', glm.vec3(0, 0, 0))
+    void.scene.sky = None
+    
+    picture_frame(void)
+    
+    return void

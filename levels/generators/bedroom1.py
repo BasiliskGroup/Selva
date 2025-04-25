@@ -13,7 +13,8 @@ def bedroom1(game: Game) -> Level:
     # create basic layout for bedroom level
     bedroom = Level(game, 'bedroom1', glm.vec3(2, 0, 2))
 
-    decor(bedroom)
+    def note_func(dt: float) -> None: bsk.draw.blit(game.engine, game.images['bedroom_note1.png'], (0, 0, game.win_size.x, game.win_size.y))
+    decor(bedroom, note_func)
     this_decor(bedroom)
     add_locked_box(bedroom)
     key_interact = key(bedroom)
@@ -284,7 +285,7 @@ def safe(level: Level) -> None:
             button = safe.buttons[[i.node for i in safe.buttons].index(cast.node)]
             if button.percent == 0: button.step = 1
             game.sounds['keycap'].play()
-        safe.locked = safe.code != [1, 2, 3, 4]
+        safe.locked = safe.code != [2, 1, 6, 9]
     
     safe.active = pan_loop(safe, rotation = glm.quatLookAt((0, 0, 1), (0, 1, 0)), position = (1.5, 0.95, 2), time = 0.5, loop_func = loop_func)
     
