@@ -16,7 +16,7 @@ void main()
     float mainDepth   = texture(mainDepthTexture, uv  ).r;
     float portalDepth = texture(portalDepthTexture, uv).r;
 
-    if (mainDepth < portalDepth) {
+    if (mainDepth <= portalDepth) {
         fragColor = vec4(mainColor, 1.0);
     }
     else {

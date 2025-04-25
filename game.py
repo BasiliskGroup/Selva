@@ -65,14 +65,14 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        # self.memory_handler['void'] = void(self)
+        self.memory_handler['void'] = void(self)
         self.memory_handler['bedroom1'] = bedroom1(self)
         self.memory_handler['office'] = office(self)
         self.memory_handler['boat'] = boat(self)
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['bedroom1'].scene, self.memory_handler['office'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['void'].scene, self.memory_handler['office'].scene)
 
         # player
         self.player = Player(self)
