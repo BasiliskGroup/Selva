@@ -44,8 +44,6 @@ class Player():
         """
         Updates the players movement, Nodes, and controls
         """
-        self.teleport()
-        
         # player controls
         if not self.control_disabled: 
             # player controls
@@ -63,6 +61,10 @@ class Player():
         # hover stabilizes camera and prevents player from falling
         self.position.y = 2.1
         self.velocity.y = 0
+        
+        if not self.item_l: return
+        if self.game.current_level.name == self.item_l.level_name: self.item_l_ui.node.mesh = self.game.meshes['picture_frame']
+        else: self.item_l_ui.node.mesh = self.game.meshes['empty_frame']
         
     def picture_swap(self, dt) -> None:
         """
@@ -127,6 +129,7 @@ class Player():
         
         # update for next frame
         self.previous_position = glm.vec3(position)
+        self.position.y = 2.1
         
     def collide(self) -> None | Any:
         """

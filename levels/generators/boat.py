@@ -16,12 +16,21 @@ from ui.effects import ImageBounce
 def boat(game: Game) -> Level:
     level = Level(game, 'boat', glm.vec3(0, -100, 0))
     
+    loading_node(level)
     fishing(level)
     load_boat(level)
     bucket(level)
     fish_book(level)
     
     return level
+
+def loading_node(level) -> None:
+    level.add(bsk.Node(
+        position = glm.vec3(-6.5, -97.45, 0),
+        scale = glm.vec3(1, 4, 3),
+        rotation = glm.angleAxis(-glm.pi() / 2, (1, 0, 0)),
+        material = level.game.materials['fish_master_2002']
+    ))
 
 def fish_book(level: Level) -> None:
     game = level.game
@@ -70,6 +79,7 @@ def fishing(level: Level) -> None:
     rod_pivot = bsk.Node(
         position = glm.normalize(tip_pos - handle_pos) * 0.3 + handle_pos,
         scale = glm.vec3(0.1),
+        shader = game.shaders['invisible']
     )
     pos, sca, rot = connect(handle_pos, tip_pos, 3)
     rod = Interactable(level, bsk.Node(
@@ -90,6 +100,7 @@ def fishing(level: Level) -> None:
         scale = glm.vec3(0.5),
         rotation = glm.conjugate(glm.quatLookAt(ortho_vector, (0, 1, 0))),
         mesh = game.meshes['crank'],
+        material = game.materials['crank_cw'],
         relative_scale=False
     )
     rod.node.add(fishing_reel)
@@ -164,7 +175,6 @@ def fishing(level: Level) -> None:
                 if distance < 8: rod.stage = 'win'
                 elif distance > 50: rod.stage = 'lose'
                     
-            # TODO swap to pick up function
             case 'win':
                 # give the player their fish
                 bait_tag = rod.held_item.node.tags[0]
@@ -195,18 +205,28 @@ def fishing(level: Level) -> None:
                     # give the player a fish
                     fish = game.player.fish_tracker.get_fish()
                     new_record = game.player.fish_tracker.log(fish)
-                    print(new_record, fish)
                     
                     caught = Interactable(level, bsk.Node(
                         scale = glm.vec3(fish.length),
                         mesh = game.meshes[fish.kind],
-                        material = game.materials[fish.kind]
+                        material = game.materials[fish.kind],
+                        tags = [fish.kind, 'new_record' if new_record else '']
                     ))
                 
                 def always_false() -> bool: return False
                 
                 if caught.node.mesh == game.meshes['picture_frame']: pickup_function(caught, interact_to_frame(caught, PictureFrame(game, 'art')), always_false)(dt)
-                else: pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false, distance = 4, rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)))(dt)
+                else: 
+                    bottom_text = None
+                    overlay_distance = 1
+                    match caught.node.tags[0]:
+                        case 'battery': top_text = 'battery'
+                        case 'paint_brush': top_text = 'pyjama_squid'
+                        case _: 
+                            top_text = caught.node.tags[0]
+                            bottom_text = caught.node.tags[1] if caught.node.tags[1] == 'new_record' else None
+                            overlay_distance = caught.node.scale.x * 2.5
+                    pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false, distance = overlay_distance, rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), top_text = top_text, bottom_text = bottom_text)(dt)
                 
                 # remove bait from rod
                 rod.held_item = None
@@ -227,7 +247,7 @@ def fishing(level: Level) -> None:
                 rod.percent_lerp = 0
                 rod.step_lerp = -1
                 game.player.control_disabled = False
-                game.player.camera.rotation = glm.conjugate(glm.quatLookAt((1, 0, 0), (0, 1, 0)))
+                game.player.camera.rotation = glm.conjugate(glm.quatLookAt((0, 0, 1), (0, 1, 0)))
             
     def rod_loop_check_func(dt: float) -> None: return rod.stage in ['bait']
         

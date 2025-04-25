@@ -227,16 +227,6 @@ float getRoughness(Material mtl, vec2 uv) {
 }
 
 void main() {
-
-    vec2 screenuv = (gl_FragCoord.xy) / viewportDimensions;
-    float portalDepth = texture(testTexture, screenuv).r;
-    float fragDepth = gl_FragCoord.z;
-
-    if (fragDepth < portalDepth) {
-        fragColor = vec4(0.0, 0.0, 0.0, 0.0);
-        discard;
-    }
-
     float gamma = 2.2;
     vec3 viewDir = vec3(normalize(cameraPosition - position));
 
@@ -298,7 +288,12 @@ void main() {
 
     // Output fragment color
     finalColor += albedo * 0.3 * mix(vec3(1.0), reflect_sky, mtl.metallicness) + mtl.emissiveColor;
-    fragColor = vec4(finalColor, 1.0);
+
+    vec2 screenuv = (gl_FragCoord.xy) / viewportDimensions;
+    float depth = 20 * (1 - texture(testTexture, screenuv).r);
+
+    fragColor = vec4(finalColor * depth, 1.0);
+
     normalTexture = vec4(abs(N), 1.0);
 
 }

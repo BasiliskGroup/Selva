@@ -18,13 +18,17 @@ class Game():
     def __init__(self) -> None:
         # Basilisk Engine overhead
         self.engine = bsk.Engine()   
+        
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.ui_fbo = bsk.Framebuffer(self.engine)
         self.ui_scene.sky = None
         self.ui_scene.camera = bsk.StaticCamera()
+        
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
         self.overlay_scene.sky = None
-        self.overlay_scene.add(bsk.Node(scale = (1, 10, 1)))
+        self.overlay_scene.camera = bsk.StaticCamera()
+        self.overlay_fbo = bsk.Framebuffer(self.engine)
+        self.overlay_on = False
 
         # Create the loading screen
         self.engine.mouse.grab = False
@@ -47,33 +51,63 @@ class Game():
         
         # portals
         self.entry_portal = bsk.Node(
-            scale = (1, 2.5, 0.001),
+            scale = (1, 2.5, 0.05),
             tags = ['portal', ''],
             material = self.materials['red'],
             shader = self.shaders['invisible']
         )
         
         self.exit_portal = bsk.Node(
-            scale = (1, 2.5, 0.001),
+            scale = (1, 2.5, 0.05),
             tags = ['portal', ''],
             material = self.materials['red'],
             shader = self.shaders['invisible']
         )
+        
+        # overlay scene
+        self.overlay_scene.add(bsk.Node(
+            mesh = self.meshes['four_star'],
+            scale = glm.vec3(1.5),
+            material = self.materials['bloom_copper'],
+            rotational_velocity=(0, 0, 1)
+        ))
+        self.overlay_scene.add(bsk.Node(
+            mesh = self.meshes['four_star'],
+            scale = glm.vec3(1.5),
+            material = self.materials['bloom_copper'],
+            rotation = glm.angleAxis(glm.pi() / 4, (0, 0, 1)),
+            rotational_velocity=(0, 0, 1)
+        ))
+        self.overlay_scene.add(bsk.Node(
+            position = (0, 0, 1),
+            scale = glm.vec3(1),
+            material = self.materials['bloom_yellow'],
+            mesh = self.meshes['four_star'],
+            rotation = glm.angleAxis(glm.pi() / 4, (0, 0, 1)),
+            rotational_velocity=(0, 0, -1)
+        ))
+        self.overlay_scene.add(bsk.Node(
+            position = (0, 0, 1),
+            scale = glm.vec3(1),
+            material = self.materials['bloom_yellow'],
+            mesh = self.meshes['four_star'],
+            rotational_velocity=(0, 0, -1)
+        ))
         
         # ui
         self.ui = UI(self)
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        # self.memory_handler['void1'] = void1(self)
-        # self.memory_handler['bedroom1'] = bedroom1(self)
-        # self.memory_handler['office'] = office(self)
-        # self.memory_handler['boat'] = boat(self)
-        # self.memory_handler['art'] = art(self)
+        self.memory_handler['void1'] = void1(self)
+        self.memory_handler['bedroom1'] = bedroom1(self)
+        self.memory_handler['office'] = office(self)
+        self.memory_handler['boat'] = boat(self)
+        self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         self.memory_handler['void2'] = void2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['bedroom2'].scene, self.memory_handler['void2'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['void1'].scene, self.memory_handler['void2'].scene)
 
         # player
         self.player = Player(self)
@@ -106,7 +140,7 @@ class Game():
         png_names = [
             'john', 'wheel_eight', 'box_three', 'picture_frame', 'fortune_dresser', 'fake_door', 'paper', 'safe_door', 'lamp', 'bed',
             'crt', 'hang_in_there', 'battery_box', 'office_window', 'coffee_maker', 'battery', 'coffee_mug', 'bulb', 'calendar', 'drawer_color', 'i_love_barcodes', 'scan_me',
-            'boat', 'fishing_rod', 'flounder', 'tuna', 'tilapia', 'herring', 'bass', 'bait_bucket', 'worm', 'squid', 'squid_red', 'squid_orange', 'squid_yellow', 'squid_green', 'squid_blue', 'squid_purple',
+            'boat', 'fishing_rod', 'flounder', 'tuna', 'tilapia', 'herring', 'bass', 'bait_bucket', 'worm', 'squid', 'squid_red', 'squid_orange', 'squid_yellow', 'squid_green', 'squid_blue', 'squid_purple', 'fish_master_2002', 'crank_cw',
             'art_table', 'bear_chair', 'art_wall', 'art_ceiling', 'paint_bucket_red', 'paint_bucket_blue', 'paint_bucket_yellow', 'window_two_pane', 'color_combos', 'color_key', 'key_key', 'water_mug', 'key_color'
         ] + [f'key{i}' for i in range(1, 10)]
         
@@ -130,6 +164,8 @@ class Game():
         self.materials['copper'] = bsk.Material(color = (255, 149, 0))
         self.materials['bedroom_floor'] = bsk.Material(color = (105, 94, 86))
         self.materials['bedroom_wall'] = bsk.Material(color = (195, 190, 183))
+        self.materials['bloom_copper'] = bsk.Material(color = (255, 149, 0), emissive_color=(300, 200, 50))
+        self.materials['bloom_yellow'] = bsk.Material(color = (211, 198, 74), emissive_color=(260, 250, 120))
         
     def load_images(self) -> None:
         """
@@ -189,19 +225,17 @@ class Game():
         
         # standard ui
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
+        self.player.teleport()
         self.main_update()
         
     def main_update(self) -> None:
         self.ui.update(self.engine.delta_time)
-        
         # update interactibles in the current level
         for interact in self.current_level.interactables.values():
             if interact.passive: interact.passive(self.engine.delta_time)
         
-        self.player.control_disabled = False
-
-        # self.portal_handler.main_scene.update(render=False)
-        # self.portal_handler.other_scene.update(render=False)
+        self.portal_handler.main_scene.update(render=False)
+        self.portal_handler.other_scene.update(render=False)
         
         self.ui_scene.camera.position = self.camera.position
         self.ui_scene.camera.rotation = self.camera.rotation
@@ -215,10 +249,17 @@ class Game():
         self.portal_handler.render()
 
         self.ui_scene.render(self.ui_fbo)
+        if self.overlay_on:
+            self.overlay_scene.update(render=False)
+            self.overlay_scene.render(self.overlay_fbo)
+        
         self.engine.ctx.disable(mgl.DEPTH_TEST)
         self.engine.ctx.enable(mgl.BLEND)
         self.engine.ctx.blend_func = mgl.DEFAULT_BLENDING
+        
         self.ui_fbo.render()
+        if self.overlay_on: self.overlay_fbo.render()
+        
         self.engine.draw_handler.render()
         self.engine.ctx.enable(mgl.DEPTH_TEST)
         self.engine.ctx.disable(mgl.BLEND)
@@ -242,7 +283,7 @@ class Game():
         self.exit_portal.node_handler.scene.remove(self.exit_portal)
         self.portal_handler.portal.position.y = -100
         
-    def open(self, exit: Level, forward_distance: float=0.2, scale: glm.vec3=None, position: glm.vec3=None) -> None:
+    def open(self, exit: Level, forward_distance: float=0.2, scale: glm.vec3=None, position: glm.vec3=None, exit_position: glm.vec3=None) -> None:
         """
         Despawns current portals and opens them in new scenes
         """
@@ -257,13 +298,13 @@ class Game():
         rotation = glm.conjugate(glm.quatLookAt(self.camera.horizontal, (0, 1, 0)))
             
         # add entry portal at player location
-        self.entry_portal.position = self.player.position + self.camera.forward * forward_distance if position is None else glm.vec3(position)
+        self.entry_portal.position = (self.player.position + self.camera.forward * forward_distance + glm.vec3(0, 0.5, 0)) if position is None else glm.vec3(position)
         self.entry_portal.rotation = rotation
         self.entry_portal.tags[1] = entry.name
         self.current_level.add(self.entry_portal)
         
         # add portal at destination level
-        self.exit_portal.position = exit.portal_position + glm.vec3(0, 2, 0)
+        self.exit_portal.position = exit.portal_position + glm.vec3(0, 2.6, 0) if exit_position is None else glm.vec3(exit_position)
         self.exit_portal.rotation = rotation
         self.exit_portal.tags[1] = exit.name
         exit.add(self.exit_portal)
@@ -272,7 +313,7 @@ class Game():
         self.portal_handler.set_scenes(self.current_scene, self.memory_handler[exit.name].scene)
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
-        self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, .01)
+        self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, 0.0001)
         
     @property
     def camera(self): return self.current_scene.camera

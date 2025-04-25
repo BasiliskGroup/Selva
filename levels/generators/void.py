@@ -45,7 +45,7 @@ def picture_frame(void: Level) -> None:
         pf.node.rotation = glm.normalize(glm.conjugate(glm.quatLookAt(direction , (0, 1, 0)))) * glm.angleAxis(glm.pi(), (0, 1, 0))
     
     pf.passive = float_down
-    pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'bedroom1')), rotation=glm.angleAxis(glm.pi(), (0, 1, 0)), distance=4)
+    pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'bedroom1', material = game.materials['bloom_white'])), rotation=glm.angleAxis(glm.pi(), (0, 1, 0)), distance=4)
     
     void.add(pf)
     

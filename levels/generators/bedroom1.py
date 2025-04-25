@@ -22,6 +22,7 @@ def bedroom1(game: Game) -> Level:
     drawers(bedroom, key_interact)
     safe(bedroom)
     mug(bedroom)
+    safe_frame(bedroom)
     
     return bedroom
 
@@ -29,12 +30,12 @@ def mug(bedroom: Level) -> None:
     game = bedroom.game
     
     mug = Interactable(bedroom, bsk.Node(
-        position = (2.5, 2.25, 4.35),
+        position = (1.5, 2.25, 4.35),
         scale = glm.vec3(0.1),
         mesh = game.meshes['mug'],
         tags = ['empty_mug']
     ))
-    mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)))
+    mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)), top_text='mug')
     bedroom.add(mug)
 
 def this_decor(bedroom: Level) -> None:
@@ -61,7 +62,7 @@ def key(level: Level) -> Interactable:
         mesh = level.game.meshes['key']
     )
     key = Interactable(level, node)
-    key.active = pickup_function(key, interact_to_hold(key, HeldItem(level.game, key.node)))
+    key.active = pickup_function(key, interact_to_hold(key, HeldItem(level.game, key.node)), top_text='key')
     return key
 
 def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Interactable:
@@ -341,4 +342,18 @@ def safe(level: Level) -> None:
     level.add(safe)
     level.add(safe_door)
     
-
+            
+def safe_frame(bedroom: Level) -> None:
+    game = bedroom.game
+    
+    frame_node = bsk.Node(
+        position = (1.2, 0.6, 4.6),
+        mesh = game.meshes['picture_frame'], 
+        material = game.materials['picture_frame'],
+        scale = glm.vec3(0.25),
+        rotation = glm.angleAxis(-glm.pi() / 2, (1, 0, 0)) * glm.angleAxis(glm.pi() / 2, (0, 1, 0)) * glm.angleAxis(glm.pi() / 4, (0, 0, 1))
+    )
+    frame = Interactable(bedroom, frame_node)
+    frame.active = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, 'void2')))
+    
+    bedroom.add(frame)

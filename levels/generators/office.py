@@ -25,7 +25,7 @@ def generate_chain(level: Level, positions: list[glm.vec3]) -> list[bsk.Node]:
 
 def office(game: Game) -> Level:
     # create basic layout for bedroom level
-    office = Level(game, 'office', glm.vec3(0, 0, 3))
+    office = Level(game, 'office', glm.vec3(3, 0, 0))
     office.add(*rect_room(0, 0, 8, 8, 4, game.materials['dirty_carpet'], game.materials['bright_wood'], game.materials['bright_wood']))
     
     desk(office)
@@ -43,7 +43,7 @@ def office(game: Game) -> Level:
         tags = ['color_key']
     )
     key = Interactable(office, node)
-    key.active = pickup_function(key, interact_to_hold(key, HeldItem(office.game, key.node)))
+    key.active = pickup_function(key, interact_to_hold(key, HeldItem(office.game, key.node)), top_text='key')
     office.add(key)
     
     return office
@@ -61,6 +61,7 @@ def puzzle(office: Level) -> None:
     ))
     setattr(computer, 'on', False)
     setattr(computer, 'cpu_stage', 'off')
+    setattr(computer, 'cpu_timer', 0)
     
     def computer_leave_check_func(dt: float, computer=computer) -> bool:
         return not computer.on
@@ -77,9 +78,13 @@ def puzzle(office: Level) -> None:
             case 'opening':
                 # grow portal to edges of screen
                 game.portal_handler.portal.scale.y += dt / 2
-                if game.portal_handler.portal.scale.y > 0.35: computer.cpu_stage = 'teleport'
+                if game.portal_handler.portal.scale.y > 0.35: 
+                    computer.cpu_stage = 'waiting'
+                    computer.cpu_timer = 0
+            case 'waiting':
+                computer.cpu_timer += dt
+                if computer.cpu_timer > 1: computer.cpu_stage = 'teleport'
             case 'teleport':
-                
                 # exit loop with variables
                 computer.percent_lerp = 0
                 computer.step_lerp = -1
@@ -201,7 +206,7 @@ def puzzle(office: Level) -> None:
         material = game.materials['battery'],
         tags     = ['battery']
     ))
-    battery.active = pickup_function(battery, interact_to_hold(battery, HeldItem(game, battery.node)))
+    battery.active = pickup_function(battery, interact_to_hold(battery, HeldItem(game, battery.node)), top_text='battery')
     
     # add the battery box
     def check_out(dt: float) -> bool: return game.key_down(bsk.pg.K_e)
@@ -281,7 +286,7 @@ def desk(office: Level) -> None:
         material = game.materials['copper'],
         tags = ['copper_wire']
     ))
-    wire_pickup = pickup_function(wire, interact_to_hold(wire, HeldItem(game, wire.node)))
+    wire_pickup = pickup_function(wire, interact_to_hold(wire, HeldItem(game, wire.node)), top_text='copper_wire')
     def wire_active(dt: float) -> None:
         wire.passive = None
         wire_pickup(dt)
