@@ -11,7 +11,7 @@ from player.held_items.held_item import HeldItem, PictureFrame
 
 def bedroom1(game: Game) -> Level:
     # create basic layout for bedroom level
-    bedroom = Level(game, 'bedroom1', glm.vec3(0, 0, 0))
+    bedroom = Level(game, 'bedroom1', glm.vec3(2, 0, 2))
 
     decor(bedroom)
     this_decor(bedroom)
@@ -23,9 +23,10 @@ def bedroom1(game: Game) -> Level:
     mug(bedroom)
     
     # TODO temporary
-    frame = Interactable(bedroom, bsk.Node(position = (1, 1, 1), mesh = game.meshes['picture_frame'], scale = (0.1, 0.1, 0.1)))
-    frame.active = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, bedroom)))
-    bedroom.add(frame)
+    for i, name in enumerate(['bedroom1', 'office', 'boat', 'art', 'bedroom2']):
+        frame = Interactable(bedroom, bsk.Node(position = (1, i + 0.5, 1), mesh = game.meshes['picture_frame'], scale = glm.vec3(0.3), material = game.materials['picture_frame']))
+        frame.active = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, name)), rotation = glm.angleAxis(glm.pi(), (0, 1, 0)))
+        bedroom.add(frame)
     
     return bedroom
 

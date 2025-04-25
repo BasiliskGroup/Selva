@@ -2,7 +2,7 @@ import glm
 import basilisk as bsk
 from typing import Callable
 from levels.interactable import Interactable
-from player.held_items.held_item import HeldItem
+from player.held_items.held_item import HeldItem, PictureFrame
 
 def interact_to_hold(interact: Interactable, held: HeldItem) -> Callable:
     """
@@ -36,7 +36,7 @@ def interact_give_hold(interact: Interactable, held: HeldItem) -> Callable:
         
     return func
 
-def interact_to_frame(interact: Interactable, held: HeldItem) -> Callable:
+def interact_to_frame(interact: Interactable, held: PictureFrame) -> Callable:
     """
     Removes the Interactable from the scene and gives the player the held item
     """
@@ -48,5 +48,7 @@ def interact_to_frame(interact: Interactable, held: HeldItem) -> Callable:
         interact.node.node_handler.scene.remove(interact.node)
         interact.node.rotational_velocity = glm.vec3()
         game.player.item_l = held
+        game.close()
+        game.portal_handler.scene_other = game.memory_handler[held.level_name].scene
         
     return func

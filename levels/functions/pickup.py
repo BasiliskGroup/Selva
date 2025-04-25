@@ -5,7 +5,7 @@ from levels.interactable import Interactable
 from levels.functions.tactile import free
 from levels.functions.helper import down
 
-def pickup_function(interact: Interactable, end_func: Callable=None, check_func: Callable=None) -> Callable:
+def pickup_function(interact: Interactable, end_func: Callable=None, check_func: Callable=None, rotation: glm.quat=None) -> Callable:
     """
     Generates a "pick up" function for the given interactable.
     func will be activated when the player closes the pick up menu in the accept termination.
@@ -51,7 +51,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None, check_func:
         # set node's position to infront of the player # TODO this will require the same shader that Emulsion used to render HUD elements over everything else
         
         interact.node.position = game.camera.position + game.camera.forward * 1 # TODO make the distance scalable
-        interact.node.rotation = glm.conjugate(game.camera.rotation)
+        interact.node.rotation = (rotation if rotation else glm.quat()) * glm.conjugate(game.camera.rotation)
         level.scene.remove(interact.node)
         game.current_scene.add(interact.node)
         game.update = update

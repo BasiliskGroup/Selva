@@ -12,14 +12,13 @@ frame in bedroom safe - to where? (change safe code)
 improve fishing - fishing frames, blit instructions
 make pickup function look better (needs more scenes)
 add testing teleportation - add picture frame teleportation
-queue the player when picking up the picture frame
+queue the player when picking up the first picture frame
+add frame cycling with mouse scrolling
+crt on & teleport
+Maybe Fix portal delay
+increase wall width (Maybe jonah update depth test?)
 """
 
 """
-Things we need to do tonight:
-UI / Overlay scene
-Design end level
-
-Maybe:
-Fix blit
+Jonah - update blit and layered scenes
 """

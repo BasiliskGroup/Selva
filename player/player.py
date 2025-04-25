@@ -33,7 +33,10 @@ class Player():
         
         self.gravity = glm.vec3(0, -9.8, 0)
         self.control_disabled = False
-        self.camera = self.current_scene.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0)) # TODO ensure that this camera is passed between scenes depending on where the player is NOTE this will act as the main player camera
+        
+        # camera swapping
+        self.game.hold_camera = self.current_scene.camera
+        self.camera = self.game.current_scene.camera = bsk.FollowCamera(self.body_node, offset = (0, 1.5, 0))
         
         self.previous_position = glm.vec3(self.camera.position)
         
@@ -50,6 +53,7 @@ class Player():
             self.item_r_ui.update(dt)
             self.item_l_ui.update(dt)
             self.interact(dt)
+            self.picture_swap(dt)
             if self.game.right_mouse_time > 1.5: self.item_r_ui.drop()
         
         # update user node to preserve direction
@@ -59,6 +63,24 @@ class Player():
         # hover stabilizes camera and prevents player from falling
         self.position.y = 2.1
         self.velocity.y = 0
+        
+    def picture_swap(self, dt) -> None:
+        """
+        Swaps the portal in the player's hand
+        """
+        if not self.item_l: return
+        
+        current_level_name = self.item_l.level_name
+        nums = [bsk.pg.K_1, bsk.pg.K_2, bsk.pg.K_3, bsk.pg.K_4, bsk.pg.K_5, bsk.pg.K_6, bsk.pg.K_7, bsk.pg.K_8, bsk.pg.K_9]
+        for i, key in enumerate(nums): 
+            if not self.game.key_down(key): continue
+            self.item_l_ui.index = i
+            break
+        
+        if current_level_name == self.item_l.level_name: return # portal was not changed
+        self.game.close()
+        # update portal exit
+        self.game.portal_handler.scene_other = self.game.memory_handler[self.item_l.level_name].scene
         
     def teleport(self) -> None: # TODO enable with multiple scenes
         """
@@ -83,7 +105,20 @@ class Player():
         self.position = glm.vec3(position)
         self.body_node.rotation = self.body_node.rotation * glm.inverse(pc.rotation.data) * pl.rotation.data
         
-        # TODO update player scene and possibly portal node scene
+        # update player scene and possibly portal node scene
+        self.game.current_scene.remove(self.body_node)
+        
+        # swap scene and camera
+        self.game.current_scene.camera = self.game.hold_camera
+        self.game.memory_handler.current_level = self.game.memory_handler[pl.tags[1]]
+        self.game.hold_camera = self.game.current_scene.camera
+        self.game.current_scene.camera = self.camera
+        
+        # add player back to scene
+        self.game.current_scene.add(self.body_node)
+        
+        # swap rendering
+        self.game.portal_handler.swap()
         
         # update for next frame
         self.previous_position = glm.vec3(position)
