@@ -61,11 +61,13 @@ class PictureFrame(HeldItem):
         
         # play ANIMATION and store lerp value
         was1 = self.percent_moved == 1
+        was0 = self.percent_moved == 0
         self.percent_moved = glm.clamp(self.percent_moved + dt / self.ANIMATION_TIME * (2 * self.game.mouse.left_down - 1), 0, 1)
         self.offset = glm.mix(self.original_offset, self.final_offset, self.percent_moved)
         self.rotation = glm.slerp(self.original_rotation, self.final_rotation, self.percent_moved)
         
         # interact with current scene if ANIMATION is at it's maximum
+        if was0 and self.percent_moved != 0: self.game.close()
         if self.percent_moved == 1 and not was1: self.game.open(self.level)
         
     @property

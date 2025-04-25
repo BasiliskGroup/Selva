@@ -79,6 +79,7 @@ def fishing(level: Level) -> None:
     rod_pivot = bsk.Node(
         position = glm.normalize(tip_pos - handle_pos) * 0.3 + handle_pos,
         scale = glm.vec3(0.1),
+        shader = game.shaders['invisible']
     )
     pos, sca, rot = connect(handle_pos, tip_pos, 3)
     rod = Interactable(level, bsk.Node(
@@ -174,7 +175,6 @@ def fishing(level: Level) -> None:
                 if distance < 8: rod.stage = 'win'
                 elif distance > 50: rod.stage = 'lose'
                     
-            # TODO swap to pick up function
             case 'win':
                 # give the player their fish
                 bait_tag = rod.held_item.node.tags[0]
