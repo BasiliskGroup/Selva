@@ -47,14 +47,14 @@ class Game():
         
         # portals
         self.entry_portal = bsk.Node(
-            scale = (1, 2.5, 0.001),
+            scale = (1, 2.5, 0.05),
             tags = ['portal', ''],
             material = self.materials['red'],
             shader = self.shaders['invisible']
         )
         
         self.exit_portal = bsk.Node(
-            scale = (1, 2.5, 0.001),
+            scale = (1, 2.5, 0.05),
             tags = ['portal', ''],
             material = self.materials['red'],
             shader = self.shaders['invisible']
@@ -65,15 +65,15 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        self.memory_handler['void1'] = void1(self)
-        self.memory_handler['bedroom1'] = bedroom1(self)
+        # self.memory_handler['void1'] = void1(self)
+        # self.memory_handler['bedroom1'] = bedroom1(self)
         self.memory_handler['office'] = office(self)
         self.memory_handler['boat'] = boat(self)
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         self.memory_handler['void2'] = void2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['void1'].scene, self.memory_handler['void2'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['office'].scene, self.memory_handler['void2'].scene)
 
         # player
         self.player = Player(self)
@@ -104,9 +104,9 @@ class Game():
         saturation = 70
         
         png_names = [
-            'john', 'wheel_eight', 'box_three', 'picture_frame', 'fortune_dresser', 'fake_door', 'paper', 'safe_door', 'lamp', 'bed', 'picture_frame_white',
+            'john', 'wheel_eight', 'box_three', 'picture_frame', 'fortune_dresser', 'fake_door', 'paper', 'safe_door', 'lamp', 'bed',
             'crt', 'hang_in_there', 'battery_box', 'office_window', 'coffee_maker', 'battery', 'coffee_mug', 'bulb', 'calendar', 'drawer_color', 'i_love_barcodes', 'scan_me',
-            'boat', 'fishing_rod', 'flounder', 'tuna', 'tilapia', 'herring', 'bass', 'bait_bucket', 'worm', 'squid', 'squid_red', 'squid_orange', 'squid_yellow', 'squid_green', 'squid_blue', 'squid_purple',
+            'boat', 'fishing_rod', 'flounder', 'tuna', 'tilapia', 'herring', 'bass', 'bait_bucket', 'worm', 'squid', 'squid_red', 'squid_orange', 'squid_yellow', 'squid_green', 'squid_blue', 'squid_purple', 'fish_master_2002',
             'art_table', 'bear_chair', 'art_wall', 'art_ceiling', 'paint_bucket_red', 'paint_bucket_blue', 'paint_bucket_yellow', 'window_two_pane', 'color_combos', 'color_key', 'key_key', 'water_mug', 'key_color'
         ] + [f'key{i}' for i in range(1, 10)]
         
@@ -194,6 +194,8 @@ class Game():
     def main_update(self) -> None:
         self.ui.update(self.engine.delta_time)
         
+        self.player.teleport()
+        
         # update interactibles in the current level
         for interact in self.current_level.interactables.values():
             if interact.passive: interact.passive(self.engine.delta_time)
@@ -240,7 +242,7 @@ class Game():
         self.exit_portal.node_handler.scene.remove(self.exit_portal)
         self.portal_handler.portal.position.y = -100
         
-    def open(self, exit: Level, forward_distance: float=0.2, scale: glm.vec3=None, position: glm.vec3=None) -> None:
+    def open(self, exit: Level, forward_distance: float=0.2, scale: glm.vec3=None, position: glm.vec3=None, exit_position: glm.vec3=None) -> None:
         """
         Despawns current portals and opens them in new scenes
         """
@@ -255,13 +257,13 @@ class Game():
         rotation = glm.conjugate(glm.quatLookAt(self.camera.horizontal, (0, 1, 0)))
             
         # add entry portal at player location
-        self.entry_portal.position = self.player.position + self.camera.forward * forward_distance if position is None else glm.vec3(position)
+        self.entry_portal.position = (self.player.position + self.camera.forward * forward_distance + glm.vec3(0, 0.5, 0)) if position is None else glm.vec3(position)
         self.entry_portal.rotation = rotation
         self.entry_portal.tags[1] = entry.name
         self.current_level.add(self.entry_portal)
         
         # add portal at destination level
-        self.exit_portal.position = exit.portal_position + glm.vec3(0, 2, 0)
+        self.exit_portal.position = exit.portal_position + glm.vec3(0, 2.6, 0) if exit_position is None else glm.vec3(exit_position)
         self.exit_portal.rotation = rotation
         self.exit_portal.tags[1] = exit.name
         exit.add(self.exit_portal)
@@ -270,7 +272,7 @@ class Game():
         self.portal_handler.set_scenes(self.current_scene, self.memory_handler[exit.name].scene)
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
-        self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, .01)
+        self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, 0.0001)
         
     @property
     def camera(self): return self.current_scene.camera

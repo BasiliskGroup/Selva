@@ -61,6 +61,7 @@ def puzzle(office: Level) -> None:
     ))
     setattr(computer, 'on', False)
     setattr(computer, 'cpu_stage', 'off')
+    setattr(computer, 'cpu_timer', 0)
     
     def computer_leave_check_func(dt: float, computer=computer) -> bool:
         return not computer.on
@@ -77,9 +78,13 @@ def puzzle(office: Level) -> None:
             case 'opening':
                 # grow portal to edges of screen
                 game.portal_handler.portal.scale.y += dt / 2
-                if game.portal_handler.portal.scale.y > 0.35: computer.cpu_stage = 'teleport'
+                if game.portal_handler.portal.scale.y > 0.35: 
+                    computer.cpu_stage = 'waiting'
+                    computer.cpu_timer = 0
+            case 'waiting':
+                computer.cpu_timer += dt
+                if computer.cpu_timer > 1: computer.cpu_stage = 'teleport'
             case 'teleport':
-                
                 # exit loop with variables
                 computer.percent_lerp = 0
                 computer.step_lerp = -1

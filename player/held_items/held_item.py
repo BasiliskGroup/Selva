@@ -1,5 +1,5 @@
 import glm
-from basilisk import Node, FollowCamera
+from basilisk import Node, FollowCamera, Material
 from typing import Callable, Any
 from helper.transforms import connect
 from helper.type_hints import Game, Level, Player
@@ -20,7 +20,7 @@ class HeldItem():
     
 class PictureFrame(HeldItem):
     
-    def __init__(self, game: Game, level_name: str):
+    def __init__(self, game: Game, level_name: str, material: Material=None):
         # Information for creating portals
         self.level_name = level_name
         self.portal = Node(
@@ -31,7 +31,7 @@ class PictureFrame(HeldItem):
         # variables to be sent to the parent
         node = Node(
             scale = (0.2, 0.2, 0.2),
-            material = game.materials['picture_frame'],
+            material = material if material else game.materials['picture_frame'],
             mesh = game.meshes['empty_frame']
         )
         

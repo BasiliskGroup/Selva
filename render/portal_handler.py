@@ -65,17 +65,6 @@ class PortalHandler:
         self.portal_scene.camera.rotation = self.main_scene.camera.rotation
         self.portal_scene.update(render=False)
 
-        # # update portals
-        # position_difference = self.main_scene.camera.position - self.portal.position
-        # look_difference = self.other_scene.camera.rotation * glm.inverse(self.portal.rotation.data) * self.other_rotation
-
-        # self.other_scene.camera.position = self.other_position + position_difference
-        # self.other_scene.camera.rotation = self.main_scene.camera.rotation
-        
-        # self.portal_scene.update(render=False)
-        
-        
-
     def render(self):
         """
         Renders both of the active scenes and renders the portals
@@ -127,7 +116,7 @@ class PortalHandler:
         """
         
         """
-        
+        print(main_position, other_position)
         self.portal.position = glm.vec3(main_position)
         self.other_position = glm.vec3(other_position)
 

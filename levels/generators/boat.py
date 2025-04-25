@@ -16,12 +16,21 @@ from ui.effects import ImageBounce
 def boat(game: Game) -> Level:
     level = Level(game, 'boat', glm.vec3(0, -100, 0))
     
+    loading_node(level)
     fishing(level)
     load_boat(level)
     bucket(level)
     fish_book(level)
     
     return level
+
+def loading_node(level) -> None:
+    level.add(bsk.Node(
+        position = glm.vec3(-6.5, -97.45, 0),
+        scale = glm.vec3(1, 4, 3),
+        rotation = glm.angleAxis(-glm.pi() / 2, (1, 0, 0)),
+        material = level.game.materials['fish_master_2002']
+    ))
 
 def fish_book(level: Level) -> None:
     game = level.game
@@ -227,7 +236,7 @@ def fishing(level: Level) -> None:
                 rod.percent_lerp = 0
                 rod.step_lerp = -1
                 game.player.control_disabled = False
-                game.player.camera.rotation = glm.conjugate(glm.quatLookAt((1, 0, 0), (0, 1, 0)))
+                game.player.camera.rotation = glm.conjugate(glm.quatLookAt((0, 0, 1), (0, 1, 0)))
             
     def rod_loop_check_func(dt: float) -> None: return rod.stage in ['bait']
         
