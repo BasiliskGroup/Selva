@@ -15,7 +15,3 @@ queue the player when picking up the first picture frame
 add frame cycling with mouse scrolling
 crt on & teleport
 """
-
-"""
-Jonah - update blit and layered scenes
-"""

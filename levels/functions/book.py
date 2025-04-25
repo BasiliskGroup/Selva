@@ -20,6 +20,7 @@ def book(interact: Interactable, pages: list[Callable]) -> Callable:
         game.camera = camera
         game.player.body_node.velocity = glm.vec3(0)
         forced_stay = True
+        game.player.control_disabled = True
         
         def update():
             # update every frame
@@ -54,14 +55,15 @@ def book(interact: Interactable, pages: list[Callable]) -> Callable:
             
             # continue/exit function
             if not game.key_down(bsk.pg.K_e) and not exit or forced_stay: game.update = update
-            else: game.camera = game.player.camera
+            else: 
+                game.camera = game.player.camera
+                game.player.control_disabled = False
             forced_stay = False
             
             # update page and game
             pages[interact.page_number](dt)
             bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
-            level.update()
-            game.engine.update()
+            game.main_update()
             
         game.update = update
         

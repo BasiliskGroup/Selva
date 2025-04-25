@@ -188,6 +188,9 @@ class Game():
         
         # standard ui
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
+        self.main_update()
+        
+    def main_update(self) -> None:
         self.ui.update(self.engine.delta_time)
         
         # update interactibles in the current level
@@ -236,7 +239,7 @@ class Game():
         self.exit_portal.node_handler.scene.remove(self.exit_portal)
         self.portal_handler.portal.position.y = -100
         
-    def open(self, exit: Level) -> None:
+    def open(self, exit: Level, forward_distance: float=0.2, scale: glm.vec3=None) -> None:
         """
         Despawns current portals and opens them in new scenes
         """
@@ -251,7 +254,7 @@ class Game():
         rotation = glm.conjugate(glm.quatLookAt(self.camera.horizontal, (0, 1, 0)))
             
         # add entry portal at player location
-        self.entry_portal.position = self.player.position + self.camera.forward * 0.2
+        self.entry_portal.position = self.player.position + self.camera.forward * forward_distance
         self.entry_portal.rotation = rotation
         self.entry_portal.tags[1] = entry.name
         self.current_level.add(self.entry_portal)
@@ -266,6 +269,7 @@ class Game():
         self.portal_handler.set_scenes(self.current_scene, self.memory_handler[exit.name].scene)
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
+        self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, .01)
         
     @property
     def camera(self): return self.current_scene.camera

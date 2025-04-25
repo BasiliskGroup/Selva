@@ -44,10 +44,8 @@ def pan_loop(interact: Interactable, time: float=1, position: glm.vec3=None, rot
             if loop_func and interact.percent_lerp == 1 and interact.step_lerp == 1: loop_func(dt) # placed after game.update reset to allow breaking without panning out
 
             forced_stay = False
-            level.update()
             bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
-            game.ui.update(dt)
-            game.engine.update()
+            game.main_update()
         
         # exit procedure for pan
         game.update = update
