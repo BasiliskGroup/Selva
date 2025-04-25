@@ -262,7 +262,7 @@ class Game():
         exit.add(self.exit_portal)
         
         # set portal positions in handler
-        self.portal_handler.other_scene = self.memory_handler[exit.name].scene
+        self.portal_handler.set_scenes(self.current_scene, self.memory_handler[exit.name].scene)
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
         

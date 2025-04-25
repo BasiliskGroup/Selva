@@ -49,14 +49,31 @@ def puzzle(office: Level) -> None:
         material = game.materials['crt']
     ))
     setattr(computer, 'on', False)
+    setattr(computer, 'stage', 'off')
+    
+    def computer_leave_check_func(dt: float) -> bool:
+        return not computer.on
     
     def computer_loop_func(dt: float) -> None: 
-        if computer.on: 
-            print('teleport')
-            game.update = game.primary_update
+        if not computer.on: return
+        match computer.stage:
+            case 'off':
+                # create portal
+                game.close()
+                game.open(game.memory_handler['boat'])
+                # game.portal_handler.portal.scale = glm.vec3()
+                computer.stage = 'opening'
+            case 'opening':
+                # grow portal to edges of screen
+                # game.portal_handler.portal.scale = 
+                computer.stage = 'teleport'
+            case 'teleport':
+                # teleport the player
+                # exit loop with variables
+                computer.stage = 'off'
     
     def computer_active(dt: float) -> None:
-        pan_loop(computer, time = 0.5, position = (0.5, 2.4, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func)(dt)
+        pan_loop(computer, time = 0.5, position = (0.5, 2.4, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func, leave_check_func = computer_leave_check_func)(dt)
     
     computer.active = computer_active
     
@@ -256,7 +273,7 @@ def desk(office: Level) -> None:
         wire.passive = None
         wire_pickup(dt)
     
-    def wire_passive(dt: float) -> None: wire.node.position.x = bottom_drawer.node.position.x
+    def wire_passive(dt: float) -> None: wire.node.position.x = bottom_drawer.node.position.x + 0.5
     wire.passive = wire_passive
     wire.active = wire_active
     
