@@ -72,7 +72,7 @@ class Game():
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['void'].scene, self.memory_handler['bedroom2'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['boat'], self.memory_handler['bedroom2'])
 
         # player
         self.player = Player(self)
@@ -197,8 +197,8 @@ class Game():
         for interact in self.current_level.interactables.values():
             if interact.passive: interact.passive(self.engine.delta_time)
         
-        self.portal_handler.main_scene.update(render=False)
-        self.portal_handler.other_scene.update(render=False)
+        # self.portal_handler.main_scene.update(render=False)
+        # self.portal_handler.other_scene.update(render=False)
         
         self.ui_scene.camera.position = self.camera.position
         self.ui_scene.camera.rotation = self.camera.rotation
