@@ -53,18 +53,26 @@ class PortalHandler:
             self.frame_portal.position = self.game.player.item_l_ui.node.position + self.game.camera.forward * -0.05
             self.frame_portal.rotation = self.game.player.item_l_ui.node.rotation
 
-        # update portals
         position_difference = self.main_scene.camera.position - self.portal.position
         look_difference = self.other_scene.camera.rotation * glm.inverse(self.portal.rotation.data) * self.other_rotation
 
         self.other_scene.camera.position = self.other_position + position_difference
         self.other_scene.camera.rotation = self.main_scene.camera.rotation
         
+        self.portal_scene.update(render=False)
         self.portal_scene.camera.position = self.main_scene.camera.position
         self.portal_scene.camera.rotation = self.main_scene.camera.rotation
+
+        # # update portals
+        # position_difference = self.main_scene.camera.position - self.portal.position
+        # look_difference = self.other_scene.camera.rotation * glm.inverse(self.portal.rotation.data) * self.other_rotation
+
+        # self.other_scene.camera.position = self.other_position + position_difference
+        # self.other_scene.camera.rotation = self.main_scene.camera.rotation
+        
+        # self.portal_scene.update(render=False)
         
         
-        self.portal_scene.update(render=False)
 
     def render(self):
         """
@@ -74,20 +82,14 @@ class PortalHandler:
         # Render the base scenes
         self.portal_scene.render(self.portal_fbo)
         self.other_shader.bind(self.portal_scene.frame.input_buffer.depth, 'testTexture', 1)
-        self.other_scene.render()
-        self.main_scene.render()
-        self.other_scene.frame.render(self.other_fbo)
-        self.main_fbo.clear()
-        self.main_scene.frame.render(self.main_fbo)
+        self.other_scene.render(self.other_fbo)
+        self.main_scene.render(self.main_fbo)
 
         # Render the portals, using the other fbo texture
         self.portal_fbo.clear()
         self.portal_scene.render(self.portal_fbo)
 
         # Render the combined scene
-        # self.main_fbo.save('main_fbo')
-        # self.other_fbo.save('other_fbo')
-        self.combine_shader.bind(self.main_scene.frame.output_buffer.texture, 'mainTexture', 3)
         self.combine_fbo.render(self.ctx.screen, auto_bind=False)
 
     def set_scenes(self, main_scene: bsk.Scene, other_scene: bsk.Scene):
@@ -139,6 +141,7 @@ class PortalHandler:
         """
         
         """
+
         self.main_scene.camera.position = self.other_position + self.main_scene.camera.position - self.portal.position
         self.portal.rotation, self.other_rotation = self.other_rotation, self.portal.rotation
         self.portal.position, self.other_position = glm.vec3(self.other_position), glm.vec3(self.portal.position.data)

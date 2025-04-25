@@ -92,7 +92,7 @@ class Game():
     
     def key_down(self, key: int) -> bool:
         """
-        Determiones if a key has been pressed by the user
+        Determines if a key has been pressed by the user
         """
         return self.keys[key] and not self.previous_keys[key]
     
