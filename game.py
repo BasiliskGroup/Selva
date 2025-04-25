@@ -82,7 +82,7 @@ class Game():
         self.update = self.primary_update
 
         self.main_menu = MainMenu(self)
-        self.main_menu.start()
+        # self.main_menu.start()
 
     def adjacent_levels(self, origin_level: Level) -> set[Level]:
         """
@@ -92,7 +92,7 @@ class Game():
     
     def key_down(self, key: int) -> bool:
         """
-        Determiones if a key has been pressed by the user
+        Determines if a key has been pressed by the user
         """
         return self.keys[key] and not self.previous_keys[key]
     
