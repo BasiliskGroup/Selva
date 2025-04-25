@@ -197,6 +197,8 @@ class Game():
         for interact in self.current_level.interactables.values():
             if interact.passive: interact.passive(self.engine.delta_time)
         
+        self.player.control_disabled = False
+
         # self.portal_handler.main_scene.update(render=False)
         # self.portal_handler.other_scene.update(render=False)
         
