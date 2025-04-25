@@ -25,8 +25,8 @@ class Player():
         self.current_scene.add(self.body_node)
         
         # variables for controling the player's held items
-        self.item_r_ui = HeldUI(self.game, glm.vec3(0.45, -0.25, 1.2))
-        self.item_l_ui = HeldUI(self.game, glm.vec3(-0.45, -0.25, 1.2))
+        self.item_r_ui = HeldUI(self.game, glm.vec3(0.45, -0.5, 1.2))
+        self.item_l_ui = HeldUI(self.game, glm.vec3(-0.45, -0.5, 1.2))
         
         # game interaction variables
         self.fish_tracker = FishTracker()
@@ -80,7 +80,7 @@ class Player():
         if current_level_name == self.item_l.level_name: return # portal was not changed
         self.game.close()
         # update portal exit
-        self.game.portal_handler.scene_other = self.game.memory_handler[self.item_l.level_name].scene
+        self.game.portal_handler.set_scenes(self.game.current_scene, self.game.memory_handler[self.item_l.level_name].scene)
         
     def teleport(self) -> None: # TODO enable with multiple scenes
         """
