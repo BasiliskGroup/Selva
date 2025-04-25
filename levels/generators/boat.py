@@ -99,6 +99,7 @@ def fishing(level: Level) -> None:
         scale = glm.vec3(0.5),
         rotation = glm.conjugate(glm.quatLookAt(ortho_vector, (0, 1, 0))),
         mesh = game.meshes['crank'],
+        material = game.materials['crank_cw'],
         relative_scale=False
     )
     rod.node.add(fishing_reel)

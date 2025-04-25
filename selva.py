@@ -8,6 +8,7 @@ while game.engine.running:
 # Fortnite
 
 """
+void scene
 improve fishing - difficulty
 queue the player when picking up the first picture frame
 add frame cycling with mouse scrolling
