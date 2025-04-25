@@ -204,18 +204,26 @@ def fishing(level: Level) -> None:
                     # give the player a fish
                     fish = game.player.fish_tracker.get_fish()
                     new_record = game.player.fish_tracker.log(fish)
-                    print(new_record, fish)
                     
                     caught = Interactable(level, bsk.Node(
                         scale = glm.vec3(fish.length),
                         mesh = game.meshes[fish.kind],
-                        material = game.materials[fish.kind]
+                        material = game.materials[fish.kind],
+                        tags = [fish.kind, 'new_record' if new_record else '']
                     ))
                 
                 def always_false() -> bool: return False
                 
                 if caught.node.mesh == game.meshes['picture_frame']: pickup_function(caught, interact_to_frame(caught, PictureFrame(game, 'art')), always_false)(dt)
-                else: pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false, distance = 4, rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)))(dt)
+                else: 
+                    bottom_text = None
+                    match caught.node.tags[0]:
+                        case 'battery': top_text = 'battery'
+                        case 'paint_brush': top_text = 'pyjama_squid'
+                        case _: 
+                            top_text = caught.node.tags[0]
+                            bottom_text = caught.node.tags[1] if caught.node.tags[1] == 'new_record' else None
+                    pickup_function(caught, interact_to_hold(caught, HeldItem(game, caught.node)), always_false, distance = 4, rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), top_text = top_text, bottom_text = bottom_text)(dt)
                 
                 # remove bait from rod
                 rod.held_item = None

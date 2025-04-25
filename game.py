@@ -18,13 +18,17 @@ class Game():
     def __init__(self) -> None:
         # Basilisk Engine overhead
         self.engine = bsk.Engine()   
+        
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.ui_fbo = bsk.Framebuffer(self.engine)
         self.ui_scene.sky = None
         self.ui_scene.camera = bsk.StaticCamera()
+        
         self.overlay_scene = bsk.Scene(self.engine) # this scene will render over 
         self.overlay_scene.sky = None
-        self.overlay_scene.add(bsk.Node(scale = (1, 10, 1)))
+        self.overlay_scene.camera = bsk.StaticCamera()
+        self.overlay_fbo = bsk.Framebuffer(self.engine)
+        self.overlay_on = False
 
         # Create the loading screen
         self.engine.mouse.grab = False
@@ -60,20 +64,50 @@ class Game():
             shader = self.shaders['invisible']
         )
         
+        # overlay scene
+        self.overlay_scene.add(bsk.Node(
+            mesh = self.meshes['four_star'],
+            scale = glm.vec3(1.5),
+            material = self.materials['bloom_copper'],
+            rotational_velocity=(0, 0, 1)
+        ))
+        self.overlay_scene.add(bsk.Node(
+            mesh = self.meshes['four_star'],
+            scale = glm.vec3(1.5),
+            material = self.materials['bloom_copper'],
+            rotation = glm.angleAxis(glm.pi() / 4, (0, 0, 1)),
+            rotational_velocity=(0, 0, 1)
+        ))
+        self.overlay_scene.add(bsk.Node(
+            position = (0, 0, 1),
+            scale = glm.vec3(1),
+            material = self.materials['bloom_yellow'],
+            mesh = self.meshes['four_star'],
+            rotation = glm.angleAxis(glm.pi() / 4, (0, 0, 1)),
+            rotational_velocity=(0, 0, -1)
+        ))
+        self.overlay_scene.add(bsk.Node(
+            position = (0, 0, 1),
+            scale = glm.vec3(1),
+            material = self.materials['bloom_yellow'],
+            mesh = self.meshes['four_star'],
+            rotational_velocity=(0, 0, -1)
+        ))
+        
         # ui
         self.ui = UI(self)
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        # self.memory_handler['void1'] = void1(self)
-        # self.memory_handler['bedroom1'] = bedroom1(self)
+        self.memory_handler['void1'] = void1(self)
+        self.memory_handler['bedroom1'] = bedroom1(self)
         self.memory_handler['office'] = office(self)
         self.memory_handler['boat'] = boat(self)
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         self.memory_handler['void2'] = void2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['office'].scene, self.memory_handler['void2'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['void1'].scene, self.memory_handler['void2'].scene)
 
         # player
         self.player = Player(self)
@@ -130,6 +164,8 @@ class Game():
         self.materials['copper'] = bsk.Material(color = (255, 149, 0))
         self.materials['bedroom_floor'] = bsk.Material(color = (105, 94, 86))
         self.materials['bedroom_wall'] = bsk.Material(color = (195, 190, 183))
+        self.materials['bloom_copper'] = bsk.Material(color = (255, 149, 0), emissive_color=(300, 200, 50))
+        self.materials['bloom_yellow'] = bsk.Material(color = (211, 198, 74), emissive_color=(260, 250, 120))
         
     def load_images(self) -> None:
         """
@@ -189,13 +225,11 @@ class Game():
         
         # standard ui
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
+        self.player.teleport()
+        self.ui.update(self.engine.delta_time)
         self.main_update()
         
     def main_update(self) -> None:
-        self.ui.update(self.engine.delta_time)
-        
-        self.player.teleport()
-        
         # update interactibles in the current level
         for interact in self.current_level.interactables.values():
             if interact.passive: interact.passive(self.engine.delta_time)
@@ -215,10 +249,17 @@ class Game():
         self.portal_handler.render()
 
         self.ui_scene.render(self.ui_fbo)
+        if self.overlay_on:
+            self.overlay_scene.update(render=False)
+            self.overlay_scene.render(self.overlay_fbo)
+        
         self.engine.ctx.disable(mgl.DEPTH_TEST)
         self.engine.ctx.enable(mgl.BLEND)
         self.engine.ctx.blend_func = mgl.DEFAULT_BLENDING
+        
         self.ui_fbo.render()
+        if self.overlay_on: self.overlay_fbo.render()
+        
         self.engine.draw_handler.render()
         self.engine.ctx.enable(mgl.DEPTH_TEST)
         self.engine.ctx.disable(mgl.BLEND)

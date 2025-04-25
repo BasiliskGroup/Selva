@@ -35,7 +35,7 @@ def mug(bedroom: Level) -> None:
         mesh = game.meshes['mug'],
         tags = ['empty_mug']
     ))
-    mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)))
+    mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)), top_text='mug')
     bedroom.add(mug)
 
 def this_decor(bedroom: Level) -> None:
@@ -62,7 +62,7 @@ def key(level: Level) -> Interactable:
         mesh = level.game.meshes['key']
     )
     key = Interactable(level, node)
-    key.active = pickup_function(key, interact_to_hold(key, HeldItem(level.game, key.node)))
+    key.active = pickup_function(key, interact_to_hold(key, HeldItem(level.game, key.node)), top_text='key')
     return key
 
 def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Interactable:

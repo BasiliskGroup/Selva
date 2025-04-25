@@ -4,7 +4,7 @@ from typing import Callable
 from levels.interactable import Interactable
 import time
 
-def free(interact: Interactable, node: bsk.Node=None, sensitivity: float=0.35) -> Callable:
+def free(interact: Interactable, node: bsk.Node=None, sensitivity: float=0.35, camera: bsk.FreeCamera=None) -> Callable:
     """
     Generates a function that allows the user to spin the given node.
     interact requires the following attributes: timer
@@ -13,13 +13,14 @@ def free(interact: Interactable, node: bsk.Node=None, sensitivity: float=0.35) -
     level = interact.level
     game = level.game
     node = node if node else interact.node
+    camera = camera if camera else level.scene.camera
     
     def func(dt: float) -> None:
         interact.timer += dt
         rel_x, rel_y = game.engine.mouse.relative
         node.rotational_velocity = node.rotational_velocity * (1 - dt) if glm.length2(node.rotational_velocity) > 1e-7 else glm.vec3(0, 0, 0)
         if game.engine.mouse.left_down and (rel_x != 0 or rel_y != 0 or interact.timer > 0.1):
-            node.rotational_velocity = level.scene.camera.rotation * glm.vec3(rel_y * sensitivity, rel_x * sensitivity, 0)
+            node.rotational_velocity = camera.rotation * glm.vec3(rel_y * sensitivity, rel_x * sensitivity, 0)
             interact.timer = 0
         
     return func
