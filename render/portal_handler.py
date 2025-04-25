@@ -157,3 +157,7 @@ class PortalHandler:
         self.main_scene, self.other_scene = self.other_scene, self.main_scene
 
         self.bind_all()
+
+        self.portal_scene.camera.position = self.main_scene.camera.position
+        self.portal_scene.camera.rotation = self.main_scene.camera.rotation
+        self.portal_scene.update(render=False)

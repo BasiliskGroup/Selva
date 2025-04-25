@@ -211,7 +211,7 @@ class Game():
         self.ui_scene.render(self.ui_fbo)
         self.engine.ctx.disable(mgl.DEPTH_TEST)
         self.engine.ctx.enable(mgl.BLEND)
-        self.engine.ctx.blend_func = mgl.ADDITIVE_BLENDING
+        self.engine.ctx.blend_func = mgl.DEFAULT_BLENDING
         self.ui_fbo.render()
         self.engine.ctx.enable(mgl.DEPTH_TEST)
         self.engine.ctx.disable(mgl.BLEND)
