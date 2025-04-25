@@ -110,7 +110,7 @@ class PortalHandler:
         """
         
         # Fixes a Basilisk bug :P
-        self.other_shader.bind(self.other_scene.sky.texture_cube, 'skyboxTexture', 8)
+        if self.other_scene.sky: self.other_shader.bind(self.other_scene.sky.texture_cube, 'skyboxTexture', 8)
         
         # Bind all stages
         self.other_shader.bind  (self.portal_scene.frame.input_buffer.depth, 'testTexture', 1)
