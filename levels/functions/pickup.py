@@ -23,7 +23,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None, check_func:
         actions(game.engine.delta_time)
         bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
         if top_text: bsk.draw.blit(game.engine, game.images[f'label_{top_text}.png'], (game.win_size.x // 8 * 3, game.win_size.y // 10, game.win_size.x // 4, game.win_size.y // 10))
-        if bottom_text: bsk.draw.blit(game.engine, game.images[f'label_{bottom_text}.png'], (game.win_size.x // 8 * 3, game.win_size.y // 10 * 6, game.win_size.x // 4, game.win_size.y // 10))
+        if bottom_text: bsk.draw.blit(game.engine, game.images[f'label_{bottom_text}.png'], (game.win_size.x // 8 * 3, game.win_size.y // 10 * 8, game.win_size.x // 4, game.win_size.y // 10))
         
         # TODO grey out background
         

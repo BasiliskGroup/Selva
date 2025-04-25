@@ -99,15 +99,15 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        self.memory_handler['void1'] = void1(self)
-        self.memory_handler['bedroom1'] = bedroom1(self)
-        self.memory_handler['office'] = office(self)
+        # self.memory_handler['void1'] = void1(self)
+        # self.memory_handler['bedroom1'] = bedroom1(self)
+        # self.memory_handler['office'] = office(self)
         self.memory_handler['boat'] = boat(self)
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         self.memory_handler['void2'] = void2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['void1'].scene, self.memory_handler['void2'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['boat'].scene, self.memory_handler['void2'].scene)
 
         # player
         self.player = Player(self)
@@ -226,10 +226,10 @@ class Game():
         # standard ui
         bsk.draw.circle(self.engine, (0, 0, 0), (self.engine.win_size[0] / 2, self.engine.win_size[1] / 2), radius = 2)
         self.player.teleport()
-        self.ui.update(self.engine.delta_time)
         self.main_update()
         
     def main_update(self) -> None:
+        self.ui.update(self.engine.delta_time)
         # update interactibles in the current level
         for interact in self.current_level.interactables.values():
             if interact.passive: interact.passive(self.engine.delta_time)
