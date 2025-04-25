@@ -157,7 +157,7 @@ def drawers(bedroom: Level, key: Interactable) -> None:
     def frame_passive(dt: float) -> None:
         frame.node.position.z = locked_drawer.node.position.z + 0.25
     
-    frame_pickup = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, bedroom)))
+    frame_pickup = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, 'office')))
     def frame_active(dt: float) -> None:
         frame.passive = None
         frame_pickup(dt)
