@@ -273,7 +273,7 @@ def desk(office: Level) -> None:
         wire.passive = None
         wire_pickup(dt)
     
-    def wire_passive(dt: float) -> None: wire.node.position.x = bottom_drawer.node.position.x + 0.5
+    def wire_passive(dt: float) -> None: wire.node.position.x = bottom_drawer.node.position.x + 0.25
     wire.passive = wire_passive
     wire.active = wire_active
     

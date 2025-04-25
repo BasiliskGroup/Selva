@@ -65,14 +65,14 @@ class Game():
         
         # level layout
         self.memory_handler = MemoryHandler(self)
-        self.memory_handler['void'] = void(self)
-        self.memory_handler['bedroom1'] = bedroom1(self)
-        self.memory_handler['office'] = office(self)
+        # self.memory_handler['void'] = void(self)
+        # self.memory_handler['bedroom1'] = bedroom1(self)
+        # self.memory_handler['office'] = office(self)
         self.memory_handler['boat'] = boat(self)
         self.memory_handler['art'] = art(self)
         self.memory_handler['bedroom2'] = bedroom2(self)
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['void'].scene, self.memory_handler['office'].scene)
+        self.portal_handler = PortalHandler(self, self.memory_handler['boat'].scene, self.memory_handler['bedroom2'].scene)
 
         # player
         self.player = Player(self)
@@ -213,10 +213,11 @@ class Game():
         self.engine.ctx.enable(mgl.BLEND)
         self.engine.ctx.blend_func = mgl.DEFAULT_BLENDING
         self.ui_fbo.render()
+        self.engine.draw_handler.render()
         self.engine.ctx.enable(mgl.DEPTH_TEST)
         self.engine.ctx.disable(mgl.BLEND)
 
-        self.engine.update(render=True)
+        self.engine.update(render=False)
         
     def track_io_holds(self) -> None:
         """
