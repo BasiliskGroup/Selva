@@ -52,6 +52,13 @@ class PortalHandler:
         if self.game.player.item_l:
             self.frame_portal.position = self.game.player.item_l_ui.node.position + self.game.camera.forward * -0.05
             self.frame_portal.rotation = self.game.player.item_l_ui.node.rotation
+            if not self.game.portal_open:
+                rotation = glm.conjugate(glm.quatLookAt(self.game.camera.horizontal, (0, 1, 0)))
+                position = glm.vec3(self.game.player.position.data)
+                position.y = 1.25
+                self.set_positions(position, position)
+                self.set_rotations(rotation, rotation)
+        print(self.other_position)
 
         position_difference = self.main_scene.camera.position - self.portal.position
         look_difference = self.other_scene.camera.rotation * glm.inverse(self.portal.rotation.data) * self.other_rotation
