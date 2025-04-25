@@ -12,7 +12,8 @@ from player.held_items.held_item import HeldItem, PictureFrame
 
 def bedroom2(game: Game) -> Level:
     bedroom = Level(game, 'bedroom2', glm.vec3(2, 0, 2))
-    decor(bedroom)
+    def note_func(dt: float) -> None: bsk.draw.blit(game.engine, game.images['bedroom_note2.png'], (0, 0, game.win_size.x, game.win_size.y))
+    decor(bedroom, note_func)
     safe(bedroom)
     drawers(bedroom)
     

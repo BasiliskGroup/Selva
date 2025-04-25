@@ -82,7 +82,7 @@ class Player():
         # update portal exit
         self.game.portal_handler.set_scenes(self.game.current_scene, self.game.memory_handler[self.item_l.level_name].scene)
         
-    def teleport(self) -> None: # TODO enable with multiple scenes
+    def teleport(self) -> None:
         """
         Teleports the player through a portal if they have collided with one between frames
         """
@@ -99,6 +99,7 @@ class Player():
         # transform position/rotation relative to portal
         pc, pl = (self.game.entry_portal, self.game.exit_portal) if self.game.entry_portal == collision.node else (self.game.exit_portal, self.game.entry_portal)
         position = plane_mirror(self.previous_position, pc.position.data, collision.normal)
+        self.camera.position = position
         
         mc = pl.model_matrix * glm.inverse(pc.model_matrix) * self.camera_model_matrix
         position = glm.vec3(mc[3])
@@ -108,10 +109,9 @@ class Player():
         self.swap_to_level(pl.tags[1], position)
     
     def swap_to_level(self, level_name: str, position: glm.vec3) -> None:
+        print('swapping to', level_name)
         # update player scene and possibly portal node scene
         self.game.current_scene.remove(self.body_node)
-        
-        print('swapping to', level_name)
         
         # swap scene and camera
         self.game.current_scene.camera = self.game.hold_camera
@@ -153,8 +153,6 @@ class Player():
         if proposed == (0, 0, 0): self.body_node.velocity *= (1 - self.DECELERATION_COEFFICIENT * dt)
         else: self.body_node.velocity = self.SPEED * glm.normalize(proposed)
         
-        # TODO add jumping once camera is stabilized
-        
     def interact(self, dt: float) -> None:
         """
         If the player is pressing E, interact with what they are looking at. 
@@ -170,7 +168,7 @@ class Player():
         if interactable.active: interactable.active(dt)
 
     @property
-    def position(self): return self.body_node.position # TODO offset this position to be at the node's feet
+    def position(self): return self.body_node.position
     @property
     def velocity(self): return self.body_node.velocity
     @position.setter
@@ -187,7 +185,6 @@ class Player():
     @property
     def current_level(self) -> Level: return self.game.current_level
     
-    # TODO check if this is needed for the game
     @property
     def control_disabled(self): return self._control_disabled
     @control_disabled.setter

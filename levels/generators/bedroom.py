@@ -3,8 +3,10 @@ import glm
 from levels.level import Level
 from levels.helper import rect_room
 from levels.functions.imports import *
+from typing import Callable
+from levels.interactable import Interactable
 
-def decor(bedroom: Level) -> None:
+def decor(bedroom: Level, note_func: Callable) -> None:
     game = bedroom.game
     bedroom.add(*rect_room(0, 0, 5.75, 6.75, 4, floor_material = game.materials['bedroom_floor'], wall_material = game.materials['bedroom_wall'], ceil_material = game.materials['light_white']))
     # bed
@@ -67,3 +69,14 @@ def decor(bedroom: Level) -> None:
         static = True,
         shader = game.shaders['invisible']
     ))
+    
+    # note
+    note = Interactable(bedroom, bsk.Node(
+        position = (3.75, 2.1, 4.35),
+        scale = glm.vec3(0.5),
+        rotation = glm.quat(),
+        mesh = game.meshes['paper'],
+        material = game.materials['paper']
+    ))
+    note.active = book(note, [note_func])
+    bedroom.add(note)
