@@ -9,6 +9,7 @@ from images.images import images
 from memories.memory_handler import MemoryHandler
 from render.loading_screen import LoadingScreen
 from render.portal_handler import PortalHandler
+from levels.main_menu import MainMenu
 from ui.effects import *
 
 
@@ -36,10 +37,11 @@ class Game():
         self.hold_camera = None
         
         # game components
+        self.load_sounds()
+        self.sounds['title_screen'].play()
         self.load_meshes()
         self.load_images()
         self.load_materials()
-        self.load_sounds()
         self.load_shaders()
         self.load_fbos()
         
@@ -78,6 +80,9 @@ class Game():
         # frame by frame updating
         self.left_mouse_time = self.right_mouse_time = 0
         self.update = self.primary_update
+
+        self.main_menu = MainMenu(self)
+        self.main_menu.start()
 
     def adjacent_levels(self, origin_level: Level) -> set[Level]:
         """
@@ -144,6 +149,7 @@ class Game():
         self.meshes = {}
         for file_name in os.listdir('./meshes'):
             self.loading_screen.update()
+            # if file_name[:-4] not in ['selva_title', 'start', 'options']: continue
             if not file_name.endswith('.obj'): continue
             self.meshes[file_name[:-4]] = bsk.Mesh(f'./meshes/{file_name}')
         
