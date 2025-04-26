@@ -57,14 +57,6 @@ def safe(bedroom: Level) -> None:
         material = game.materials['black']
     )
     
-    handle = bsk.Node(
-        position = (1.85, 0.95, 3.9),
-        rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
-        scale = (0.7, 0.7, 0.7),
-        mesh = game.meshes['safe_door_handle'],
-        material = game.materials['black']
-    )
-    
     door = bsk.Node(
         position = (1, 0.95, 3.5),
         rotation = glm.angleAxis(glm.pi()/2, (0, 1, 0)),
@@ -73,7 +65,7 @@ def safe(bedroom: Level) -> None:
         material = game.materials['safe_door']
     )
     
-    bedroom.add(safe, handle, door)
+    bedroom.add(safe, door)
     
     for y in range(1, -2, -1):
         for x in range(1, -2, -1):

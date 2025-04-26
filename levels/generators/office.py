@@ -83,6 +83,7 @@ def puzzle(office: Level) -> None:
                 
                 # teleport the player
                 game.player.swap_to_level('boat', glm.vec3(0, 1, 0))
+                game.player.position = glm.vec3(0, 2.1, 0)
     
     computer.active = pan_loop(computer, time = 0.5, position = (0.5, 2.4, 0), rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)), loop_func = computer_loop_func, leave_check_func=computer_leave_check_func)
     
