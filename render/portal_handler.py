@@ -103,6 +103,9 @@ class PortalHandler:
         Main scene is where the player is, other scene is what is shown in the portal. 
         """
 
+        self.main_level = main_level
+        self.other_level = other_level
+
         self.main_scene   = main_level.scene
         self.other_scene  = other_level.scene
 
