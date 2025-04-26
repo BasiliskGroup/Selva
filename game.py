@@ -18,7 +18,7 @@ class Game():
     
     def __init__(self) -> None:
         # Basilisk Engine overhead
-        self.engine = bsk.Engine((1000, 800))   
+        self.engine = bsk.Engine((1000, 800), resizable=False)   
         
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.ui_fbo = bsk.Framebuffer(self.engine)
@@ -43,7 +43,7 @@ class Game():
         
         # game components
         self.load_sounds()
-        self.sounds['title_screen'].play()
+        self.sounds['title_screen'].play(loops=20)
         self.load_meshes()
         self.load_images()
         self.load_materials()
