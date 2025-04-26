@@ -49,6 +49,6 @@ def interact_to_frame(interact: Interactable, held: PictureFrame) -> Callable:
         interact.node.rotational_velocity = glm.vec3()
         game.player.item_l = held
         game.close()
-        game.portal_handler.set_scenes(game.current_scene, game.memory_handler[held.level_name].scene)
+        game.portal_handler.set_levels(game.current_level, game.memory_handler[held.level_name])
         
     return func

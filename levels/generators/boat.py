@@ -12,9 +12,11 @@ from helper.transforms import connect
 from levels.classes.fish import FishTracker
 from images.images import images
 from ui.effects import ImageBounce
+from render.pixel import PixelRenderer
+
 
 def boat(game: Game) -> Level:
-    level = Level(game, 'boat', glm.vec3(0, -100, 0))
+    level = Level(game, 'boat', glm.vec3(0, -100, 0), PixelRenderer)
     
     loading_node(level)
     fishing(level)

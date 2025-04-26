@@ -55,6 +55,9 @@ in mat3 TBN;
 flat in Material mtl;
 
 // Uniforms
+uniform vec2 viewportDimensions;
+uniform sampler2D depthTexture;
+
 uniform      textArray textureArrays[5];
 
 
@@ -79,6 +82,15 @@ vec3 getNormal(Material mtl, mat3 TBN){
 }
 
 void main() {
+    vec2 screenuv = (gl_FragCoord.xy) / viewportDimensions;
+    float portalDepth = texture(depthTexture, screenuv).r;
+    float fragDepth = gl_FragCoord.z;
+
+    if (fragDepth < portalDepth) {
+        fragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        discard;
+    }
+
     float gamma = 2.2;
 
     // Get lighting vectors
