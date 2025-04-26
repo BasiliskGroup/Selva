@@ -8,10 +8,5 @@ while game.engine.running:
 # Fortnite
 
 """
-improve fishing - difficulty
-lock camera at beginning
 adjust held item positions
-sound queue box unlocked
-change drop to q
-bind coffee to rmb
 """

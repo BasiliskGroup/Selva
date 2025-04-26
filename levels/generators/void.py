@@ -21,13 +21,12 @@ def picture_frame(void: Level) -> None:
     pf = Interactable(void, bsk.Node(
         position = starting_position,
         scale = glm.vec3(0.7),
-        rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['picture_frame'],
         material = game.materials['bloom_white']
     ))
     setattr(pf, 'fall_time', 0)
     setattr(pf, 'falling', True)
-    camera = bsk.StaticCamera(position = glm.vec3(0, 2.6, 0))
+    camera = bsk.StaticCamera(position = glm.vec3(0, 3.6, 0))
     
     def float_down(dt: float, pf=pf) -> None:
         if not pf.falling: return
@@ -47,7 +46,7 @@ def picture_frame(void: Level) -> None:
             glm.cos(t) * 10 / t
         )
         direction = glm.normalize((starting_position.x, pf.node.position.y + 1, starting_position.z) - pf.node.position.data)
-        pf.node.rotation = glm.normalize(glm.conjugate(glm.quatLookAt(direction , (0, 1, 0)))) * glm.angleAxis(glm.pi(), (0, 1, 0))
+        pf.node.rotation = glm.normalize(glm.conjugate(glm.quatLookAt(direction , (0, 1, 0)))) * glm.angleAxis(-glm.pi() / 2, (0, 1, 0))
     
     pf.passive = float_down
     pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'bedroom1', material = game.materials['bloom_white'])), rotation=glm.angleAxis(glm.pi(), (0, 1, 0)), distance=4, top_text='remember', bottom_text='press_e')
