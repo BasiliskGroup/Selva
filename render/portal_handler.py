@@ -1,5 +1,6 @@
 import basilisk as bsk
 import glm
+import moderngl as mgl
 from levels.level import Level
 
 
@@ -77,8 +78,10 @@ class PortalHandler:
         """
 
         # Render the base scenes
+        self.ctx.disable(mgl.CULL_FACE)
         self.portal_scene.render(self.portal_fbo)
         self.other_renderer.other_shader.bind(self.portal_scene.frame.input_buffer.depth, 'depthTexture', 1)
+        self.ctx.enable(mgl.CULL_FACE)
 
         self.other_renderer.render()
         self.main_renderer.render()
@@ -86,8 +89,10 @@ class PortalHandler:
         self.bind_all()
 
         # Render the portals, using the other fbo texture
+        self.ctx.disable(mgl.CULL_FACE)
         self.portal_fbo.clear()
         self.portal_scene.render(self.portal_fbo)
+        self.ctx.enable(mgl.CULL_FACE)
 
         # Render the combined scene
         self.combine_fbo.render(self.ctx.screen, auto_bind=False)
