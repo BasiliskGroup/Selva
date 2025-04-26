@@ -9,10 +9,11 @@ from levels.helper import rect_room
 from levels.interactable import Interactable
 from levels.functions.imports import *
 from helper.transforms import connect
+from render.kuwahara import KuwaharaRenderer
 
 
 def art(game: Game) -> Level:
-    art = Level(game, 'art', glm.vec3(-1, 0, -1))
+    art = Level(game, 'art', glm.vec3(-1, 0, -1), KuwaharaRenderer, KuwaharaRenderer)
     
     room(art)
     painting_puzzle(art)
