@@ -19,16 +19,6 @@ def art(game: Game) -> Level:
     paint_buckets(art)
     hints(art)
     
-    paint_brush = Interactable(art, bsk.Node(
-        position = (2.5, 2.25, 4.35),
-        scale = glm.vec3(0.1),
-        mesh = game.meshes['squid'],
-        material = game.materials['squid'],
-        tags = ['paint_brush', 'none']
-    ))
-    paint_brush.active = pickup_function(paint_brush, interact_to_hold(paint_brush, HeldItem(game, paint_brush.node)))
-    art.add(paint_brush)
-    
     return art
     
 def paint_buckets(art: Level) -> None:
@@ -73,6 +63,8 @@ def paint_buckets(art: Level) -> None:
             held_node.material = game.materials[f'squid_{new_color}'] # set material of HeldItem
             game.player.item_r_ui.node.material = game.materials[f'squid_{new_color}'] # set material of Node
             held_node.tags[color_index] = new_color
+            
+            # game.sounds['placeholder'].play() # TODO paint collect
             
         paint_buckets[color].active = mix
           
@@ -141,6 +133,7 @@ def painting_puzzle(art: Level) -> None:
             if brush_color == 'none': return
             paint_part.node.material = game.materials[brush_color]
             paint_part.happy = brush_color == color
+            # game.sounds['placeholder'].play() # TODO paint use
             
             # when puzzle has been completed
             if all([p.happy for p in painting_interacts.values()]):

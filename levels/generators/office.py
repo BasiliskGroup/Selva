@@ -210,21 +210,30 @@ def puzzle(office: Level) -> None:
         computer.on = True
     def left_out(dt: float) -> None: computer.on = False
     
+    # add bulb
+    bulb_node = bsk.Node(
+        position = (0, 4.9, 0),
+        scale = glm.vec3(0.1),
+        rotation = glm.angleAxis(glm.pi(), (1, 0, 0)),
+        material = game.materials['bulb'],
+        mesh = game.meshes['bulb']
+    )
+    office.add(bulb_node)
+    
     # center socket (light) NOTE could be !game.day for both but separated for security
     def center_in(dt: float) -> None:  
         # game.sounds['placeholder'].play()
         game.day = False
-        # game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
         game.portal_handler.update_time()
-        # game.portal_handler.set_levels(game.portal_handler.other_level, game.portal_handler.main_level)
         game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
+        bulb_node.material = game.materials['bloom_yellow']
+        
     def center_out(dt: float) -> None: 
         # game.sounds['placeholder'].play()
         game.day = True
-        # game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
         game.portal_handler.update_time()
-        # game.portal_handler.set_levels(game.portal_handler.other_level, game.portal_handler.main_level)
         game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
+        bulb_node.material = game.materials['bulb']
     
     # right socket (coffee)
     def right_in(dt: float) -> None:  
@@ -426,15 +435,6 @@ def decor(office: Level) -> None:
     )
     
     office.add(windows, cubicle, posters, door, calendar, cubicle_colliders)
-    
-    # add bulb
-    office.add(bsk.Node(
-        position = (0, 4.9, 0),
-        scale = glm.vec3(0.1),
-        rotation = glm.angleAxis(glm.pi(), (1, 0, 0)),
-        material = game.materials['bulb'],
-        mesh = game.meshes['bulb']
-    ))
     
     # chair
     office.add(bsk.Node(

@@ -235,9 +235,10 @@ class Game():
     def main_update(self) -> None:
         self.ui.update(self.engine.delta_time)
         # update interactibles in the current level
-        for interact in self.current_level.interactables.values():
-            if interact.passive: interact.passive(self.engine.delta_time)
-                
+        if self.engine.delta_time < 0.1:
+            for interact in self.current_level.interactables.values():
+                if interact.passive: interact.passive(self.engine.delta_time)
+                    
         self.ui_scene.camera.position = self.camera.position
         self.ui_scene.camera.rotation = self.camera.rotation
         self.ui_scene.update(render=False)

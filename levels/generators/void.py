@@ -17,21 +17,27 @@ def void1(game: Game) -> Level:
 def picture_frame(void: Level) -> None:
     game = void.game
     
-    starting_position = glm.vec3(0, 25.65, -20)
+    starting_position = glm.vec3(0, 18, -20)
     pf = Interactable(void, bsk.Node(
         position = starting_position,
         scale = glm.vec3(0.7),
+        rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['picture_frame'],
         material = game.materials['bloom_white']
     ))
     setattr(pf, 'fall_time', 0)
     setattr(pf, 'falling', True)
+    camera = bsk.StaticCamera(position = glm.vec3(0, 2.6, 0))
     
     def float_down(dt: float, pf=pf) -> None:
         if not pf.falling: return
+        game.camera = camera
         if pf.node.position.y < 0: 
             pf.falling = False
+            game.camera = game.player.camera
+            game.player.control_disabled = False
             return
+        game.player.control_disabled = True
         pf.fall_time += dt * 3
         
         t = pf.fall_time
@@ -47,8 +53,6 @@ def picture_frame(void: Level) -> None:
     pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'bedroom1', material = game.materials['bloom_white'])), rotation=glm.angleAxis(glm.pi(), (0, 1, 0)), distance=4, top_text='remember', bottom_text='press_e')
     
     void.add(pf)
-    
-    
     
 def void2(game: Game) -> Level:
     void = Level(game, 'void2', glm.vec3(0, 0, 0))
