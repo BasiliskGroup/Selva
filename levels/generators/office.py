@@ -9,8 +9,7 @@ from levels.helper import rect_room
 from levels.interactable import Interactable
 from levels.functions.imports import *
 from helper.transforms import connect
-from render.gooch import GoochRenderer
-from render.quantize import QuantizeRenderer
+from render.gooch import GoochRenderer, GoochInvertedRenderer
 
 
 def generate_chain(level: Level, positions: list[glm.vec3]) -> list[bsk.Node]:
@@ -28,7 +27,7 @@ def generate_chain(level: Level, positions: list[glm.vec3]) -> list[bsk.Node]:
 
 def office(game: Game) -> Level:
     # create basic layout for bedroom level
-    office = Level(game, 'office', glm.vec3(4, 0, 0), GoochRenderer, QuantizeRenderer)
+    office = Level(game, 'office', glm.vec3(4, 0, 0), GoochRenderer, GoochInvertedRenderer)
     office.add(*rect_room(0, 0, 8, 8, 4, game.materials['dirty_carpet'], game.materials['bright_wood'], game.materials['bright_wood']))
     
     desk(office)

@@ -35,3 +35,10 @@ class GoochRenderer(Renderer):
         self.combine_fbo.bind(self.gooch_fbo.texture, 'mainTexture', 2)
         self.combine_fbo.bind(self.outline_fbo.texture, 'outlineTexture', 3)
         self.combine_fbo.render(self.fbo, auto_bind=False)
+
+
+class GoochInvertedRenderer(GoochRenderer):
+    def __init__(self, scene):
+        super().__init__(scene)
+        self.main_shader = bsk.Shader(self.engine, frag='shaders/invertedGooch.frag')
+        self.other_shader = bsk.Shader(self.engine, frag='shaders/invertedGoochOther.frag')
