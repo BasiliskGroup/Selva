@@ -20,7 +20,6 @@ class PortalHandler:
         self.ctx    = main_level.scene.ctx
 
         # Load shaders
-        self.blank_shader   = bsk.Shader(self.engine, 'shaders/blank.vert' , 'shaders/blank.frag'  )
         self.other_shader   = bsk.Shader(self.engine, 'shaders/other.vert' , 'shaders/other.frag'  )
         self.portal_shader  = bsk.Shader(self.engine, 'shaders/portal.vert', 'shaders/portal.frag' )
         self.combine_shader = bsk.Shader(self.engine, 'shaders/frame.vert' , 'shaders/combine.frag')
