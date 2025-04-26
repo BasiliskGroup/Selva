@@ -172,7 +172,7 @@ def puzzle(office: Level) -> None:
                     game.player.item_r_ui.node.material = game.materials['white']
                     game.player.item_r_ui.node.tags = ['empty_mug']
                 
-                mug_lerp = lerp_held(held_item, time = 0.2, position = glm.vec3(-0.42, -0.05, -0.6), rotation = glm.angleAxis(-glm.pi() / 4, (1, 0, 0)), end_func = coffee_mug_end_func)
+                mug_lerp = lerp_held(held_item, time = 0.2, position = glm.vec3(-0.42, -0.05, -0.6), rotation = glm.angleAxis(-glm.pi() / 4, (1, 0, 0)), end_func = coffee_mug_end_func, right=True)
                 def coffee_mug_func(dt: float) -> None:
                     mug_lerp(dt)
                     

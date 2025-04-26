@@ -25,8 +25,8 @@ class Player():
         self.current_scene.add(self.body_node, self.loader)
         
         # variables for controling the player's held items
-        self.item_r_ui = HeldUI(self.game, glm.vec3(0.45, -0.35, 1.2))
-        self.item_l_ui = HeldUI(self.game, glm.vec3(-0.45, -0.35, 1.2))
+        self.item_r_ui = HeldUI(self.game, glm.vec3(0.7, -0.5, 1.2))
+        self.item_l_ui = HeldUI(self.game, glm.vec3(-0.7, -0.5, 1.2))
         
         # game interaction variables
         self.fish_tracker = FishTracker()
@@ -93,6 +93,15 @@ class Player():
                 mesh = self.game.meshes['wire'],
                 material = self.game.materials['copper'],
                 tags = ['copper_wire']
+            ))
+        if self.game.key_down(bsk.pg.K_4):
+            self.item_r = HeldItem(self.game, bsk.Node(
+                position = (-3, 1.9, -0.2),
+                scale    = glm.vec3(0.2),
+                rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
+                mesh     = self.game.meshes['battery'],
+                material = self.game.materials['battery'],
+                tags     = ['battery']
             ))
         
     def picture_swap(self, dt) -> None:
