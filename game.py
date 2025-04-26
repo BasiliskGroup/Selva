@@ -10,6 +10,7 @@ from memories.memory_handler import MemoryHandler
 from render.loading_screen import LoadingScreen
 from render.portal_handler import PortalHandler
 from levels.main_menu import MainMenu
+from levels.end_cutscene import EndCutscene
 from ui.effects import *
 
 
@@ -107,6 +108,7 @@ class Game():
         self.memory_handler['bedroom2'] = bedroom2(self)
         self.memory_handler['void2'] = void2(self)
         
+        
         self.portal_handler = PortalHandler(self, self.memory_handler['void1'].scene, self.memory_handler['void2'].scene)
 
         # player
@@ -116,6 +118,7 @@ class Game():
         self.left_mouse_time = self.right_mouse_time = 0
         self.update = self.primary_update
 
+        self.end_cutscene = EndCutscene(self)
         self.main_menu = MainMenu(self)
         # self.main_menu.start()
 

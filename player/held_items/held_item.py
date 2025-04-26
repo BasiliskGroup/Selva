@@ -20,13 +20,16 @@ class HeldItem():
     
 class PictureFrame(HeldItem):
     
-    def __init__(self, game: Game, level_name: str, material: Material=None):
+    def __init__(self, game: Game, level_name: str, material: Material=None, end_func: Callable=None):
         # Information for creating portals
         self.level_name = level_name
         self.portal = Node(
             scale = (1, 2.5, 0.01),
             material = game.materials['red']
         )
+        
+        def default_end_func() -> None: self.game.open(self.level)
+        self.end_func = end_func if end_func else default_end_func
         
         # variables to be sent to the parent
         node = Node(
@@ -68,7 +71,7 @@ class PictureFrame(HeldItem):
         
         # interact with current scene if ANIMATION is at it's maximum
         if was0 and self.percent_moved != 0: self.game.close()
-        if self.percent_moved == 1 and not was1: self.game.open(self.level)
+        if self.percent_moved == 1 and not was1: self.end_func()
         
     @property
     def player(self) -> Player: return self.game.player
