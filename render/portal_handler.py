@@ -106,8 +106,12 @@ class PortalHandler:
         self.main_scene   = main_level.scene
         self.other_scene  = other_level.scene
 
-        self.main_renderer = main_level.renderer
-        self.other_renderer = other_level.renderer
+        if self.game.day:
+            self.main_renderer = main_level.renderer
+            self.other_renderer = other_level.renderer
+        else:
+            self.main_renderer = main_level.night_render
+            self.other_renderer = other_level.night_render
 
         self.other_renderer.set_other()
         self.main_renderer.set_main()

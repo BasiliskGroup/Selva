@@ -8,7 +8,7 @@ from render.pixel import PixelRenderer
 
 class Level():
     
-    def __init__(self, game: Game, name: str, portal_position: glm.vec3, render_type: Renderer=Renderer) -> None:
+    def __init__(self, game: Game, name: str, portal_position: glm.vec3, render_type: Renderer=Renderer, night_type: Renderer=Renderer) -> None:
         self.game = game
         self.name = name
         self.scene = bsk.Scene(self.game.engine)
@@ -16,6 +16,7 @@ class Level():
         self.scene.physics_engine.accelerations = [glm.vec3(0, -25, 0)]
         
         self.renderer = render_type(self.scene)
+        self.night_render = night_type(self.scene)
 
         self.interactables: dict[bsk.Node, Interactable] = {}
         
