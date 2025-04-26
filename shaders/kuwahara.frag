@@ -8,7 +8,7 @@ in vec2 uv;
 uniform sampler2D screenTexture;
 uniform vec2 viewportDimensions;
 
-const int size = 15;
+const int size = 9;
 const int skip = 3;
 
 

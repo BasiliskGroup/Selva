@@ -18,7 +18,7 @@ class Game():
     
     def __init__(self) -> None:
         # Basilisk Engine overhead
-        self.engine = bsk.Engine()   
+        self.engine = bsk.Engine((1000, 800))   
         
         self.ui_scene = bsk.Scene(self.engine) # scene to contain player UI like held items
         self.ui_fbo = bsk.Framebuffer(self.engine)
@@ -205,7 +205,11 @@ class Game():
             self.loading_screen.update()
             if not file_name.endswith('.mp3') and not file_name.endswith('.wav'): continue
             self.sounds[file_name[:-4]] = bsk.Sound(f'./sounds/{file_name}')
+
         self.sounds['PageTurn'].volume = 25
+        self.sounds['ItemPickupFanfare'].volume = 25
+        self.sounds['Night'].volume = 15
+        self.sounds['PortalOpen'].volume = 50
 
     def load_shaders(self) -> None:
         """

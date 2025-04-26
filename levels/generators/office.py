@@ -226,7 +226,7 @@ def puzzle(office: Level) -> None:
     # center socket (light) NOTE could be !game.day for both but separated for security
     def center_in(dt: float) -> None:  
         game.sounds['BatteryInsert'].play()
-        # game.sounds['placeholder'].play()
+        game.sounds['Night'].play()
         game.day = False
         game.portal_handler.update_time()
         game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
@@ -234,7 +234,7 @@ def puzzle(office: Level) -> None:
         
     def center_out(dt: float) -> None: 
         game.sounds['BatteryRemove'].play()
-        # game.sounds['placeholder'].play()
+        game.sounds['Night'].play()
         game.day = True
         game.portal_handler.update_time()
         game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
