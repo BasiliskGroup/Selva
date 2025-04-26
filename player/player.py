@@ -21,8 +21,8 @@ class Player():
         self.DECELERATION_COEFFICIENT = 10
         
         # Main body used for stabilizing collisions on the camera
-        self.body_node = player_nodes(self.game)
-        self.current_scene.add(self.body_node)
+        self.body_node, self.loader = player_nodes(self.game)
+        self.current_scene.add(self.body_node, self.loader)
         
         # variables for controling the player's held items
         self.item_r_ui = HeldUI(self.game, glm.vec3(0.45, -0.25, 1.2))
@@ -44,6 +44,8 @@ class Player():
         """
         Updates the players movement, Nodes, and controls
         """
+        self.loader.position = self.body_node.position
+        
         # player controls
         if not self.control_disabled: 
             # player controls
@@ -114,6 +116,7 @@ class Player():
         print('swapping to', level_name)
         # update player scene and possibly portal node scene
         self.game.current_scene.remove(self.body_node)
+        self.game.current_scene.remove(self.loader)
         
         # swap scene and camera
         self.game.current_scene.camera = self.game.hold_camera
@@ -123,6 +126,7 @@ class Player():
         
         # add player back to scene
         self.game.current_scene.add(self.body_node)
+        self.game.current_scene.add(self.loader)
         
         # swap rendering
         self.game.portal_handler.swap()

@@ -15,7 +15,6 @@ place sample sound
 shrink grow overlay
 lock camera at beginning
 adjust held item positions
-fix front of boat
-prevent same scenes
+prevent same scenes ~
 sound queue box unlocked
 """
