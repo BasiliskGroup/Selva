@@ -53,8 +53,9 @@ class Player():
             self.item_r_ui.update(dt)
             self.item_l_ui.update(dt)
             self.interact(dt)
+            self.debug()
             self.picture_swap(dt)
-            if self.game.right_mouse_time > 1.5: self.item_r_ui.drop()
+            if self.game.key_down(bsk.pg.K_q): self.item_r_ui.drop()
         
         # update user node to preserve direction
         self.body_node.rotation = self.horizontal_quat
@@ -67,6 +68,32 @@ class Player():
         if not self.item_l: return
         if self.game.current_level.name == self.item_l.level_name: self.item_l_ui.node.mesh = self.game.meshes['picture_frame']
         else: self.item_l_ui.node.mesh = self.game.meshes['empty_frame']
+        
+    def debug(self) -> None:
+        if not self.game.engine.keys[bsk.pg.K_LSHIFT]: return
+        if self.game.key_down(bsk.pg.K_1):
+            self.item_r = HeldItem(self.game, bsk.Node(
+                position = (3.5, 2.4, -4.35),
+                scale = (0.1, 0.1, 0.1),
+                rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)) * glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
+                mesh = self.game.meshes['key'],
+                tags = ['color_key']
+            ))
+        if self.game.key_down(bsk.pg.K_2):
+            self.item_r = HeldItem(self.game, bsk.Node(
+                position = (1.5, 2.25, 4.35),
+                scale = glm.vec3(0.1),
+                mesh = self.game.meshes['mug'],
+                tags = ['empty_mug']
+            ))
+        if self.game.key_down(bsk.pg.K_3):
+            self.item_r = HeldItem(self.game, bsk.Node(
+                position = (-0.3, 0.5, 0.9),
+                scale = glm.vec3(0.03),
+                mesh = self.game.meshes['wire'],
+                material = self.game.materials['copper'],
+                tags = ['copper_wire']
+            ))
         
     def picture_swap(self, dt) -> None:
         """

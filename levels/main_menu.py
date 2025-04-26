@@ -30,9 +30,8 @@ class MainMenu:
 
         self.title_node   = bsk.Node(position=(0, 1, 0), mesh=self.game.meshes['selva_title'], material=self.mtl, scale=1.5)
         self.start_node   = bsk.Node(position=(0, -.5, 0), mesh=self.game.meshes['start'], material=self.mtl)
-        self.options_node = bsk.Node(position=(0, -1.5, 0), mesh=self.game.meshes['options'], material=self.mtl)
 
-        self.scene.add(self.title_node, self.start_node, self.options_node)
+        self.scene.add(self.title_node, self.start_node)
 
     def add_particle(self):
         """
@@ -92,7 +91,6 @@ class MainMenu:
         
         self.title_node.velocity.y   += 1 * self.engine.delta_time
         self.start_node.velocity.y   += 1 * self.engine.delta_time
-        self.options_node.velocity.y += 1 * self.engine.delta_time
 
         if self.time > 7: 
             print('stop')

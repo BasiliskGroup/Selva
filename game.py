@@ -170,6 +170,7 @@ class Game():
         self.materials['bedroom_wall'] = bsk.Material(color = (195, 190, 183))
         self.materials['bloom_copper'] = bsk.Material(color = (255, 149, 0), emissive_color=(300, 200, 50))
         self.materials['bloom_yellow'] = bsk.Material(color = (211, 198, 74), emissive_color=(260, 250, 120))
+        self.materials['bulb'] = bsk.Material(color = (211, 198, 74), emissive_color=(5200, 5000, 2400))
         
     def load_images(self) -> None:
         """
