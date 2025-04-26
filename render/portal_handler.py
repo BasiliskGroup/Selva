@@ -102,7 +102,8 @@ class PortalHandler:
         Sets the main and other scene. 
         Main scene is where the player is, other scene is what is shown in the portal. 
         """
-
+        if main_level == other_level: return
+        
         self.main_level = main_level
         self.other_level = other_level
 
@@ -174,7 +175,6 @@ class PortalHandler:
         """
         
         """
-
         
         # main_scene, other_scene = self.main_renderer.scene, self.other_renderer.scene
         self.main_scene.camera.position = self.other_position + self.main_scene.camera.position - self.portal.position
@@ -187,6 +187,8 @@ class PortalHandler:
 
         self.other_renderer.set_other()
         self.main_renderer.set_main()
+        
+        self.main_level, self.other_level = self.other_level, self.main_level
 
         self.bind_all()
 

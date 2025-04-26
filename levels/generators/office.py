@@ -66,7 +66,7 @@ def puzzle(office: Level) -> None:
                 game.close()
                 game.open(game.memory_handler['boat'], scale = (0.4, 0.01, 0.01), position = game.camera.position + game.camera.forward * 0.6)
                 computer.cpu_stage = 'opening'
-
+                game.portal_handler.set_levels(game.memory_handler['office'], game.memory_handler['boat'])
             case 'opening':
                 # grow portal to edges of screen
                 game.portal_handler.portal.scale.y += dt / 2
@@ -215,13 +215,17 @@ def puzzle(office: Level) -> None:
     def center_in(dt: float) -> None:  
         # game.sounds['placeholder'].play()
         game.day = False
-        game.portal_handler.set_levels(game.current_level, game.memory_handler[game.player.item_l.level_name])
+        # game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
         game.portal_handler.update_time()
+        # game.portal_handler.set_levels(game.portal_handler.other_level, game.portal_handler.main_level)
+        game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
     def center_out(dt: float) -> None: 
         # game.sounds['placeholder'].play()
         game.day = True
-        game.portal_handler.set_levels(game.current_level, game.memory_handler[game.player.item_l.level_name])
+        # game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
         game.portal_handler.update_time()
+        # game.portal_handler.set_levels(game.portal_handler.other_level, game.portal_handler.main_level)
+        game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
     
     # right socket (coffee)
     def right_in(dt: float) -> None:  

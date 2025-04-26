@@ -312,7 +312,7 @@ class Game():
         exit.add(self.exit_portal)
         
         # set portal positions in handler
-        self.portal_handler.set_levels(self.current_level, self.memory_handler[exit.name])
+        self.portal_handler.set_levels(self.current_level, self.player.item_l.level)
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
         self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, 0.05)

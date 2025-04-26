@@ -113,7 +113,6 @@ class Player():
         self.swap_to_level(pl.tags[1], position)
     
     def swap_to_level(self, level_name: str, position: glm.vec3) -> None:
-        print('swapping to', level_name)
         # update player scene and possibly portal node scene
         self.game.current_scene.remove(self.body_node)
         self.game.current_scene.remove(self.loader)
@@ -129,6 +128,7 @@ class Player():
         self.game.current_scene.add(self.loader)
         
         # swap rendering
+        
         self.game.portal_handler.swap()
         
         # update for next frame
