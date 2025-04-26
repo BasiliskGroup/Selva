@@ -315,7 +315,7 @@ def safe(level: Level) -> None:
         if not safe_handle.open: safe.active(dt)
         else: 
             for button in safe.buttons: button.passive = empty
-            game.sounds['placeholder'].play() # TODO safe door
+            # game.sounds['placeholder'].play() # TODO safe door
             safe_door.step = 1
         
     safe_door.active = door_func
