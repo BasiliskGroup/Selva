@@ -123,6 +123,17 @@ class PortalHandler:
 
         self.bind_all()
 
+    def update_time(self):
+        if self.game.day:
+            self.main_renderer = self.main_level.renderer
+            self.other_renderer = self.other_level.renderer
+        else:
+            self.main_renderer = self.main_level.night_render
+            self.other_renderer = self.other_level.night_render
+
+        self.bind_all()
+
+
     def bind_all(self):
         """
         Binds all the textures for the portal pipeline
