@@ -17,13 +17,13 @@ def bedroom1(game: Game) -> Level:
     shader = bsk.Shader(game.engine)
 
     def note_func(dt: float) -> None: bsk.draw.blit(game.engine, game.images['bedroom_note1.png'], (0, 0, game.win_size.x, game.win_size.y))
-    decor(bedroom, note_func)
-    this_decor(bedroom, shader)
-    add_locked_box(bedroom, shader)
+    decor(bedroom, note_func, textures = False)
+    this_decor(bedroom)
+    add_locked_box(bedroom)
     key_interact = key(bedroom)
     bedroom.add(key_interact)
     drawers(bedroom, key_interact)
-    safe(bedroom, shader)
+    safe(bedroom)
     mug(bedroom)
     safe_frame(bedroom)
     
@@ -41,7 +41,7 @@ def mug(bedroom: Level) -> None:
     mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)), top_text='mug')
     bedroom.add(mug)
 
-def this_decor(bedroom: Level, shader) -> None:
+def this_decor(bedroom: Level) -> None:
     game = bedroom.game
     
     bedroom.add(bsk.Node(
@@ -49,10 +49,9 @@ def this_decor(bedroom: Level, shader) -> None:
         scale = (0.01, 0.9, 1.4),
         rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
         material = game.materials['fortune_dresser'],
-        shader = shader
     ))
 
-def add_locked_box(bedroom: Level, shader) -> None:
+def add_locked_box(bedroom: Level) -> None:
     locked_box_interact = locked_box(bedroom)
     bedroom.add(locked_box_interact)
     wheels(bedroom, locked_box_interact)
@@ -254,15 +253,14 @@ def locked_lid(bedroom: Level, locked_box: Interactable) -> Interactable:
     
     return locked_lid
 
-def safe(level: Level, shader) -> None:
+def safe(level: Level) -> None:
     game = level.game
     
     safe = Interactable(level, bsk.Node(
         position = (1.5, 0.95, 4.6),
         rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
         scale = (0.7, 0.7, 0.7),
-        mesh = game.meshes['safe'],
-        material = game.materials['black']
+        mesh = game.meshes['safe']
     ))
     setattr(safe, 'buttons', [])
     setattr(safe, 'code', [0 for _ in range(4)])
@@ -273,8 +271,7 @@ def safe(level: Level, shader) -> None:
         position = (1.85, 0.95, 3.9),
         rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
         scale = (0.7, 0.7, 0.7),
-        mesh = game.meshes['safe_door_handle'],
-        material = game.materials['black']
+        mesh = game.meshes['safe_door_handle']
     ))
     setattr(safe_handle, 'open', False)
     setattr(safe, 'handle', safe_handle)
@@ -306,7 +303,7 @@ def safe(level: Level, shader) -> None:
         rotation = glm.angleAxis(glm.pi(), (0, 1, 0)),
         scale = (0.7, 0.7, 0.7),
         mesh = game.meshes['safe_door'],
-        material = game.materials['safe_door']
+        material = game.materials['safe_door_white']
     ))
     hinge = bsk.Node(
         position = (1, 0.95, 4),
@@ -333,7 +330,7 @@ def safe(level: Level, shader) -> None:
                 rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)) * glm.angleAxis(glm.pi(), (0, 0, 1)),
                 scale = (0.8, 0.8, 0.8),
                 mesh = game.meshes['keycap'],
-                material = game.materials[f'key{(x + 2) + (y + 1) * 3}'],
+                material = game.materials[f'key{(x + 2) + (y + 1) * 3}_white'],
             ))
             setattr(keycap, 'safe', safe)
             setattr(keycap, 'number', (x + 2) + (y + 1) * 3)
