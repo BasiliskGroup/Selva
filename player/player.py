@@ -25,8 +25,8 @@ class Player():
         self.current_scene.add(self.body_node, self.loader)
         
         # variables for controling the player's held items
-        self.item_r_ui = HeldUI(self.game, glm.vec3(0.45, -0.25, 1.2))
-        self.item_l_ui = HeldUI(self.game, glm.vec3(-0.45, -0.25, 1.2))
+        self.item_r_ui = HeldUI(self.game, glm.vec3(0.7, -0.4, 1.2))
+        self.item_l_ui = HeldUI(self.game, glm.vec3(-0.7, -0.4, 1.2))
         
         # game interaction variables
         self.fish_tracker = FishTracker()

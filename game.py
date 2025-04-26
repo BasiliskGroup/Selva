@@ -121,7 +121,7 @@ class Game():
 
         self.end_cutscene = EndCutscene(self)
         self.main_menu = MainMenu(self)
-        # self.main_menu.start()
+        self.main_menu.start()
 
     def adjacent_levels(self, origin_level: Level) -> set[Level]:
         """
