@@ -165,7 +165,7 @@ class Player():
         if not cast.node: return
         interactable = self.current_level[cast.node]
         if not interactable: return
-        
+        bsk.draw.blit(self.game.engine, self.game.images['label_e.png'], (self.game.win_size.x // 2, self.game.win_size.y // 2, 20, 20))
         if not self.game.keys[bsk.pg.K_e]: return
         
         # use the Interactable's functionality
