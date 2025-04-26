@@ -6,7 +6,7 @@ from levels.functions.imports import *
 from typing import Callable
 from levels.interactable import Interactable
 
-def decor(bedroom: Level, note_func: Callable) -> None:
+def decor(bedroom: Level, note_func: Callable, textures: bool=True) -> None:
     game = bedroom.game
     bedroom.add(*rect_room(0, 0, 5.75, 6.75, 4, floor_material = game.materials['bedroom_floor'], wall_material = game.materials['bedroom_wall'], ceil_material = game.materials['light_white']))
     # bed
@@ -14,7 +14,7 @@ def decor(bedroom: Level, note_func: Callable) -> None:
     bedroom.add(bsk.Node(
         position = (-2.5, 1, -2.5),
         mesh = game.meshes['bed'],
-        material = game.materials['bed']
+        material = game.materials['bed'] if textures else None
     ))
     bedroom.add(bsk.Node(
         position = (-2.5, 1, -2.5),
@@ -29,14 +29,14 @@ def decor(bedroom: Level, note_func: Callable) -> None:
         position = (1, 2.25, -4.35),
         scale = (0.7, 0.7, 0.7),
         mesh = game.meshes['lamp'],
-        material = game.materials['lamp']
+        material = game.materials['lamp'] if textures else None
     ))
     
     # desk
     bedroom.add(bsk.Node(
         position = (2.5, 2, 4.5),
         mesh = game.meshes['desk'],
-        material = game.materials['light_wood']
+        material = game.materials['light_wood'] if textures else None
     ))
     bedroom.add(bsk.Node(
         position = (2.5, 1, 4.5),
@@ -52,7 +52,7 @@ def decor(bedroom: Level, note_func: Callable) -> None:
         scale = glm.vec3(0.65),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['fake_door'],
-        material = game.materials['fake_door']
+        material = game.materials['fake_door'] if textures else None
     ))
     
     # dresser
@@ -61,7 +61,7 @@ def decor(bedroom: Level, note_func: Callable) -> None:
         scale = (1, 0.8, 1),
         rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh = game.meshes['dresser'],
-        material = game.materials['bright_wood']
+        material = game.materials['bright_wood'] if textures else None
     ))
     bedroom.add(bsk.Node(
         position = (2.5, 1, -4.5),
