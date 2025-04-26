@@ -206,9 +206,12 @@ def puzzle(office: Level) -> None:
     
     # left socket (computer)
     def left_in(dt: float) -> None:  
+        game.sounds['BatteryInsert'].play()
         # game.sounds['placeholder'].play()
         computer.on = True
-    def left_out(dt: float) -> None: computer.on = False
+    def left_out(dt: float) -> None: 
+        game.sounds['BatteryRemove'].play()
+        computer.on = False
     
     # add bulb
     bulb_node = bsk.Node(
@@ -222,6 +225,7 @@ def puzzle(office: Level) -> None:
     
     # center socket (light) NOTE could be !game.day for both but separated for security
     def center_in(dt: float) -> None:  
+        game.sounds['BatteryInsert'].play()
         # game.sounds['placeholder'].play()
         game.day = False
         game.portal_handler.update_time()
@@ -229,6 +233,7 @@ def puzzle(office: Level) -> None:
         bulb_node.material = game.materials['bloom_yellow']
         
     def center_out(dt: float) -> None: 
+        game.sounds['BatteryRemove'].play()
         # game.sounds['placeholder'].play()
         game.day = True
         game.portal_handler.update_time()
@@ -237,9 +242,11 @@ def puzzle(office: Level) -> None:
     
     # right socket (coffee)
     def right_in(dt: float) -> None:  
+        game.sounds['BatteryInsert'].play()
         coffee_maker.on = True
         coffee_icon.material = game.materials['green']
     def right_out(dt: float) -> None: 
+        game.sounds['BatteryRemove'].play()
         coffee_maker.on = False
         coffee_icon.material = game.materials['red']
     
