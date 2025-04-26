@@ -12,15 +12,17 @@ from player.held_items.held_item import HeldItem, PictureFrame
 def bedroom1(game: Game) -> Level:
     # create basic layout for bedroom level
     bedroom = Level(game, 'bedroom1', glm.vec3(2, 0, 2))
+    
+    shader = bsk.Shader(game.engine)
 
     def note_func(dt: float) -> None: bsk.draw.blit(game.engine, game.images['bedroom_note1.png'], (0, 0, game.win_size.x, game.win_size.y))
     decor(bedroom, note_func)
-    this_decor(bedroom)
-    add_locked_box(bedroom)
+    this_decor(bedroom, shader)
+    add_locked_box(bedroom, shader)
     key_interact = key(bedroom)
     bedroom.add(key_interact)
     drawers(bedroom, key_interact)
-    safe(bedroom)
+    safe(bedroom, shader)
     mug(bedroom)
     safe_frame(bedroom)
     
@@ -38,17 +40,18 @@ def mug(bedroom: Level) -> None:
     mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)), top_text='mug')
     bedroom.add(mug)
 
-def this_decor(bedroom: Level) -> None:
+def this_decor(bedroom: Level, shader) -> None:
     game = bedroom.game
     
     bedroom.add(bsk.Node(
         position = (4.75, 3.2, 0),
         scale = (0.01, 0.9, 1.4),
         rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
-        material = game.materials['fortune_dresser']
+        material = game.materials['fortune_dresser'],
+        shader = shader
     ))
 
-def add_locked_box(bedroom: Level) -> None:
+def add_locked_box(bedroom: Level, shader) -> None:
     locked_box_interact = locked_box(bedroom)
     bedroom.add(locked_box_interact)
     wheels(bedroom, locked_box_interact)
@@ -243,7 +246,7 @@ def locked_lid(bedroom: Level, locked_box: Interactable) -> Interactable:
     
     return locked_lid
 
-def safe(level: Level) -> None:
+def safe(level: Level, shader) -> None:
     game = level.game
     
     safe = Interactable(level, bsk.Node(

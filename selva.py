@@ -10,4 +10,6 @@ while game.engine.running:
 """
 improve fishing - difficulty
 fix portal frame glitch (probably camera collision being bad)
+fix all white room models
+move battery to table
 """
