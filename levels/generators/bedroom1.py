@@ -218,7 +218,10 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
             angle = (abs(angle) - glm.pi() / 8) % (2 * glm.pi())
             
             # compute input code from angle
-            locked_box.code[index] = 8 - int(angle / glm.pi() * 4)
+            new_val = 8 - int(angle / glm.pi() * 4)
+            updated = locked_box.code[index] != new_val 
+            locked_box.code[index] = new_val
+            if updated and locked_box.code == [3, 6, 1]: game.sounds['KeyUnlock'].play()
         
         locked_box.prev_left_down = game.mouse.left_down
     
