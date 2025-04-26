@@ -24,6 +24,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None, check_func:
         bsk.draw.blit(game.engine, game.images['mouse.png'], (*game.mouse.position, 20, 20))
         if top_text: bsk.draw.blit(game.engine, game.images[f'label_{top_text}.png'], (game.win_size.x // 8 * 3, game.win_size.y // 10, game.win_size.x // 4, game.win_size.y // 10))
         if bottom_text: bsk.draw.blit(game.engine, game.images[f'label_{bottom_text}.png'], (game.win_size.x // 8 * 3, game.win_size.y // 10 * 8, game.win_size.x // 4, game.win_size.y // 10))
+        game.player.control_disabled = True
         
         # TODO grey out background
         
@@ -56,6 +57,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None, check_func:
         interact.node.rotation = (rotation if rotation else glm.quat()) * glm.conjugate(game.camera.rotation)
         level.scene.remove(interact.node)
         game.overlay_scene.add(interact.node)
+        game.sounds['placeholder'].play() # get item sound
         game.update = update
         
     return func

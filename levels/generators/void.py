@@ -21,7 +21,6 @@ def picture_frame(void: Level) -> None:
     pf = Interactable(void, bsk.Node(
         position = starting_position,
         scale = glm.vec3(0.7),
-        rotation = glm.quat(),
         mesh = game.meshes['picture_frame'],
         material = game.materials['bloom_white']
     ))
@@ -45,7 +44,7 @@ def picture_frame(void: Level) -> None:
         pf.node.rotation = glm.normalize(glm.conjugate(glm.quatLookAt(direction , (0, 1, 0)))) * glm.angleAxis(glm.pi(), (0, 1, 0))
     
     pf.passive = float_down
-    pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'bedroom1', material = game.materials['bloom_white'])), rotation=glm.angleAxis(glm.pi(), (0, 1, 0)), distance=4)
+    pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'bedroom1', material = game.materials['bloom_white'])), rotation=glm.angleAxis(glm.pi(), (0, 1, 0)), distance=4, top_text='remember', bottom_text='press_e')
     
     void.add(pf)
     
@@ -55,6 +54,23 @@ def void2(game: Game) -> Level:
     void = Level(game, 'void2', glm.vec3(0, 0, 0))
     void.scene.sky = None
     
-    picture_frame(void)
+    end_frame(void)
     
     return void
+
+def end_frame(void: Level) -> None:
+    game = void.game
+    
+    starting_position = glm.vec3(0, 0, -20)
+    pf = Interactable(void, bsk.Node(
+        position = starting_position,
+        scale = glm.vec3(0.7),
+        mesh = game.meshes['picture_frame'],
+        material = game.materials['bloom_white']
+    ))
+    
+    def end_func() -> None: game.end_cutscene.start()
+    
+    pf.active = pickup_function(pf, interact_to_frame(pf, PictureFrame(game, 'void2', material = game.materials['bloom_white'], end_func = end_func)), rotation=glm.angleAxis(glm.pi(), (0, 1, 0)), distance=4)
+    
+    void.add(pf)

@@ -14,15 +14,16 @@ from render.outline import OutlineRenderer
 def bedroom1(game: Game) -> Level:
     # create basic layout for bedroom level
     bedroom = Level(game, 'bedroom1', glm.vec3(2, 0, 2), OutlineRenderer)
+    shader = bsk.Shader(game.engine)
 
     def note_func(dt: float) -> None: bsk.draw.blit(game.engine, game.images['bedroom_note1.png'], (0, 0, game.win_size.x, game.win_size.y))
     decor(bedroom, note_func)
-    this_decor(bedroom)
-    add_locked_box(bedroom)
+    this_decor(bedroom, shader)
+    add_locked_box(bedroom, shader)
     key_interact = key(bedroom)
     bedroom.add(key_interact)
     drawers(bedroom, key_interact)
-    safe(bedroom)
+    safe(bedroom, shader)
     mug(bedroom)
     safe_frame(bedroom)
     
@@ -40,17 +41,18 @@ def mug(bedroom: Level) -> None:
     mug.active = pickup_function(mug, interact_to_hold(mug, HeldItem(game, mug.node)), top_text='mug')
     bedroom.add(mug)
 
-def this_decor(bedroom: Level) -> None:
+def this_decor(bedroom: Level, shader) -> None:
     game = bedroom.game
     
     bedroom.add(bsk.Node(
         position = (4.75, 3.2, 0),
         scale = (0.01, 0.9, 1.4),
         rotation = glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
-        material = game.materials['fortune_dresser']
+        material = game.materials['fortune_dresser'],
+        shader = shader
     ))
 
-def add_locked_box(bedroom: Level) -> None:
+def add_locked_box(bedroom: Level, shader) -> None:
     locked_box_interact = locked_box(bedroom)
     bedroom.add(locked_box_interact)
     wheels(bedroom, locked_box_interact)
@@ -76,8 +78,12 @@ def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Inter
     )
     drawer = Interactable(level, node)
     
+    drawer_lerp = lerp_interact(drawer, check_func = check_func, sound='placeholder') # TODO drawer sounds
+    def drawer_active(dt: float) -> None:
+        drawer_lerp(dt)
+    
     drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (0, 0, 1))
-    drawer.active = lerp_interact(drawer, check_func = check_func)
+    drawer.active = drawer_active
     return drawer
 
 def drawers(bedroom: Level, key: Interactable) -> None:
@@ -138,8 +144,11 @@ def drawers(bedroom: Level, key: Interactable) -> None:
     
     # function for opening locked drawer
     def check_func() -> bool:
-        if not bedroom.game.key_down(bsk.pg.K_e) or not bedroom.game.player.item_r or not bedroom.game.player.item_r.node == key.node: return False
+        if not bedroom.game.key_down(bsk.pg.K_e) or not bedroom.game.player.item_r or not bedroom.game.player.item_r.node == key.node: 
+            # game.sounds['placeholder'].play() # TODO lock gingle
+            return False
         bedroom.game.player.item_r_ui.remove(bedroom.game.player.item_r) # removes key from the player's inventory
+        game.sounds['placeholder'].play()
         return True
 
     locked_drawer = drawer(bedroom, glm.vec3(1.55, 1.4, -4.4), check_func = check_func)
@@ -155,7 +164,7 @@ def drawers(bedroom: Level, key: Interactable) -> None:
     def frame_passive(dt: float) -> None:
         frame.node.position.z = locked_drawer.node.position.z + 0.25
     
-    frame_pickup = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, 'office')))
+    frame_pickup = pickup_function(frame, interact_to_frame(frame, PictureFrame(game, 'office')), top_text = 'swap')
     def frame_active(dt: float) -> None:
         frame.passive = None
         frame_pickup(dt)
@@ -245,7 +254,7 @@ def locked_lid(bedroom: Level, locked_box: Interactable) -> Interactable:
     
     return locked_lid
 
-def safe(level: Level) -> None:
+def safe(level: Level, shader) -> None:
     game = level.game
     
     safe = Interactable(level, bsk.Node(
@@ -309,6 +318,7 @@ def safe(level: Level) -> None:
         if not safe_handle.open: safe.active(dt)
         else: 
             for button in safe.buttons: button.passive = empty
+            game.sounds['placeholder'].play() # TODO safe door
             safe_door.step = 1
         
     safe_door.active = door_func

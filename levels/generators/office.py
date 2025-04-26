@@ -27,7 +27,7 @@ def generate_chain(level: Level, positions: list[glm.vec3]) -> list[bsk.Node]:
 
 def office(game: Game) -> Level:
     # create basic layout for bedroom level
-    office = Level(game, 'office', glm.vec3(3, 0, 0), GoochRenderer)
+    office = Level(game, 'office', glm.vec3(4, 0, 0), GoochRenderer)
     office.add(*rect_room(0, 0, 8, 8, 4, game.materials['dirty_carpet'], game.materials['bright_wood'], game.materials['bright_wood']))
     
     desk(office)
@@ -36,17 +36,6 @@ def office(game: Game) -> Level:
     decor(office)
     wires(office)
     note(office)
-    
-    node = bsk.Node(
-        position = (3.5, 2.4, -4.35),
-        scale = (0.1, 0.1, 0.1),
-        rotation = glm.angleAxis(-glm.pi() / 2, (0, 1, 0)) * glm.angleAxis(glm.pi() / 2, (1, 0, 0)),
-        mesh = office.game.meshes['key'],
-        tags = ['color_key']
-    )
-    key = Interactable(office, node)
-    key.active = pickup_function(key, interact_to_hold(key, HeldItem(office.game, key.node)), top_text='key')
-    office.add(key)
     
     return office
     
@@ -202,8 +191,9 @@ def puzzle(office: Level) -> None:
     
     # add the battery into the scene
     battery = Interactable(office, bsk.Node(
-        position = (-3, 1.8, 3),
+        position = (-3, 1.9, -0.2),
         scale    = glm.vec3(0.2),
+        rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh     = game.meshes['battery'],
         material = game.materials['battery'],
         tags     = ['battery']
@@ -215,12 +205,18 @@ def puzzle(office: Level) -> None:
     def check_in(dt: float) -> bool:  return game.key_down(bsk.pg.K_e) and game.player.item_r and game.player.item_r.node.tags == ['battery']
     
     # left socket (computer)
-    def left_in(dt: float) -> None:  computer.on = True
+    def left_in(dt: float) -> None:  
+        game.sounds['placeholder'].play()
+        computer.on = True
     def left_out(dt: float) -> None: computer.on = False
     
     # center socket (light) NOTE could be !game.day for both but separated for security
-    def center_in(dt: float) -> None:  game.day = False
-    def center_out(dt: float) -> None: game.day = True
+    def center_in(dt: float) -> None:  
+        game.sounds['placeholder'].play()
+        game.day = False
+    def center_out(dt: float) -> None: 
+        game.sounds['placeholder'].play()
+        game.day = True
     
     # right socket (coffee)
     def right_in(dt: float) -> None:  
@@ -283,7 +279,7 @@ def desk(office: Level) -> None:
     # add copper wire
     wire = Interactable(office, bsk.Node(
         position = (-0.3, 0.5, 0.9),
-        scale = glm.vec3(0.3),
+        scale = glm.vec3(0.03),
         mesh = game.meshes['wire'],
         material = game.materials['copper'],
         tags = ['copper_wire']
@@ -293,7 +289,7 @@ def desk(office: Level) -> None:
         wire.passive = None
         wire_pickup(dt)
     
-    def wire_passive(dt: float) -> None: wire.node.position.x = bottom_drawer.node.position.x + 0.25
+    def wire_passive(dt: float) -> None: wire.node.position.x = bottom_drawer.node.position.x + 0.35
     wire.passive = wire_passive
     wire.active = wire_active
     
@@ -465,8 +461,7 @@ def note(level: Level) -> None:
         mesh = game.meshes['paper']
     ))
     
-    def p1(dt: float) -> None: 
-        def p1(dt: float) -> None: bsk.draw.blit(engine, game.images['office_ad.png'], (0, 0, game.win_size.x, game.win_size.y))
+    def p1(dt: float) -> None: bsk.draw.blit(engine, game.images['office_ad.png'], (0, 0, game.win_size.x, game.win_size.y))
 
     pages = [p1]
     note.active = book(note, pages)

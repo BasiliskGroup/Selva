@@ -161,11 +161,12 @@ class Player():
         If the player is pressing E, interact with what they are looking at. 
         """
         # determine if the player is interacting with a valid object
-        if not self.game.keys[bsk.pg.K_e]: return
         cast = self.current_scene.raycast(has_collisions=False) # will find the player's hitbox
         if not cast.node: return
         interactable = self.current_level[cast.node]
         if not interactable: return
+        bsk.draw.blit(self.game.engine, self.game.images['label_e.png'], (self.game.win_size.x // 2, self.game.win_size.y // 2, 20, 20))
+        if not self.game.keys[bsk.pg.K_e]: return
         
         # use the Interactable's functionality
         if interactable.active: interactable.active(dt)
