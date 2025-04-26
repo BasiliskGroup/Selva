@@ -47,7 +47,7 @@ def lerp_interact(interact: Interactable, end_func: Callable=None, check_func: C
             
     def func(dt: float) -> None:
         if not check_func(): return
-        if sound: interact.level.game.sounds[sound].play()
+        # if sound: interact.level.game.sounds[sound].play()
         interact.step *= -1
         if end_func: end_func(dt)
         
