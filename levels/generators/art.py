@@ -10,6 +10,7 @@ from levels.interactable import Interactable
 from levels.functions.imports import *
 from helper.transforms import connect
 
+
 def art(game: Game) -> Level:
     art = Level(game, 'art', glm.vec3(-1, 0, -1))
     

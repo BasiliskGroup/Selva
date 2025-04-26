@@ -71,7 +71,7 @@ LightResult BlinnPhong(DirectionalLight light, Material mtl, vec3 albedo, vec3 N
 
     vec3 L = normalize(-light.direction);  // light direction
     vec3 H = normalize(L + V);             // half vector
-    float cos_theta_l = clamp(dot(N, L), 0.0, 1.0) * .75 + .25;
+    float cos_theta_l = clamp(dot(N, L), 0.0, 1.0);
 
     float ndoth = dot(N, H);
 
@@ -112,7 +112,7 @@ void main() {
         fragColor = vec4(0.0, 0.0, 0.0, 0.0);
         discard;
     }
-    
+
     float gamma = 2.2;
     vec3 viewDir = vec3(normalize(cameraPosition - position));
 

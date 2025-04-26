@@ -9,9 +9,11 @@ from levels.interactable import Interactable
 from levels.functions.imports import *
 from levels.generators.bedroom import decor
 from player.held_items.held_item import HeldItem, PictureFrame
+from render.quantize import QuantizeRenderer
+
 
 def bedroom2(game: Game) -> Level:
-    bedroom = Level(game, 'bedroom2', glm.vec3(2, 0, 2))
+    bedroom = Level(game, 'bedroom2', glm.vec3(2, 0, 2), QuantizeRenderer, QuantizeRenderer)
     def note_func(dt: float) -> None: bsk.draw.blit(game.engine, game.images['bedroom_note2.png'], (0, 0, game.win_size.x, game.win_size.y))
     decor(bedroom, note_func)
     safe(bedroom)

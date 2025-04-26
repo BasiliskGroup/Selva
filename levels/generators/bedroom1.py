@@ -13,7 +13,7 @@ from render.outline import OutlineRenderer
 
 def bedroom1(game: Game) -> Level:
     # create basic layout for bedroom level
-    bedroom = Level(game, 'bedroom1', glm.vec3(2, 0, 2), OutlineRenderer)
+    bedroom = Level(game, 'bedroom1', glm.vec3(2, 0, 2), OutlineRenderer, OutlineRenderer)
     shader = bsk.Shader(game.engine)
 
     def note_func(dt: float) -> None: bsk.draw.blit(game.engine, game.images['bedroom_note1.png'], (0, 0, game.win_size.x, game.win_size.y))
