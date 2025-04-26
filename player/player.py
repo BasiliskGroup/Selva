@@ -71,6 +71,8 @@ class Player():
         
     def debug(self) -> None:
         if not self.game.engine.keys[bsk.pg.K_LSHIFT]: return
+        if self.game.key_down(bsk.pg.K_r):
+            self.camera.rotation = glm.quat(1, 0, 0, 0)
         if self.game.key_down(bsk.pg.K_1):
             self.item_r = HeldItem(self.game, bsk.Node(
                 position = (3.5, 2.4, -4.35),

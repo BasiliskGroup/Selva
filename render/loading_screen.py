@@ -10,7 +10,7 @@ class LoadingScreen:
         self.banner = bsk.Image('images/basilisk_banner.png', flip_y=False)
 
         self.progess = 0
-        self.total = len(os.listdir('./meshes')) + len(os.listdir('./sounds')) + len(os.listdir('./images')) * 2 + 1
+        self.total = len(os.listdir('./meshes')) + len(os.listdir('./sounds')) + len(os.listdir('./images')) * 2 + 8
 
         self.update()
 

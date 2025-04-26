@@ -102,15 +102,26 @@ class Game():
         # level layout
         self.memory_handler = MemoryHandler(self)
         self.memory_handler['void1'] = void1(self)
+        self.loading_screen.update()
         self.memory_handler['bedroom1'] = bedroom1(self)
+        self.loading_screen.update()
         self.memory_handler['office'] = office(self)
+        self.loading_screen.update()
         self.memory_handler['boat'] = boat(self)
+        self.loading_screen.update()
         self.memory_handler['art'] = art(self)
+        self.loading_screen.update()
         self.memory_handler['bedroom2'] = bedroom2(self)
+        self.loading_screen.update()
         self.memory_handler['void2'] = void2(self)
+        self.loading_screen.update()
         
-        
-        
+        for image in self.images.values():
+            self.engine.material_handler.image_handler.images.append(image)
+            self.loading_screen.update()
+
+        self.engine.material_handler.image_handler.write(regenerate=True)
+
         self.portal_handler = PortalHandler(self, self.memory_handler['void1'], self.memory_handler['void2'])
 
         # player
@@ -181,14 +192,10 @@ class Game():
         self.images = {}
         for file_name in os.listdir('./images'):
             self.loading_screen.update()
-            if not (file_name.endswith('.png') or file_name.endswith('.jpeg') or file_name.endswith('.jpg')): continue
+            if not (file_name.endswith('.png') or file_name.endswith('.jpeg') or file_name.endswith('.jpg')):
+                self.loading_screen.update()
+                continue
             self.images[file_name] = bsk.Image(f'./images/{file_name}', flip_y=False)
-
-        for image in self.images.values():
-            self.engine.material_handler.image_handler.images.append(image)
-            self.loading_screen.update()
-
-        self.engine.material_handler.image_handler.write(regenerate=True)
 
     def load_meshes(self) -> None:
         """
@@ -252,7 +259,7 @@ class Game():
         if self.engine.delta_time < 0.1:
             for interact in self.current_level.interactables.values():
                 if interact.passive: interact.passive(self.engine.delta_time)
-                    
+
         self.ui_scene.camera.position = self.camera.position
         self.ui_scene.camera.rotation = self.camera.rotation
         self.ui_scene.update(render=False)
