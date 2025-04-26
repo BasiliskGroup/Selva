@@ -8,11 +8,12 @@ from levels.interactable import Interactable
 from levels.functions.imports import *
 from levels.generators.bedroom import decor
 from player.held_items.held_item import HeldItem, PictureFrame
+from render.outline import OutlineRenderer
+
 
 def bedroom1(game: Game) -> Level:
     # create basic layout for bedroom level
-    bedroom = Level(game, 'bedroom1', glm.vec3(2, 0, 2))
-    
+    bedroom = Level(game, 'bedroom1', glm.vec3(2, 0, 2), OutlineRenderer)
     shader = bsk.Shader(game.engine)
 
     def note_func(dt: float) -> None: bsk.draw.blit(game.engine, game.images['bedroom_note1.png'], (0, 0, game.win_size.x, game.win_size.y))

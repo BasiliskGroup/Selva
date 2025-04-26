@@ -109,7 +109,8 @@ class Game():
         self.memory_handler['void2'] = void2(self)
         
         
-        self.portal_handler = PortalHandler(self, self.memory_handler['void1'].scene, self.memory_handler['void2'].scene)
+        
+        self.portal_handler = PortalHandler(self, self.memory_handler['void1'], self.memory_handler['void2'])
 
         # player
         self.player = Player(self)
@@ -236,10 +237,7 @@ class Game():
         # update interactibles in the current level
         for interact in self.current_level.interactables.values():
             if interact.passive: interact.passive(self.engine.delta_time)
-        
-        self.portal_handler.main_scene.update(render=False)
-        self.portal_handler.other_scene.update(render=False)
-        
+                
         self.ui_scene.camera.position = self.camera.position
         self.ui_scene.camera.rotation = self.camera.rotation
         self.ui_scene.update(render=False)
@@ -314,7 +312,7 @@ class Game():
         exit.add(self.exit_portal)
         
         # set portal positions in handler
-        self.portal_handler.set_scenes(self.current_scene, self.memory_handler[exit.name].scene)
+        self.portal_handler.set_levels(self.current_level, self.memory_handler[exit.name])
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
         self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, 0.0001)

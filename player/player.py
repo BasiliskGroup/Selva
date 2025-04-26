@@ -82,7 +82,7 @@ class Player():
         if current_level_name == self.item_l.level_name: return # portal was not changed
         self.game.close()
         # update portal exit
-        self.game.portal_handler.set_scenes(self.game.current_scene, self.game.memory_handler[self.item_l.level_name].scene)
+        self.game.portal_handler.set_levels(self.game.current_level, self.game.memory_handler[self.item_l.level_name])
         
     def teleport(self) -> None:
         """

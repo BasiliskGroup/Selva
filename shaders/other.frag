@@ -57,7 +57,7 @@ flat in Material mtl;
 
 // Uniforms
 uniform vec2 viewportDimensions;
-uniform sampler2D testTexture;
+uniform sampler2D depthTexture;
 
 uniform vec3 cameraPosition;
 const int    maxDirLights = 5;
@@ -229,7 +229,7 @@ float getRoughness(Material mtl, vec2 uv) {
 void main() {
 
     vec2 screenuv = (gl_FragCoord.xy) / viewportDimensions;
-    float portalDepth = texture(testTexture, screenuv).r;
+    float portalDepth = texture(depthTexture, screenuv).r;
     float fragDepth = gl_FragCoord.z;
 
     if (fragDepth < portalDepth) {

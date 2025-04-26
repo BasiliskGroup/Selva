@@ -2,17 +2,21 @@ import glm
 import basilisk as bsk
 from helper.type_hints import Game
 from levels.interactable import Interactable
+from render.renderer import Renderer
+from render.pixel import PixelRenderer
 
 
 class Level():
     
-    def __init__(self, game: Game, name: str, portal_position: glm.vec3) -> None:
+    def __init__(self, game: Game, name: str, portal_position: glm.vec3, render_type: Renderer=Renderer) -> None:
         self.game = game
         self.name = name
         self.scene = bsk.Scene(self.game.engine)
         self.scene.camera = bsk.FixedCamera()
         self.scene.physics_engine.accelerations = [glm.vec3(0, -25, 0)]
         
+        self.renderer = render_type(self.scene)
+
         self.interactables: dict[bsk.Node, Interactable] = {}
         
         self.portal_position = glm.vec3(portal_position)

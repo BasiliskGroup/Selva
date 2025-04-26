@@ -10,6 +10,7 @@ def decor(bedroom: Level, note_func: Callable) -> None:
     game = bedroom.game
     bedroom.add(*rect_room(0, 0, 5.75, 6.75, 4, floor_material = game.materials['bedroom_floor'], wall_material = game.materials['bedroom_wall'], ceil_material = game.materials['light_white']))
     # bed
+
     bedroom.add(bsk.Node(
         position = (-2.5, 1, -2.5),
         mesh = game.meshes['bed'],
