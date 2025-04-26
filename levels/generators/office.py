@@ -207,17 +207,20 @@ def puzzle(office: Level) -> None:
     
     # left socket (computer)
     def left_in(dt: float) -> None:  
-        game.sounds['placeholder'].play()
+        # game.sounds['placeholder'].play()
         computer.on = True
     def left_out(dt: float) -> None: computer.on = False
     
     # center socket (light) NOTE could be !game.day for both but separated for security
     def center_in(dt: float) -> None:  
-        game.sounds['placeholder'].play()
+        # game.sounds['placeholder'].play()
+        
         game.day = False
+        game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
     def center_out(dt: float) -> None: 
-        game.sounds['placeholder'].play()
+        # game.sounds['placeholder'].play()
         game.day = True
+        game.portal_handler.set_levels(game.portal_handler.main_level, game.portal_handler.other_level)
     
     # right socket (coffee)
     def right_in(dt: float) -> None:  

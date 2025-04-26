@@ -147,7 +147,7 @@ def drawers(bedroom: Level, key: Interactable) -> None:
             # game.sounds['placeholder'].play() # TODO lock gingle
             return False
         bedroom.game.player.item_r_ui.remove(bedroom.game.player.item_r) # removes key from the player's inventory
-        game.sounds['placeholder'].play()
+        # game.sounds['placeholder'].play()
         return True
 
     locked_drawer = drawer(bedroom, glm.vec3(1.55, 1.4, -4.4), check_func = check_func)
@@ -315,7 +315,7 @@ def safe(level: Level) -> None:
         if not safe_handle.open: safe.active(dt)
         else: 
             for button in safe.buttons: button.passive = empty
-            game.sounds['placeholder'].play() # TODO safe door
+            # game.sounds['placeholder'].play() # TODO safe door
             safe_door.step = 1
         
     safe_door.active = door_func
