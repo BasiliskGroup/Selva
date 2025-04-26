@@ -42,25 +42,26 @@ class MainMenu:
         self.time = 0
         
         padding = 4
+        padding_x = 6
         speed = random.randrange(0, 10) / 30
         
         
         side = random.randint(1, 4)
         if side == 1:
             # From left
-            pos = (padding, random.randrange(-padding, padding), -.5)
+            pos = (padding_x, random.randrange(-padding, padding), -.5)
             vel = [-speed, random.randrange(-1, 2) * speed, -.5]
         elif side == 2:
             # From left
-            pos = (-padding, random.randrange(-padding, padding), -.5)
+            pos = (-padding_x, random.randrange(-padding, padding), -.5)
             vel = [speed, random.randrange(-1, 2) * speed, -.5]
         elif side == 3:
             # From left
-            pos = (random.randrange(-padding, padding), padding, -.5)
+            pos = (random.randrange(-padding_x, padding_x), padding, -.5)
             vel = [random.randrange(-1, 2) * speed, -speed, -.5]
         else:
             # From left
-            pos = (random.randrange(-padding, padding), -padding, -.5)
+            pos = (random.randrange(-padding_x, padding_x), -padding, -.5)
             vel = [random.randrange(-1, 2) * speed, speed, -.5]
 
         # Get the acceleration base on the mouse position

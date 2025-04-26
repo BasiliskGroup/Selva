@@ -40,13 +40,14 @@ class Game():
         self.day = True
         self.portal_open = False
         self.hold_camera = None
+        self.dial_was_unlocked = False
         
         # game components
         self.load_sounds()
         self.sounds['title_screen'].play(loops=20)
         self.load_images()
-        self.load_meshes()
         self.load_materials()
+        self.load_meshes()
         self.load_shaders()
         self.load_fbos()
         
@@ -213,9 +214,10 @@ class Game():
             self.sounds[file_name[:-4]] = bsk.Sound(f'./sounds/{file_name}')
 
         self.sounds['PageTurn'].volume = 25
-        self.sounds['ItemPickupFanfare'].volume = 25
+        self.sounds['ItemPickupFanfare'].volume = 15
         self.sounds['Night'].volume = 15
         self.sounds['PortalOpen'].volume = 50
+        self.sounds['KeyUnlock'].volume = 35
 
     def load_shaders(self) -> None:
         """

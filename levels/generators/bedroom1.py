@@ -221,7 +221,8 @@ def wheels(bedroom: Level, locked_box: Interactable) -> None:
             new_val = 8 - int(angle / glm.pi() * 4)
             updated = locked_box.code[index] != new_val 
             locked_box.code[index] = new_val
-            if updated and locked_box.code == [3, 6, 1]: game.sounds['KeyUnlock'].play()
+            if updated and locked_box.code == [3, 6, 1] and not game.dial_was_unlocked: game.sounds['KeyUnlock'].play()
+            game.dial_was_unlocked = locked_box.code == [3, 6, 1]
         
         locked_box.prev_left_down = game.mouse.left_down
     
