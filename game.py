@@ -183,6 +183,12 @@ class Game():
             if not (file_name.endswith('.png') or file_name.endswith('.jpeg') or file_name.endswith('.jpg')): continue
             self.images[file_name] = bsk.Image(f'./images/{file_name}', flip_y=False)
 
+        for image in self.images.values():
+            self.engine.material_handler.image_handler.images.append(image)
+            self.loading_screen.update()
+
+        self.engine.material_handler.image_handler.write(regenerate=True)
+
     def load_meshes(self) -> None:
         """
         Loads all meshes from the meshes folder
