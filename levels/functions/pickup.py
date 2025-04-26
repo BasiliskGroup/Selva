@@ -11,6 +11,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None, check_func:
     func will be activated when the player closes the pick up menu in the accept termination.
     """
     setattr(interact, 'timer', 0)
+    setattr(interact, 'pickup_overlay_timer', 0)
     level = interact.level
     game = level.game
     actions = free(interact, camera=game.overlay_scene.camera)
@@ -25,6 +26,12 @@ def pickup_function(interact: Interactable, end_func: Callable=None, check_func:
         if top_text: bsk.draw.blit(game.engine, game.images[f'label_{top_text}.png'], (game.win_size.x // 8 * 3, game.win_size.y // 10, game.win_size.x // 4, game.win_size.y // 10))
         if bottom_text: bsk.draw.blit(game.engine, game.images[f'label_{bottom_text}.png'], (game.win_size.x // 8 * 3, game.win_size.y // 10 * 8, game.win_size.x // 4, game.win_size.y // 10))
         game.player.control_disabled = True
+        
+        interact.pickup_overlay_timer += game.engine.delta_time
+        if interact.pickup_overlay_timer < 1:
+            for node in game.overlay_scene.nodes: 
+                if node.material == game.materials['bloom_yellow']: node.scale = glm.vec3(interact.pickup_overlay_timer)  
+                elif node.material == game.materials['bloom_copper']: node.scale = glm.vec3(interact.pickup_overlay_timer / 2 * 3)
         
         # TODO grey out background
         
@@ -43,6 +50,8 @@ def pickup_function(interact: Interactable, end_func: Callable=None, check_func:
         
     def func(dt: float) -> None:
         if check(): return # only allow the user to call this function on a full left click
+        for node in game.overlay_scene.nodes: node.scale = glm.vec3(0)
+        interact.pickup_overlay_timer = 0
         
         # prevent the player from moving camera and position
         game.camera = bsk.StaticCamera(

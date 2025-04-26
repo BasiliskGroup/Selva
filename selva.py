@@ -9,12 +9,7 @@ while game.engine.running:
 
 """
 improve fishing - difficulty
-fix portal frame glitch (probably camera collision being bad)
-fix all white room models
-place sample sound
-shrink grow overlay
 lock camera at beginning
 adjust held item positions
-prevent same scenes ~
 sound queue box unlocked
 """
