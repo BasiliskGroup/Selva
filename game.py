@@ -203,8 +203,9 @@ class Game():
         self.sounds = {}
         for file_name in os.listdir('./sounds'):
             self.loading_screen.update()
-            if not file_name.endswith('.mp3'): continue
+            if not file_name.endswith('.mp3') and not file_name.endswith('.wav'): continue
             self.sounds[file_name[:-4]] = bsk.Sound(f'./sounds/{file_name}')
+        self.sounds['PageTurn'].volume = 25
 
     def load_shaders(self) -> None:
         """
@@ -318,7 +319,7 @@ class Game():
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
         self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, 0.05)
-        # self.sounds['placeholder'].play() # portal open
+        self.sounds['PortalOpen'].play() # portal open
         
     @property
     def camera(self): return self.current_scene.camera
