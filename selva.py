@@ -6,7 +6,3 @@ while game.engine.running:
     game.update()
 
 # Fortnite
-
-"""
-adjust held item positions
-"""
