@@ -189,8 +189,9 @@ def puzzle(office: Level) -> None:
     
     # add the battery into the scene
     battery = Interactable(office, bsk.Node(
-        position = (-3, 1.8, 3),
+        position = (-3, 1.9, -0.2),
         scale    = glm.vec3(0.2),
+        rotation = glm.angleAxis(glm.pi() / 2, (0, 1, 0)),
         mesh     = game.meshes['battery'],
         material = game.materials['battery'],
         tags     = ['battery']
@@ -202,12 +203,18 @@ def puzzle(office: Level) -> None:
     def check_in(dt: float) -> bool:  return game.key_down(bsk.pg.K_e) and game.player.item_r and game.player.item_r.node.tags == ['battery']
     
     # left socket (computer)
-    def left_in(dt: float) -> None:  computer.on = True
+    def left_in(dt: float) -> None:  
+        game.sounds['placeholder'].play()
+        computer.on = True
     def left_out(dt: float) -> None: computer.on = False
     
     # center socket (light) NOTE could be !game.day for both but separated for security
-    def center_in(dt: float) -> None:  game.day = False
-    def center_out(dt: float) -> None: game.day = True
+    def center_in(dt: float) -> None:  
+        game.sounds['placeholder'].play()
+        game.day = False
+    def center_out(dt: float) -> None: 
+        game.sounds['placeholder'].play()
+        game.day = True
     
     # right socket (coffee)
     def right_in(dt: float) -> None:  

@@ -152,6 +152,7 @@ def fishing(level: Level) -> None:
                     rod_node.velocity = glm.vec3(0)
                     rod.stage = 'reel'
                     rod.time = 0
+                    game.sounds['placeholder'].play()
                     
                     # spawn reel icon
                     game.ui.add(ImageBounce(game.ui, game.images['reel.png'], position1 = glm.vec2(100, 100), scale1 = glm.vec2(75, 125), position2 = glm.vec2(100, 100), scale2 = glm.vec2(150, 250), effect_time = 2))
@@ -239,6 +240,7 @@ def fishing(level: Level) -> None:
                 rod.step_lerp = -1
                 game.player.control_disabled = False
                 game.player.camera.rotation = glm.conjugate(glm.quatLookAt((0, 0, 1), (0, 1, 0)))
+                game.sounds['placeholder'].play() # TODO win sound
             
             case 'lose':
                 rod_node.position = tip_pos
@@ -248,6 +250,7 @@ def fishing(level: Level) -> None:
                 rod.step_lerp = -1
                 game.player.control_disabled = False
                 game.player.camera.rotation = glm.conjugate(glm.quatLookAt((0, 0, 1), (0, 1, 0)))
+                game.sounds['placeholder'].play() # TODO lose sound
             
     def rod_loop_check_func(dt: float) -> None: return rod.stage in ['bait']
         

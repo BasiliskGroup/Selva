@@ -21,6 +21,7 @@ def book(interact: Interactable, pages: list[Callable]) -> Callable:
         game.player.body_node.velocity = glm.vec3(0)
         forced_stay = True
         game.player.control_disabled = True
+        game.sounds['placeholder'].play() # TODO page turn
         
         def update():
             # update every frame
@@ -41,8 +42,12 @@ def book(interact: Interactable, pages: list[Callable]) -> Callable:
                 else: bsk.draw.blit(engine, game.images[f'{image}.png'], transforms[trans])
             
             # page buttons
-            def decr(): interact.page_number -= 1
-            def incr(): interact.page_number += 1
+            def decr(): 
+                game.sounds['placeholder'].play() # TODO page turn
+                interact.page_number -= 1
+            def incr(): 
+                game.sounds['placeholder'].play() # TODO page turn
+                interact.page_number += 1
             if interact.page_number: button('left_arrow', 'left', decr)
             if interact.page_number < len(pages) - 1: button('right_arrow', 'right', incr)
                 

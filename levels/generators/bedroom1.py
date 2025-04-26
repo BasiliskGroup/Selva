@@ -77,8 +77,12 @@ def drawer(level: Level, position: glm.vec3, check_func: Callable=None) -> Inter
     )
     drawer = Interactable(level, node)
     
+    drawer_lerp = lerp_interact(drawer, check_func = check_func, sound='placeholder') # TODO drawer sounds
+    def drawer_active(dt: float) -> None:
+        drawer_lerp(dt)
+    
     drawer.passive = lerp_difference(drawer, time = 0.25, delta_position = (0, 0, 1))
-    drawer.active = lerp_interact(drawer, check_func = check_func)
+    drawer.active = drawer_active
     return drawer
 
 def drawers(bedroom: Level, key: Interactable) -> None:
@@ -139,8 +143,11 @@ def drawers(bedroom: Level, key: Interactable) -> None:
     
     # function for opening locked drawer
     def check_func() -> bool:
-        if not bedroom.game.key_down(bsk.pg.K_e) or not bedroom.game.player.item_r or not bedroom.game.player.item_r.node == key.node: return False
+        if not bedroom.game.key_down(bsk.pg.K_e) or not bedroom.game.player.item_r or not bedroom.game.player.item_r.node == key.node: 
+            # game.sounds['placeholder'].play() # TODO lock gingle
+            return False
         bedroom.game.player.item_r_ui.remove(bedroom.game.player.item_r) # removes key from the player's inventory
+        game.sounds['placeholder'].play()
         return True
 
     locked_drawer = drawer(bedroom, glm.vec3(1.55, 1.4, -4.4), check_func = check_func)
@@ -310,6 +317,7 @@ def safe(level: Level, shader) -> None:
         if not safe_handle.open: safe.active(dt)
         else: 
             for button in safe.buttons: button.passive = empty
+            game.sounds['placeholder'].play() # TODO safe door
             safe_door.step = 1
         
     safe_door.active = door_func

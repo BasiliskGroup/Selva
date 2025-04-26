@@ -276,12 +276,13 @@ class Game():
         self.right_mouse_time = self.engine.delta_time + self.right_mouse_time if self.engine.mouse.right_down else 0
         self.left_mouse_time = self.engine.delta_time + self.left_mouse_time if self.engine.mouse.left_down else 0
         
-    def close(self) -> None:
+    def close(self, sound: bool=True) -> None:
         """
         Closes both portals
         """
         self.portal_open = False
         if not self.entry_portal.node_handler: return
+        self.sounds['placeholder'].play() # TODO portal close
         self.entry_portal.node_handler.scene.remove(self.entry_portal)
         self.exit_portal.node_handler.scene.remove(self.exit_portal)
         self.portal_handler.portal.position.y = -100
@@ -293,7 +294,7 @@ class Game():
         entry = self.current_level
         
         # do this if it is not the first time spawning a portal
-        self.close()
+        self.close(sound = False)
             
         # prevent opening a portal in the same scene
         if entry == exit: return
@@ -317,6 +318,7 @@ class Game():
         self.portal_handler.set_positions(self.entry_portal.position.data, self.exit_portal.position.data)
         self.portal_handler.set_rotations(rotation, rotation)
         self.portal_handler.portal.scale = glm.vec3(scale) if scale else glm.vec3(1, 2.5, 0.0001)
+        self.sounds['placeholder'].play() # portal open
         
     @property
     def camera(self): return self.current_scene.camera

@@ -57,6 +57,7 @@ def pickup_function(interact: Interactable, end_func: Callable=None, check_func:
         interact.node.rotation = (rotation if rotation else glm.quat()) * glm.conjugate(game.camera.rotation)
         level.scene.remove(interact.node)
         game.overlay_scene.add(interact.node)
+        game.sounds['placeholder'].play() # get item sound
         game.update = update
         
     return func
