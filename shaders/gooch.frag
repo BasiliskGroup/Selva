@@ -143,7 +143,13 @@ void main() {
 
     // No bloom currently
     float brightness = dot(finalColor, vec3(0.2126, 0.7152, 0.0722)) + dot(mtl.emissiveColor, vec3(1));
-    fragColor = vec4(finalColor + mtl.emissiveColor, 1.0);
+
+    if (bool(mtl.hasAlbedoMap)) {
+        fragColor = vec4(albedo, 1.0);
+    }
+    else {
+        fragColor = vec4(finalColor + mtl.emissiveColor, 1.0);
+    }
 
     // Filter out bright pixels for bloom
     bloomColor = vec4(albedo / 20 / brightness, 1.0);
