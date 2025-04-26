@@ -44,8 +44,8 @@ class Game():
         # game components
         self.load_sounds()
         self.sounds['title_screen'].play(loops=20)
-        self.load_meshes()
         self.load_images()
+        self.load_meshes()
         self.load_materials()
         self.load_shaders()
         self.load_fbos()
