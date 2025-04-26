@@ -47,7 +47,7 @@ class PictureFrame(HeldItem):
         
         self.original_offset = glm.vec3(self.offset) # left hand offset (-0.45, -0.25, 1.2)
         self.original_rotation = glm.quat(self.rotation)
-        self.final_offset = glm.vec3(0, 0, 0.3) - glm.vec3(-0.7, -0.5, 1.2)
+        self.final_offset = glm.vec3(0, 0, 0.3) - glm.vec3(-0.5, -0.4, 1.2)
         self.final_rotation = glm.quat(self.rotation)
         
     def func(self, dt: float) -> None:
@@ -60,7 +60,7 @@ class PictureFrame(HeldItem):
         blv, tlv, brv, trv = self.corner_vectors
         
         s = 0.333 / (glm.length(tl - bl) + 2 * glm.dot(tlv, self.camera.right))
-        self.final_offset = -s * glm.dot(self.camera.forward, tlv) * glm.vec3(0, 0, 1) - glm.vec3(-0.7, -0.5, 1.2)
+        self.final_offset = -s * glm.dot(self.camera.forward, tlv) * glm.vec3(0, 0, 1) - glm.vec3(-0.5, -0.4, 1.2)
         
         # play ANIMATION and store lerp value
         was1 = self.percent_moved == 1
